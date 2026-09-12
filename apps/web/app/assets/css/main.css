@@ -1,2 +1,151 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+
+/*
+ * Nationa design system — public-sector, white-first.
+ * See ./README.md for the full token / animation reference.
+ */
+
+@theme static {
+  --font-sans: "Inter", sans-serif;
+
+  /* Brand: institutional blue, 50 → 950. Consumed by app.config.ts (primary: 'brand'). */
+  --color-brand-50: #f0f5ff;
+  --color-brand-100: #dbe7fe;
+  --color-brand-200: #bfd4fe;
+  --color-brand-300: #93b4fd;
+  --color-brand-400: #6090fa;
+  --color-brand-500: #3b6df5;
+  --color-brand-600: #2456e6;
+  --color-brand-700: #1c44c4;
+  --color-brand-800: #1c3b9e;
+  --color-brand-900: #1c357d;
+  --color-brand-950: #142350;
+}
+
+:root,
+.light {
+  /* Slightly tighter than the default 0.75rem for a crisper, institutional feel. */
+  --ui-radius: 0.625rem;
+
+  /* --- Semantic surface tokens (light is the default) --- */
+  --ui-bg: #ffffff;
+  --ui-bg-muted: var(--ui-color-neutral-50);
+  --ui-bg-elevated: #ffffff;
+  --ui-bg-accented: var(--ui-color-neutral-100);
+  --ui-bg-inverted: var(--ui-color-neutral-900);
+
+  /* --- Text --- */
+  --ui-text-dimmed: var(--ui-color-neutral-400);
+  --ui-text-muted: var(--ui-color-neutral-500);
+  --ui-text-toned: var(--ui-color-neutral-600);
+  --ui-text: var(--ui-color-neutral-700);
+  --ui-text-highlighted: var(--ui-color-neutral-900);
+  --ui-text-inverted: #ffffff;
+
+  /* --- Borders / dividers --- */
+  --ui-border: var(--ui-color-neutral-200);
+  --ui-border-muted: var(--ui-color-neutral-100);
+  --ui-border-accented: var(--ui-color-neutral-300);
+  --ui-border-inverted: var(--ui-color-neutral-900);
+
+  /* --- Brand primary: blue-600 in light mode --- */
+  --ui-primary: var(--ui-color-primary-600);
+
+  /* --- App-level helpers --- */
+  --nationa-surface: #ffffff;
+  --nationa-surface-subtle: var(--ui-color-neutral-50);
+  --nationa-header-bg: rgb(255 255 255 / 0.85);
+  --nationa-shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.04);
+  --nationa-shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 3px 0 rgb(15 23 42 / 0.06);
+  --nationa-shadow-md: 0 6px 16px -4px rgb(15 23 42 / 0.1), 0 2px 6px -2px rgb(15 23 42 / 0.06);
+  --nationa-focus-ring: 0 0 0 3px rgb(36 86 230 / 0.25);
+}
+
+.dark {
+  /* --- Brand primary: blue-400 in dark mode --- */
+  --ui-primary: var(--ui-color-primary-400);
+
+  --ui-bg: var(--ui-color-neutral-950);
+  --ui-bg-muted: var(--ui-color-neutral-900);
+  --ui-bg-elevated: var(--ui-color-neutral-900);
+  --ui-bg-accented: var(--ui-color-neutral-800);
+  --ui-bg-inverted: #ffffff;
+
+  --ui-text-dimmed: var(--ui-color-neutral-600);
+  --ui-text-muted: var(--ui-color-neutral-400);
+  --ui-text-toned: var(--ui-color-neutral-300);
+  --ui-text: var(--ui-color-neutral-200);
+  --ui-text-highlighted: #ffffff;
+  --ui-text-inverted: var(--ui-color-neutral-950);
+
+  --ui-border: var(--ui-color-neutral-800);
+  --ui-border-muted: var(--ui-color-neutral-800);
+  --ui-border-accented: var(--ui-color-neutral-700);
+  --ui-border-inverted: #ffffff;
+
+  --nationa-surface: var(--ui-color-neutral-950);
+  --nationa-surface-subtle: var(--ui-color-neutral-900);
+  --nationa-header-bg: rgb(2 6 23 / 0.8);
+  --nationa-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --nationa-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --nationa-shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.5);
+  --nationa-focus-ring: 0 0 0 3px rgb(96 144 250 / 0.35);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scrollbar-gutter: stable;
+  }
+
+  ::selection {
+    background-color: var(--ui-color-primary-100);
+    color: var(--ui-color-primary-900);
+  }
+
+  .dark ::selection {
+    background-color: var(--ui-color-primary-900);
+    color: #ffffff;
+  }
+
+  /* Keep focus rings blue by default; component utilities still win. */
+  :where(
+    a,
+    button,
+    [role="button"],
+    input,
+    select,
+    textarea,
+    summary,
+    [tabindex]:not([tabindex="-1"])
+  ):focus-visible {
+    outline-color: var(--ui-color-primary-500);
+  }
+}
+
+/* Subtle links inside a fixed header backdrop. */
+@utility bg-header {
+  background-color: var(--nationa-header-bg);
+}
+
+@keyframes nationa-header-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-header-in {
+  animation: nationa-header-in 0.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-header-in {
+    animation: none;
+  }
+}

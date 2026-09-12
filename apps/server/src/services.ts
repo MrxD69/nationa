@@ -1,7 +1,7 @@
-import { type Database, createDb } from "@nationa/db";
+import { type Database, type DatabaseConfig, createDb } from "@nationa/db";
 
-import { env } from "./env.server";
+import { env as serverEnv } from "./env.server";
 
-export function getDb(): Database {
-  return createDb(env);
+export function getDb(runtimeEnv: DatabaseConfig = serverEnv): Database {
+  return createDb(runtimeEnv);
 }

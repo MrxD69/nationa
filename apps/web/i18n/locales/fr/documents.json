@@ -1,0 +1,65 @@
+{
+  "documents": {
+    "title": "Documents",
+    "subtitle": "Téléversez et extrayez les documents de l'entreprise.",
+    "upload": {
+      "title": "Nouveau document",
+      "subtitle": "Sélectionnez un type puis déposez un fichier.",
+      "typeLabel": "Type de document",
+      "typePlaceholder": "Choisir un type",
+      "requiredHint": "Champs attendus :",
+      "label": "Déposez un fichier ici ou cliquez pour parcourir",
+      "description": "PDF, JPG ou PNG. Taille maximale selon la configuration.",
+      "uploading": "Téléversement en cours…",
+      "processing": "Extraction en cours…",
+      "success": "Document téléversé. Extraction lancée.",
+      "button": "Téléverser"
+    },
+    "list": {
+      "title": "Documents de l'entreprise",
+      "count": "{count} document(s)",
+      "refresh": "Actualiser",
+      "loading": "Chargement des documents…",
+      "empty": "Aucun document",
+      "emptyHint": "Téléversez un premier document pour commencer.",
+      "untitled": "Document sans titre",
+      "typeUnknown": "Autres documents",
+      "fileName": "Fichier",
+      "size": "Taille",
+      "uploadedAt": "Téléversé le",
+      "version": "Version",
+      "view": "Voir"
+    },
+    "status": {
+      "uploaded": "Téléversé",
+      "pending": "En attente",
+      "processing": "En cours",
+      "extracted": "Extrait",
+      "needs_review": "À vérifier",
+      "verified": "Vérifié",
+      "failed": "Échec"
+    },
+    "extraction": {
+      "reprocess": "Relancer l'extraction",
+      "overallConfidence": "Confiance",
+      "error": "L'extraction a échoué."
+    },
+    "detail": {
+      "title": "Détail du document",
+      "subtitle": "Champs extraits et niveaux de confiance.",
+      "loading": "Chargement du document…"
+    },
+    "fields": {
+      "key": "Champ",
+      "value": "Valeur",
+      "confidence": "Confiance",
+      "empty": "Aucun champ extrait",
+      "noValue": "—"
+    },
+    "errors": {
+      "missingScope": "Sélectionnez une entreprise ou un dossier.",
+      "uploadFailed": "Le téléversement a échoué.",
+      "generic": "Une erreur est survenue."
+    }
+  }
+}

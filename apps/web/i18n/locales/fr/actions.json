@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "title": "Actions",
+    "subtitle": "Suivez chaque démarche, étape par étape, auprès de chaque administration.",
+    "search": {
+      "placeholder": "Rechercher une démarche…",
+      "empty": "Aucune démarche ne correspond à votre recherche.",
+      "results": "Résultats"
+    },
+    "hub": {
+      "outstanding": "À traiter",
+      "allActions": "Toutes les démarches",
+      "loading": "Chargement des démarches…",
+      "error": "Impossible de charger les démarches",
+      "retry": "Réessayer",
+      "empty": "Aucune démarche disponible pour cette administration.",
+      "docsRequired": "{count} document(s) requis",
+      "steps": "{count} étapes",
+      "days": "{count} jours estimés",
+      "open": "Ouvrir",
+      "start": "Démarrer",
+      "resume": "Reprendre",
+      "outstandingEmpty": "Aucune action en attente. Tout est à jour."
+    },
+    "agencies": {
+      "all": "Toutes",
+      "RNE": "RNE",
+      "DGI": "DGI",
+      "CNSS": "CNSS",
+      "APII": "APII",
+      "BCT": "BCT"
+    },
+    "state": {
+      "not_started": "Non démarré",
+      "in_progress": "En cours",
+      "done": "Terminée",
+      "verified": "Vérifiée",
+      "generated": "Générée",
+      "needs_correction": "À corriger",
+      "blocked": "Bloquée",
+      "locked": "Verrouillée"
+    },
+    "tracker": {
+      "title": "Suivi de la démarche",
+      "loading": "Chargement du suivi…",
+      "notFound": "Démarche introuvable",
+      "progress": "Progression",
+      "nextAction": "Prochaine action",
+      "noNext": "Aucune action immédiate. La démarche est à jour.",
+      "runChecks": "Lancer les contrôles",
+      "running": "Contrôles en cours…",
+      "openCase": "Ouvrir le dossier",
+      "startCase": "Démarrer la démarche",
+      "requiredDocuments": "Documents requis",
+      "citations": "Références légales",
+      "generatedArtifacts": "Documents générés",
+      "findings": "Anomalies",
+      "fields": "Informations saisies",
+      "noFindings": "Aucune anomalie détectée.",
+      "noDocuments": "Aucun document associé.",
+      "noFields": "Aucune information saisie.",
+      "caseStatus": "Statut du dossier",
+      "fees": "Frais",
+      "verification": "Vérification",
+      "verified": "Vérifié",
+      "lastRun": "Dernier contrôle",
+      "noRun": "Aucun contrôle lancé",
+      "stepOf": "Étape {position} sur {total}",
+      "estimatedTime": "Délai estimé"
+    },
+    "step": {
+      "objective": "Objectif",
+      "optional": "Optionnelle",
+      "required": "Obligatoire"
+    },
+    "severity": {
+      "info": "Information",
+      "warning": "Avertissement",
+      "error": "Erreur",
+      "blocker": "Bloquant"
+    }
+  }
+}

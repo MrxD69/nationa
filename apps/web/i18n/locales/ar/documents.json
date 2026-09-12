@@ -1,0 +1,65 @@
+{
+  "documents": {
+    "title": "الوثائق",
+    "subtitle": "ارفع وثائق المؤسسة واستخرج بياناتها.",
+    "upload": {
+      "title": "وثيقة جديدة",
+      "subtitle": "اختر النوع ثم أسقط الملف.",
+      "typeLabel": "نوع الوثيقة",
+      "typePlaceholder": "اختر نوعًا",
+      "requiredHint": "الحقول المتوقعة:",
+      "label": "أسقط ملفًا هنا أو انقر للاختيار",
+      "description": "PDF أو JPG أو PNG. الحجم الأقصى حسب الإعداد.",
+      "uploading": "جارٍ الرفع…",
+      "processing": "جارٍ الاستخراج…",
+      "success": "تم رفع الوثيقة. بدأ الاستخراج.",
+      "button": "رفع"
+    },
+    "list": {
+      "title": "وثائق المؤسسة",
+      "count": "{count} وثيقة",
+      "refresh": "تحديث",
+      "loading": "جارٍ تحميل الوثائق…",
+      "empty": "لا توجد وثائق",
+      "emptyHint": "ارفع أول وثيقة للبدء.",
+      "untitled": "وثيقة بدون عنوان",
+      "typeUnknown": "وثائق أخرى",
+      "fileName": "الملف",
+      "size": "الحجم",
+      "uploadedAt": "تاريخ الرفع",
+      "version": "الإصدار",
+      "view": "عرض"
+    },
+    "status": {
+      "uploaded": "مرفوعة",
+      "pending": "قيد الانتظار",
+      "processing": "قيد المعالجة",
+      "extracted": "مستخرجة",
+      "needs_review": "بحاجة إلى مراجعة",
+      "verified": "مؤكدة",
+      "failed": "فشل"
+    },
+    "extraction": {
+      "reprocess": "إعادة الاستخراج",
+      "overallConfidence": "الثقة",
+      "error": "فشل الاستخراج."
+    },
+    "detail": {
+      "title": "تفاصيل الوثيقة",
+      "subtitle": "الحقول المستخرجة ودرجات الثقة.",
+      "loading": "جارٍ تحميل الوثيقة…"
+    },
+    "fields": {
+      "key": "الحقل",
+      "value": "القيمة",
+      "confidence": "الثقة",
+      "empty": "لا توجد حقول مستخرجة",
+      "noValue": "—"
+    },
+    "errors": {
+      "missingScope": "اختر مؤسسة أو ملفًا.",
+      "uploadFailed": "فشل رفع الوثيقة.",
+      "generic": "حدث خطأ."
+    }
+  }
+}

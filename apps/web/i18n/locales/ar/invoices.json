@@ -1,0 +1,93 @@
+{
+  "invoices": {
+    "title": "الفواتير",
+    "subtitle": "استورد الفواتير وتحقّق منها وتابع فواتير الشراء والبيع.",
+    "count": "{count} فاتورة",
+    "loading": "جارٍ تحميل الفواتير…",
+    "empty": "لا توجد فواتير",
+    "emptyHint": "استورد فاتورة مورد للبدء.",
+    "direction": {
+      "purchase": "شراء",
+      "sale": "بيع"
+    },
+    "status": {
+      "extracted": "مستخرجة",
+      "needs_review": "بحاجة إلى مراجعة",
+      "verified": "متحقّق منها"
+    },
+    "upload": {
+      "title": "استيراد فاتورة",
+      "subtitle": "أضف فاتورة لاستخراج بياناتها تلقائيًا.",
+      "button": "استيراد واستخراج",
+      "uploading": "جارٍ الرفع…",
+      "processing": "جارٍ الاستخراج…",
+      "success": "تم استخراج الفاتورة.",
+      "noFile": "اختر ملفًا.",
+      "failed": "فشل استخراج الفاتورة."
+    },
+    "table": {
+      "number": "رقم الفاتورة",
+      "supplier": "المورد",
+      "issueDate": "التاريخ",
+      "direction": "الاتجاه",
+      "total": "الإجمالي",
+      "status": "الحالة",
+      "actions": "إجراءات",
+      "empty": "لا توجد فواتير بعد."
+    },
+    "form": {
+      "newTitle": "فاتورة جديدة",
+      "editTitle": "تعديل الفاتورة",
+      "direction": "الاتجاه",
+      "supplierName": "المورد",
+      "supplierTaxId": "المعرّف الجبائي",
+      "invoiceNumber": "الرقم",
+      "issueDate": "تاريخ الإصدار",
+      "dueDate": "تاريخ الاستحقاق",
+      "currency": "العملة",
+      "subtotal": "المجموع دون أداء",
+      "taxAmount": "الأداء",
+      "total": "المجموع مع الأداء",
+      "lines": "الأسطر",
+      "description": "الوصف",
+      "quantity": "الكمية",
+      "unitPrice": "سعر الوحدة",
+      "taxRate": "النسبة %",
+      "lineTax": "أداء السطر",
+      "lineTotal": "مجموع السطر",
+      "addLine": "إضافة سطر",
+      "removeLine": "حذف",
+      "save": "حفظ",
+      "cancel": "إلغاء"
+    },
+    "detail": {
+      "title": "تفاصيل الفاتورة",
+      "lines": "الأسطر",
+      "noLines": "لا توجد أسطر",
+      "provenance": "مصدر الحقول"
+    },
+    "actions": {
+      "verify": "تحقّق",
+      "edit": "تعديل",
+      "remove": "حذف",
+      "close": "إغلاق",
+      "new": "فاتورة جديدة",
+      "refresh": "تحديث"
+    },
+    "provenance": {
+      "source": "المصدر",
+      "confidence": "الثقة",
+      "document": "وثيقة",
+      "user": "إدخال يدوي",
+      "ai": "المساعد",
+      "system": "النظام",
+      "import": "استيراد"
+    },
+    "errors": {
+      "loadFailed": "تعذر تحميل الفواتير.",
+      "saveFailed": "تعذر حفظ الفاتورة.",
+      "verifyFailed": "تعذر التحقّق من الفاتورة.",
+      "removeFailed": "تعذر حذف الفاتورة."
+    }
+  }
+}

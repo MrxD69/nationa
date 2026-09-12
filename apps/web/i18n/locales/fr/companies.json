@@ -1,0 +1,166 @@
+{
+  "companies": {
+    "title": "Entreprises",
+    "subtitle": "Gérez vos sociétés et leurs données légales.",
+    "new": "Nouvelle entreprise",
+    "connect": "Connecter une entreprise existante",
+    "viewAll": "Toutes",
+    "accountantView": "Portefeuille comptable",
+    "loading": "Chargement des entreprises…",
+    "empty": {
+      "title": "Aucune entreprise pour le moment",
+      "description": "Créez votre première entreprise ou connectez-vous à une entreprise existante.",
+      "cta": "Créer une entreprise"
+    },
+    "error": {
+      "title": "Impossible de charger les entreprises",
+      "description": "Vérifiez votre connexion puis réessayez."
+    },
+    "connectModal": {
+      "title": "Connecter une entreprise",
+      "description": "Saisissez l'identifiant unique (RNE) de l'entreprise à laquelle vous rattacher.",
+      "identifier": "Identifiant unique",
+      "identifierPlaceholder": "Ex. 1234567/A/M/000",
+      "submit": "Connecter",
+      "cancel": "Annuler"
+    },
+    "card": {
+      "role": "Rôle",
+      "status": "Statut",
+      "open": "Ouvrir"
+    },
+    "create": {
+      "title": "Nouvelle entreprise",
+      "subtitle": "Renseignez les informations légales de la société.",
+      "portfolio": "Je suis comptable et je crée cette entreprise pour un client",
+      "submit": "Créer l'entreprise"
+    },
+    "edit": {
+      "title": "Modifier l'entreprise",
+      "subtitle": "Mettez à jour les informations légales. Chaque champ modifié est tracé.",
+      "submit": "Enregistrer les modifications"
+    },
+    "detail": {
+      "title": "Fiche entreprise",
+      "back": "Retour aux entreprises",
+      "edit": "Modifier",
+      "access": "Gérer les accès",
+      "documents": "Documents",
+      "cases": "Dossiers",
+      "checks": "Vérifications",
+      "invoices": "Factures",
+      "filings": "Déclarations",
+      "notFound": "Entreprise introuvable",
+      "overview": "Informations légales",
+      "provenance": "Provenance",
+      "noValue": "—",
+      "role": "Votre rôle",
+      "scopes": "Permissions"
+    },
+    "access": {
+      "title": "Accès",
+      "subtitle": "Invitez des collaborateurs et gérez leurs permissions.",
+      "members": "Membres",
+      "invite": "Inviter un membre",
+      "inviteTitle": "Inviter un membre",
+      "email": "Adresse e-mail",
+      "emailPlaceholder": "nom@exemple.com",
+      "role": "Rôle",
+      "expiresIn": "Expire dans (jours)",
+      "send": "Envoyer l'invitation",
+      "cancel": "Annuler",
+      "revoke": "Révoquer",
+      "noMembers": "Aucun membre pour le moment.",
+      "tokenTitle": "Lien d'invitation",
+      "tokenHelp": "Partagez ce lien avec la personne invitée. Il expire bientôt.",
+      "copy": "Copier",
+      "copied": "Copié",
+      "close": "Fermer",
+      "status": "Statut",
+      "empty": "Aucun accès enregistré."
+    },
+    "roles": {
+      "owner": "Propriétaire",
+      "admin": "Administrateur",
+      "employee": "Employé",
+      "accountant": "Comptable",
+      "accountant_assistant": "Assistant comptable"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "active": "Actif",
+      "suspended": "Suspendu",
+      "radiated": "Radié"
+    },
+    "boolean": {
+      "yes": "Oui",
+      "no": "Non"
+    },
+    "registryType": {
+      "societe": "Société",
+      "entreprise": "Entreprise"
+    },
+    "registryState": {
+      "actif": "Actif",
+      "suspendu": "Suspendu",
+      "radie": "Radié"
+    },
+    "fiscalDefault": {
+      "none": "Aucune",
+      "months_12_24": "12 à 24 mois",
+      "over_24_months": "Plus de 24 mois",
+      "unknown": "Inconnue"
+    },
+    "provenance": {
+      "label": "Source",
+      "user": "Saisi",
+      "document": "Document",
+      "ai": "IA",
+      "import": "Import",
+      "system": "Système",
+      "confidence": "Confiance"
+    },
+    "acceptInvite": {
+      "title": "Invitation",
+      "working": "Validation de l'invitation…",
+      "success": "Invitation acceptée. Vous avez maintenant accès à l'entreprise.",
+      "error": "Impossible d'accepter l'invitation",
+      "open": "Ouvrir l'entreprise",
+      "missing": "Aucun jeton d'invitation fourni."
+    },
+    "form": {
+      "groups": {
+        "identity": "Identité",
+        "registry": "Registre et fiscalité",
+        "activity": "Activité",
+        "address": "Adresses",
+        "flags": "Indicateurs"
+      },
+      "legalName": "Dénomination sociale",
+      "legalNameAr": "Dénomination sociale (arabe)",
+      "tradeName": "Nom commercial",
+      "brandName": "Enseigne",
+      "legalForm": "Forme juridique",
+      "capitalAmount": "Capital",
+      "currency": "Devise",
+      "durationYears": "Durée",
+      "publicationDate": "Date de publication",
+      "headquartersAddress": "Siège social",
+      "activityAddress": "Adresse d'activité",
+      "mainActivityLabel": "Activité principale",
+      "mainActivityLabelAr": "Activité principale (arabe)",
+      "mainActivityCode": "Code activité",
+      "activityStartDate": "Date début d'activité",
+      "registryState": "État au registre",
+      "secondaryEstablishmentsCount": "Établissements secondaires",
+      "leasing": "Crédit-bail",
+      "hasPledge": "Nantissement",
+      "fiscalDefault": "Défaillance fiscale",
+      "mentionDate": "Date de mention",
+      "uniqueIdentifier": "Identifiant unique",
+      "internalManagementNumber": "Numéro de gestion interne",
+      "registryType": "Type de registre",
+      "taxId": "Identifiant fiscal"
+    }
+  }
+}

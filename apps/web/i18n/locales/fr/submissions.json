@@ -1,0 +1,78 @@
+{
+  "submissions": {
+    "title": "Mes soumissions",
+    "subtitle": "Suivi des dossiers transmis aux organismes",
+    "loading": "Chargement…",
+    "error": {
+      "title": "Impossible de charger les soumissions",
+      "description": "Une erreur est survenue lors du chargement.",
+      "retry": "Réessayer"
+    },
+    "empty": "Aucune soumission",
+    "emptyDescription": "Vous n'avez encore transmis aucun dossier.",
+    "back": "Retour",
+    "status": {
+      "draft": "Brouillon",
+      "queued": "En file",
+      "in_review": "En cours d'examen",
+      "approved": "Approuvée",
+      "rejected": "Rejetée",
+      "returned": "Renvoyée pour correction",
+      "escalated": "Escaladée"
+    },
+    "cleanliness": {
+      "clean": "Propre",
+      "minor_concern": "Léger risque",
+      "needs_review": "À vérifier",
+      "label": "Propreté",
+      "score": "Score : {score}"
+    },
+    "list": {
+      "company": "Entreprise",
+      "agency": "Organisme",
+      "submittedAt": "Soumis le",
+      "status": "Statut",
+      "cleanliness": "Propreté",
+      "findings": "Constats"
+    },
+    "card": {
+      "open": "Ouvrir"
+    },
+    "detail": {
+      "title": "Détail de la soumission",
+      "notFound": "Soumission introuvable.",
+      "company": "Entreprise",
+      "agency": "Organisme",
+      "submittedAt": "Soumis le",
+      "decidedAt": "Décidé le",
+      "case": "Dossier",
+      "reason": "Motif de la décision",
+      "documents": "Documents",
+      "noDocuments": "Aucun document",
+      "findings": "Constats",
+      "noFindings": "Aucun constat",
+      "reviews": "Historique des décisions",
+      "noReviews": "Aucune décision",
+      "activity": "Activité",
+      "noActivity": "Aucune activité",
+      "resubmit": "Soumettre à nouveau",
+      "resubmitAcknowledge": "Je reconnais les constats bloquants",
+      "resubmitted": "Soumission renvoyée pour examen",
+      "blockers": "Constats bloquants",
+      "blockersDescription": "{count} constat(s) bloquant(s) doivent être reconnus avant de soumettre."
+    },
+    "timeline": {
+      "title": "Chronologie",
+      "empty": "Aucun événement",
+      "created": "Créée",
+      "submitted": "Soumise",
+      "resubmitted": "Soumise à nouveau"
+    },
+    "actions": {
+      "view": "Voir",
+      "open": "Ouvrir",
+      "back": "Retour",
+      "retry": "Réessayer"
+    }
+  }
+}

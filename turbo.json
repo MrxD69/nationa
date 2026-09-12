@@ -18,9 +18,16 @@
       "cache": false,
       "persistent": true
     },
+    "dev:bare": {
+      "cache": false,
+      "persistent": true
+    },
     "db:push": {
       "cache": false,
       "interactive": true
+    },
+    "db:seed": {
+      "cache": false
     },
     "db:generate": {
       "cache": false,
@@ -47,13 +54,18 @@
     "CI",
     "CORS_ORIGIN",
     "DATABASE_URL",
-    "GOOGLE_GENERATIVE_AI_API_KEY",
     "NODE_ENV",
     "NUXT_PUBLIC_SERVER_URL",
-    "VERCEL",
-    "VERCEL_ENV",
-    "VERCEL_PROJECT_PRODUCTION_URL",
-    "VERCEL_URL",
+    "NUXT_PUBLIC_SUPABASE_KEY",
+    "NUXT_PUBLIC_SUPABASE_URL",
+    "OPENROUTER_API_KEY",
+    "OPENROUTER_MODEL",
+    "R2_ACCESS_KEY_ID",
+    "R2_ACCOUNT_ID",
+    "R2_BUCKET_NAME",
+    "R2_SECRET_ACCESS_KEY",
+    "SUPABASE_JWKS_URL",
+    "SUPABASE_URL",
     "_VARLOCK_ENV_KEY"
   ],
   "globalDependencies": [".env*", "apps/*/.env*", "packages/*/.env*"]

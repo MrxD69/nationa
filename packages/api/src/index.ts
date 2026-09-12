@@ -1,7 +1,8 @@
-import { os } from "@orpc/server";
-
-import type { Context } from "./context";
-
-export const o = os.$context<Context>();
-
-export const publicProcedure = o;
+export {
+  o,
+  publicProcedure,
+  userProcedure,
+  authedProcedure,
+  companyProcedure,
+  agencyProcedure,
+} from "./rpc/builders";

@@ -1,0 +1,55 @@
+{
+  "onboarding": {
+    "title": "Bienvenue sur Nationa",
+    "subtitle": "Quelques questions pour personnaliser votre espace.",
+    "loading": "Chargement…",
+    "retry": "Réessayer",
+    "resume": "Votre onboarding est déjà terminé.",
+    "steps": {
+      "question": "Question",
+      "consent": "Confidentialité",
+      "finish": "Terminé"
+    },
+    "question": "Avez-vous déjà une entreprise ?",
+    "choices": {
+      "has_company": {
+        "title": "J'ai déjà une entreprise",
+        "description": "Rattachez vos sociétés existantes et démarrez le suivi."
+      },
+      "no_company": {
+        "title": "Je n'ai pas encore d'entreprise",
+        "description": "Créez votre société et lancez les démarches."
+      },
+      "accountant": {
+        "title": "Je suis comptable / avocat",
+        "description": "Gérez un portefeuille de clients et leurs obligations."
+      }
+    },
+    "consent": {
+      "title": "Votre vie privée",
+      "intro": "Avant de continuer, voici comment nous utilisons vos données.",
+      "dataTitle": "Quelles données ?",
+      "data": "Informations d'entreprise, documents officiels et données d'identification que vous téléversez.",
+      "whyTitle": "Pourquoi ?",
+      "why": "Pour préparer vos dossiers, vérifier leur conformité et suivre vos obligations légales.",
+      "retentionTitle": "Combien de temps ?",
+      "retention": "Vos données sont conservées pendant la durée de votre compte et supprimées sur demande.",
+      "agree": "J'accepte le traitement de mes données selon la politique de confidentialité.",
+      "submit": "Accepter et continuer",
+      "policyVersion": "Version de la politique"
+    },
+    "finish": {
+      "title": "Tout est prêt !",
+      "description": "Votre espace est configuré. Passons à la suite.",
+      "cta": "Continuer",
+      "hasCompanyCta": "Voir mes entreprises",
+      "createCompanyCta": "Créer une entreprise",
+      "accountantCta": "Ouvrir le portefeuille"
+    },
+    "back": "Retour",
+    "errors": {
+      "saveFailed": "Échec de l'enregistrement. Réessayez.",
+      "consentRequired": "Vous devez accepter la politique de confidentialité."
+    }
+  }
+}

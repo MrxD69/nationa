@@ -1,0 +1,218 @@
+import type { DocumentTemplateDef } from "./types";
+
+export const declarationExistenceDgiTemplate: DocumentTemplateDef = {
+  code: "declaration_existence_dgi",
+  version: 1,
+  documentTypeCode: "declaration_existence",
+  defaultLanguage: "fr",
+  title: {
+    fr: "Déclaration d'existence auprès de la DGI",
+    ar: "التصريح بالوجود لدى الإدارة العامة للجباية",
+  },
+  description: {
+    fr: "Déclaration d'existence d'une entreprise auprès de la Direction générale des impôts.",
+    ar: "التصريح بوجود مؤسسة لدى الإدارة العامة للجباية.",
+  },
+  canonicalKeys: [
+    "legalName",
+    "legalNameAr",
+    "tradeName",
+    "legalForm",
+    "uniqueIdentifier",
+    "internalManagementNumber",
+    "taxId",
+    "activityStartDate",
+    "headquartersAddress",
+    "activityAddress",
+    "mainActivityLabel",
+    "mainActivityCode",
+    "currency",
+    "capitalAmount",
+    "publicationDate",
+    "fullName",
+    "nationalId",
+    "email",
+    "phone",
+  ],
+  citationKeys: [
+    "code_irpp_is_declarations",
+    "loi52_2018_art_6_immatriculation",
+    "loi_beneficiaire_effectif",
+  ],
+  sections: [
+    {
+      id: "declarant",
+      title: { fr: "Déclarant / représentant légal", ar: "المصرح / الممثل القانوني" },
+      blocks: [
+        {
+          type: "field",
+          id: "fullName",
+          key: "fullName",
+          label: { fr: "Nom et prénom du déclarant", ar: "الاسم واللقب للمصرح" },
+          required: true,
+        },
+        {
+          type: "field",
+          id: "nationalId",
+          key: "nationalId",
+          label: { fr: "CIN du déclarant", ar: "بطاقة تعريف المصرح" },
+        },
+        {
+          type: "field",
+          id: "email",
+          key: "email",
+          label: { fr: "Email", ar: "البريد الإلكتروني" },
+        },
+        {
+          type: "field",
+          id: "phone",
+          key: "phone",
+          label: { fr: "Téléphone", ar: "الهاتف" },
+        },
+      ],
+    },
+    {
+      id: "entreprise",
+      title: { fr: "Identification de l'entreprise", ar: "تعريف المؤسسة" },
+      blocks: [
+        {
+          type: "field",
+          id: "legalName",
+          key: "legalName",
+          label: { fr: "Raison sociale", ar: "الاسم الاجتماعي" },
+          required: true,
+        },
+        {
+          type: "field",
+          id: "tradeName",
+          key: "tradeName",
+          label: { fr: "Nom commercial / enseigne", ar: "الاسم التجاري / العلامة" },
+        },
+        {
+          type: "field",
+          id: "legalForm",
+          key: "legalForm",
+          label: { fr: "Forme juridique", ar: "الشكل القانوني" },
+        },
+        {
+          type: "field",
+          id: "uniqueIdentifier",
+          key: "uniqueIdentifier",
+          label: { fr: "Identifiant unique RNE", ar: "المعرف الفريد بالسجل الوطني للمؤسسات" },
+        },
+        {
+          type: "field",
+          id: "internalManagementNumber",
+          key: "internalManagementNumber",
+          label: { fr: "Numéro de gestion", ar: "رقم التصرف" },
+        },
+        {
+          type: "field",
+          id: "taxId",
+          key: "taxId",
+          label: { fr: "Identifiant fiscal", ar: "المعرف الجبائي" },
+        },
+        {
+          type: "field",
+          id: "activityStartDate",
+          key: "activityStartDate",
+          label: { fr: "Date de début d'activité", ar: "تاريخ بداية النشاط" },
+          format: "date",
+          required: true,
+        },
+        {
+          type: "field",
+          id: "publicationDate",
+          key: "publicationDate",
+          label: { fr: "Date de publication", ar: "تاريخ النشر" },
+          format: "date",
+        },
+      ],
+    },
+    {
+      id: "activite",
+      title: { fr: "Activité et adresses", ar: "النشاط والعناوين" },
+      blocks: [
+        {
+          type: "field",
+          id: "mainActivityLabel",
+          key: "mainActivityLabel",
+          label: { fr: "Activité principale", ar: "النشاط الرئيسي" },
+          format: "longtext",
+        },
+        {
+          type: "field",
+          id: "mainActivityCode",
+          key: "mainActivityCode",
+          label: { fr: "Code d'activité", ar: "رمز النشاط" },
+        },
+        {
+          type: "field",
+          id: "headquartersAddress",
+          key: "headquartersAddress",
+          label: { fr: "Adresse du siège", ar: "عنوان المقر" },
+          format: "address",
+          required: true,
+        },
+        {
+          type: "field",
+          id: "activityAddress",
+          key: "activityAddress",
+          label: { fr: "Adresse d'exploitation", ar: "عنوان الاستغلال" },
+          format: "address",
+        },
+        {
+          type: "field",
+          id: "capitalAmount",
+          key: "capitalAmount",
+          label: { fr: "Capital", ar: "رأس المال" },
+          format: "currency",
+        },
+        {
+          type: "field",
+          id: "currency",
+          key: "currency",
+          label: { fr: "Devise", ar: "العملة" },
+        },
+      ],
+    },
+    {
+      id: "engagements",
+      title: { fr: "Engagements", ar: "التعهدات" },
+      blocks: [
+        {
+          type: "clause",
+          id: "obligations_fiscales",
+          title: { fr: "Obligations déclaratives", ar: "الالتزامات التصريحية" },
+          text: {
+            fr: "Le déclarant s'engage à déposer ses déclarations fiscales périodiques et annuelles dans les délais fixés par l'administration fiscale.",
+            ar: "يتعهد المصرح بإيداع تصريحاته الجبائية الدورية والسنوية في الآجال التي تحددها الإدارة الجبائية.",
+          },
+          citationKeys: ["code_irpp_is_declarations"],
+        },
+        {
+          type: "clause",
+          id: "immatriculation",
+          title: { fr: "Immatriculation au RNE", ar: "التسجيل بالسجل الوطني للمؤسسات" },
+          text: {
+            fr: "Toute personne morale exerçant une activité économique est tenue de requérir son immatriculation au registre national des entreprises.",
+            ar: "يجب على كل شخص معنوي يمارس نشاطا اقتصاديا أن يطلب تسجيله بالسجل الوطني للمؤسسات.",
+          },
+          citationKeys: ["loi52_2018_art_6_immatriculation"],
+        },
+      ],
+    },
+    {
+      id: "signatures",
+      title: { fr: "Signature", ar: "الإمضاء" },
+      blocks: [
+        {
+          type: "signature",
+          id: "declarant_signature",
+          label: { fr: "Le déclarant", ar: "المصرح" },
+          role: { fr: "Signature et cachet", ar: "الإمضاء والختم" },
+        },
+      ],
+    },
+  ],
+};

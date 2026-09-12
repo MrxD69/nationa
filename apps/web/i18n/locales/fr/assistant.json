@@ -1,0 +1,71 @@
+{
+  "assistant": {
+    "title": "Assistant",
+    "subtitle": "Posez vos questions fiscales et réglementaires, avec des sources officielles.",
+    "newConversation": "Nouvelle conversation",
+    "conversations": "Conversations",
+    "noConversations": "Aucune conversation",
+    "loading": "Chargement…",
+    "delete": "Supprimer",
+    "deleteConfirm": "Supprimer cette conversation ?",
+    "emptyTitle": "Comment puis-je vous aider ?",
+    "emptySubtitle": "Posez une question sur vos obligations, échéances ou procédures. L'assistant cite ses sources et ne décide jamais à votre place.",
+    "placeholder": "Posez votre question…",
+    "send": "Envoyer",
+    "stop": "Arrêter",
+    "regenerate": "Régénérer",
+    "thinking": "Réflexion…",
+    "messages": "{count} message(s)",
+    "tools": {
+      "title": "Outils utilisés",
+      "searchRules": "Recherche de règles",
+      "lookupObligations": "Recherche d'obligations",
+      "getCompanyProfile": "Profil de l'entreprise",
+      "getUpcomingDeadlines": "Échéances à venir",
+      "citeRule": "Citation",
+      "proposeCaseFieldFills": "Proposition de champs",
+      "requestClarification": "Demande de précision",
+      "flagDelicateMatter": "Sujet délicat",
+      "running": "En cours…",
+      "done": "Terminé",
+      "error": "Échec"
+    },
+    "citation": {
+      "title": "Sources",
+      "open": "Ouvrir la source",
+      "empty": "Aucune source"
+    },
+    "proposal": {
+      "title": "Proposition",
+      "draft": "Brouillon",
+      "accepted": "Acceptée",
+      "rejected": "Rejetée",
+      "superseded": "Remplacée",
+      "accept": "Accepter",
+      "reject": "Rejeter",
+      "fields": "{count} champ(s)",
+      "acceptedToast": "Proposition acceptée",
+      "rejectedToast": "Proposition rejetée"
+    },
+    "clarification": {
+      "title": "Précisions nécessaires",
+      "hint": "Répondez à ces questions pour continuer."
+    },
+    "delicate": {
+      "title": "Point d'attention"
+    },
+    "disclaimer": "L'assistant ne décide pas et ne soumet rien à votre place. Vérifiez toujours les informations fournies.",
+    "notifications": {
+      "title": "Notifications",
+      "empty": "Aucune notification",
+      "markAllRead": "Tout marquer comme lu",
+      "loading": "Chargement…"
+    },
+    "errors": {
+      "loadFailed": "Impossible de charger la conversation",
+      "sendFailed": "Échec de l'envoi du message",
+      "acceptFailed": "Impossible d'accepter la proposition",
+      "rejectFailed": "Impossible de rejeter la proposition"
+    }
+  }
+}

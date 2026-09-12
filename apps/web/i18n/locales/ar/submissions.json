@@ -1,0 +1,78 @@
+{
+  "submissions": {
+    "title": "طلباتي المودعة",
+    "subtitle": "متابعة الملفات المحالة إلى الهيئات",
+    "loading": "جارٍ التحميل…",
+    "error": {
+      "title": "تعذّر تحميل الطلبات",
+      "description": "حدث خطأ أثناء التحميل.",
+      "retry": "إعادة المحاولة"
+    },
+    "empty": "لا توجد طلبات",
+    "emptyDescription": "لم تقم بإرسال أي ملف بعد.",
+    "back": "رجوع",
+    "status": {
+      "draft": "مسودة",
+      "queued": "في الانتظار",
+      "in_review": "قيد الدراسة",
+      "approved": "مقبول",
+      "rejected": "مرفوض",
+      "returned": "أُعيد للتصحيح",
+      "escalated": "تمت إحالته"
+    },
+    "cleanliness": {
+      "clean": "سليم",
+      "minor_concern": "ملاحظة طفيفة",
+      "needs_review": "بحاجة إلى مراجعة",
+      "label": "السلامة",
+      "score": "النقطة: {score}"
+    },
+    "list": {
+      "company": "المؤسسة",
+      "agency": "الهيئة",
+      "submittedAt": "أُرسل في",
+      "status": "الحالة",
+      "cleanliness": "السلامة",
+      "findings": "الملاحظات"
+    },
+    "card": {
+      "open": "فتح"
+    },
+    "detail": {
+      "title": "تفاصيل الطلب",
+      "notFound": "الطلب غير موجود.",
+      "company": "المؤسسة",
+      "agency": "الهيئة",
+      "submittedAt": "أُرسل في",
+      "decidedAt": "تم البتّ في",
+      "case": "الملف",
+      "reason": "سبب القرار",
+      "documents": "الوثائق",
+      "noDocuments": "لا توجد وثائق",
+      "findings": "الملاحظات",
+      "noFindings": "لا توجد ملاحظات",
+      "reviews": "سجل القرارات",
+      "noReviews": "لا يوجد قرار",
+      "activity": "النشاط",
+      "noActivity": "لا يوجد نشاط",
+      "resubmit": "إعادة الإرسال",
+      "resubmitAcknowledge": "أقرّ بالملاحظات المانعة",
+      "resubmitted": "أُعيد إرسال الطلب للدراسة",
+      "blockers": "ملاحظات مانعة",
+      "blockersDescription": "يجب الإقرار بـ {count} ملاحظة مانعة قبل الإرسال."
+    },
+    "timeline": {
+      "title": "التسلسل الزمني",
+      "empty": "لا توجد أحداث",
+      "created": "أُنشئ",
+      "submitted": "أُرسل",
+      "resubmitted": "أُعيد الإرسال"
+    },
+    "actions": {
+      "view": "عرض",
+      "open": "فتح",
+      "back": "رجوع",
+      "retry": "إعادة المحاولة"
+    }
+  }
+}

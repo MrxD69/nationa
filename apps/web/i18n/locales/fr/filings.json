@@ -1,0 +1,80 @@
+{
+  "filings": {
+    "title": "Déclarations",
+    "subtitle": "Préparez un aperçu de votre déclaration fiscale à partir des factures vérifiées.",
+    "count": "{count} déclaration(s)",
+    "loading": "Chargement des déclarations…",
+    "empty": "Aucune déclaration",
+    "emptyHint": "Sélectionnez une période et créez un brouillon de déclaration.",
+    "disclaimer": "Aperçu indicatif non officiel. Les montants sont calculés à partir des factures vérifiées et ne constituent pas une déclaration soumise à la DGI. Vous devez vérifier et déposer vous-même.",
+    "status": {
+      "draft": "Brouillon",
+      "ready": "Prête",
+      "under_review": "En revue",
+      "submitted": "Déposée",
+      "approved": "Approuvée",
+      "rejected": "Rejetée"
+    },
+    "period": {
+      "start": "Du",
+      "end": "Au",
+      "obligation": "Obligation",
+      "selectObligation": "Choisir une obligation",
+      "preview": "Aperçu",
+      "previewHint": "Les totaux se recalculent automatiquement."
+    },
+    "preview": {
+      "title": "Aperçu des totaux",
+      "outputBase": "Base imposable (ventes)",
+      "outputTax": "TVA collectée",
+      "inputBase": "Base déductible (achats)",
+      "inputTax": "TVA déductible",
+      "netTaxDue": "TVA nette à payer",
+      "byRate": "Répartition par taux",
+      "rate": "Taux",
+      "base": "Base",
+      "tax": "TVA",
+      "invoiceCount": "{count} facture(s) vérifiée(s)",
+      "empty": "Aucune facture vérifiée sur cette période."
+    },
+    "list": {
+      "period": "Période",
+      "obligation": "Obligation",
+      "taxType": "Type de déclaration",
+      "status": "Statut",
+      "totalTaxDue": "TVA nette",
+      "actions": "Actions"
+    },
+    "detail": {
+      "title": "Détail de la déclaration",
+      "invoices": "Factures incluses",
+      "noInvoices": "Aucune facture liée"
+    },
+    "actions": {
+      "newDraft": "Nouveau brouillon",
+      "createDraft": "Créer le brouillon",
+      "recompute": "Recalculer",
+      "markReady": "Marquer prête",
+      "markUnderReview": "Passer en revue",
+      "inviteAccountant": "Inviter un comptable",
+      "remove": "Supprimer",
+      "print": "Imprimer",
+      "refresh": "Actualiser",
+      "close": "Fermer"
+    },
+    "invite": {
+      "title": "Inviter un comptable",
+      "message": "Message",
+      "send": "Notifier",
+      "success": "{count} membre(s) notifié(s)"
+    },
+    "errors": {
+      "loadFailed": "Impossible de charger les déclarations.",
+      "createFailed": "Impossible de créer le brouillon.",
+      "recomputeFailed": "Impossible de recalculer la déclaration.",
+      "updateFailed": "Impossible de mettre à jour le statut.",
+      "removeFailed": "Impossible de supprimer la déclaration.",
+      "inviteFailed": "Impossible de notifier les membres."
+    }
+  }
+}

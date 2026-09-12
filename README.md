@@ -1,6 +1,6 @@
-# nationa
+# Nationa
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines Nuxt, Hono, ORPC, and more.
+Nationa is a platform for managing companies, compliance cases, and administrative workflows, built on a modern TypeScript stack with Nuxt, Hono, and oRPC.
 
 ## Features
 

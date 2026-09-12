@@ -1,0 +1,146 @@
+{
+  "checks": {
+    "title": "المخالفات",
+    "subtitle": "تحقق حتمي من مطابقة الملف",
+    "rerun": "إعادة تشغيل التحقق",
+    "running": "جارٍ التحقق…",
+    "loading": "جارٍ التحميل…",
+    "empty": "لا توجد مخالفات",
+    "emptyDescription": "لم يتم رصد أي مخالفة لهذا الموضوع.",
+    "missingSubject": "اختر شركة وموضوعًا لعرض المخالفات.",
+    "loadError": "تعذّر تحميل المخالفات.",
+    "latestRun": "آخر تشغيل",
+    "noRun": "لم يتم تشغيل أي تحقق بعد.",
+    "findingsCount": "{count} مخالفة",
+    "blockingCount": "{count} مانعة",
+    "groups": {
+      "blocker": "المخالفات المانعة",
+      "error": "الأخطاء",
+      "warning": "التحذيرات",
+      "info": "المعلومات"
+    },
+    "severity": {
+      "blocker": "مانع",
+      "error": "خطأ",
+      "warning": "تحذير",
+      "info": "معلومة"
+    },
+    "status": {
+      "open": "مفتوح",
+      "resolved": "محلول",
+      "waived": "متنازل عنه",
+      "acknowledged": "تم الاطلاع"
+    },
+    "runStatus": {
+      "queued": "في الانتظار",
+      "running": "قيد التنفيذ",
+      "passed": "ناجح",
+      "failed": "تم رصد مخالفات",
+      "error": "خطأ"
+    },
+    "sources": {
+      "companies": "بطاقة الشركة",
+      "persons": "بطاقة الشخص",
+      "company_persons": "الشركاء",
+      "extracted_fields": "قيمة مستخرجة",
+      "company_registry_snapshots": "مضمون السجل الوطني",
+      "document_versions": "نسخة المستند",
+      "document_types": "نوع المستند",
+      "documents": "المستندات المودعة",
+      "procedure_steps": "خطوة الإجراء",
+      "obligations": "الالتزام",
+      "filings": "التصاريح"
+    },
+    "fields": {
+      "documentType": "الوثيقة المطلوبة",
+      "presentDocuments": "الوثائق المودعة",
+      "uploadedAt": "تاريخ الإيداع",
+      "validityDays": "مدة الصلاحية (أيام)",
+      "legalName": "الاسم القانوني",
+      "capitalAmount": "رأس المال",
+      "legalForm": "الشكل القانوني",
+      "nationalId": "رقم الهوية",
+      "beneficialOwners": "المستفيدون الحقيقيون",
+      "lastBeneficialDeclarationDate": "تاريخ التصريح بالمستفيدين",
+      "deadlineRule": "قاعدة الأجل",
+      "filingStatus": "التصريح المكتمل"
+    },
+    "actions": {
+      "rerun": "إعادة التحقق",
+      "resolve": "وضع كمحلول",
+      "reopen": "إعادة الفتح",
+      "waive": "التنازل",
+      "acknowledge": "الاطلاع",
+      "addNote": "إضافة ملاحظة",
+      "sendNote": "نشر",
+      "back": "العودة إلى المخالفات"
+    },
+    "compared": {
+      "title": "القيم المقارنة",
+      "empty": "لا توجد قيم للمقارنة.",
+      "mismatch": "تباين"
+    },
+    "notes": {
+      "title": "سجل الملاحظات",
+      "empty": "لا توجد ملاحظات لهذه المخالفة.",
+      "placeholder": "أضف توضيحًا…",
+      "kind": {
+        "note": "ملاحظة",
+        "explanation": "توضيح"
+      }
+    },
+    "detail": {
+      "title": "تفاصيل المخالفة",
+      "suggestedFix": "التصحيح المقترح",
+      "notFound": "المخالفة غير موجودة.",
+      "code": "الرمز",
+      "createdAt": "تاريخ الإنشاء"
+    },
+    "readiness": {
+      "ready": "جاهز للإرسال",
+      "blocked": "محجوب بسبب {count} مخالفة مانعة"
+    },
+    "findings": {
+      "required_document_missing": {
+        "title": "وثيقة مطلوبة مفقودة: {documentType}",
+        "message": "الوثيقة « {documentType} » مطلوبة في الإجراء، لكن لم يتم إيداع أي مستند مطابق.",
+        "fix": "قم برفع الوثيقة « {documentType} » إلى الملف قبل إرساله."
+      },
+      "document_expired": {
+        "title": "مستند منتهي الصلاحية: {documentType}",
+        "message": "انتهت صلاحية المستند « {documentType} » بتاريخ {expiredOn} (صلاحية {validityDays} يومًا).",
+        "fix": "ارفع نسخة حديثة وسارية من المستند « {documentType} »."
+      },
+      "company_name_mismatch": {
+        "title": "تباين في الاسم القانوني",
+        "message": "الاسم القانوني المسجّل (« {expected} ») يختلف عن القيمة المستخرجة (« {actual} »).",
+        "fix": "تحقق من الاسم القانوني وحدّث بطاقة الشركة أو صحّح الاستخراج."
+      },
+      "person_national_id_mismatch": {
+        "title": "تباين في رقم الهوية",
+        "message": "رقم الهوية المسجّل (« {expected} ») يختلف عن القيمة المستخرجة (« {actual} »).",
+        "fix": "تحقق من رقم بطاقة الهوية وصحّح بطاقة الشخص أو الاستخراج."
+      },
+      "capital_mismatch": {
+        "title": "تباين في رأس المال",
+        "message": "رأس المال المسجّل (« {expected} ») يختلف عن القيمة المستخرجة (« {actual} »).",
+        "fix": "تحقق من مبلغ رأس المال وحدّث بطاقة الشركة أو صحّح الاستخراج."
+      },
+      "legal_form_mismatch": {
+        "title": "تباين في الشكل القانوني",
+        "message": "الشكل القانوني المسجّل (« {expected} ») يختلف عن القيمة المستخرجة (« {actual} »).",
+        "fix": "تحقق من الشكل القانوني وحدّث بطاقة الشركة أو صحّح الاستخراج."
+      },
+      "beneficial_owner_declaration_missing": {
+        "title": "تصريح المستفيدين الحقيقيين مفقود",
+        "message": "شركة « {companyName} » لديها {ownerCount} مستفيد(ين) حقيقيين ولكن لم يتم تسجيل أي تصريح.",
+        "fix": "قم بإيداع تصريح المستفيدين الحقيقيين وتحديد تاريخه."
+      },
+      "obligation_deadline_not_met": {
+        "title": "أجل غير محترم: {obligation}",
+        "message": "الالتزام « {obligation} » ({agency}) كان مستحقًا في {dueDate} ولم يتم العثور على أي تصريح مكتمل.",
+        "fix": "قم بإعداد وإرسال التصريح المقابل لدى {agency}."
+      }
+    }
+  }
+}

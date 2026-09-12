@@ -1,0 +1,107 @@
+{
+  "officer": {
+    "title": "المكتب الخلفي",
+    "subtitle": "معالجة الطلبات وتحليلها",
+    "nav": {
+      "queue": "قائمة المعالجة",
+      "analytics": "التحليلات"
+    },
+    "common": {
+      "backToWorkspace": "مساحة العمل",
+      "loading": "جارٍ التحميل…",
+      "retry": "إعادة المحاولة",
+      "cancel": "إلغاء",
+      "back": "رجوع"
+    },
+    "agency": {
+      "label": "الهيئة",
+      "placeholder": "اختر هيئة",
+      "none": "لا توجد هيئة نشطة مرتبطة بحسابك."
+    },
+    "queue": {
+      "title": "قائمة المعالجة",
+      "subtitle": "الطلبات في انتظار القرار",
+      "error": "تعذّر تحميل القائمة.",
+      "empty": "لا توجد طلبات",
+      "emptyDescription": "لا يوجد طلب مطابق للمرشحات.",
+      "company": "المؤسسة",
+      "submitted": "أُرسل",
+      "cleanliness": "السلامة",
+      "findings": "الملاحظات",
+      "status": "الحالة",
+      "age": "المدة",
+      "ageDays": "{count} ي",
+      "sort": "ترتيب",
+      "sortCleanliness": "السلامة",
+      "sortSubmitted": "تاريخ الإرسال",
+      "filters": "المرشحات",
+      "statusFilter": "الحالة",
+      "tierFilter": "السلامة",
+      "allStatuses": "كل الحالات",
+      "allTiers": "الكل",
+      "open": "دراسة",
+      "loadMore": "تحميل المزيد"
+    },
+    "review": {
+      "title": "دراسة الطلب",
+      "notFound": "الطلب غير موجود.",
+      "company": "المؤسسة",
+      "submitter": "أُرسل بواسطة",
+      "submittedAt": "أُرسل في",
+      "case": "الملف",
+      "cleanliness": "السلامة",
+      "documents": "الوثائق",
+      "noDocuments": "لا توجد وثائق",
+      "findings": "الملاحظات",
+      "noFindings": "لا توجد ملاحظات",
+      "blockers": "ملاحظات مانعة",
+      "timeline": "النشاط",
+      "noActivity": "لا يوجد نشاط",
+      "pattern": "اتجاه المؤسسة",
+      "patternDescription": "المشاكل المتكررة الملاحظة لدى هذه المؤسسة.",
+      "patternFindings": "ملاحظات متكررة",
+      "patternReasons": "أسباب الرفض المتكررة",
+      "noPattern": "لا يوجد اتجاه",
+      "decision": "القرار",
+      "reason": "السبب",
+      "reasonPlaceholder": "اشرح القرار…",
+      "notes": "ملاحظات داخلية",
+      "notesPlaceholder": "ملاحظات (اختياري)",
+      "submit": "تأكيد",
+      "cancel": "إلغاء",
+      "openDocument": "فتح في تبويب جديد",
+      "previewUnavailable": "المعاينة غير متاحة لهذا النوع من الملفات.",
+      "back": "رجوع إلى القائمة",
+      "submittedBy": "المُرسل"
+    },
+    "decision": {
+      "approve": "قبول",
+      "reject": "رفض",
+      "return_for_correction": "إعادة للتصحيح",
+      "escalate": "إحالة"
+    },
+    "analytics": {
+      "title": "التحليلات",
+      "subtitle": "مؤشرات معالجة الهيئة",
+      "error": "تعذّر تحميل التحليلات.",
+      "empty": "لا توجد بيانات",
+      "supervisorOnly": "مخصّص للمشرفين والمديرين.",
+      "kpi": {
+        "submissions": "الطلبات",
+        "commonFindings": "ملاحظات متكررة",
+        "commonReasons": "أسباب الرفض المتكررة",
+        "caughtByChecks": "مشاكل مكتشفة",
+        "timeSaved": "الوقت المقدّر الذي تم توفيره",
+        "minutes": "{count} دقيقة"
+      },
+      "volume": "حجم الطلبات",
+      "quality": "الجودة (المعدّل)",
+      "byTier": "التوزيع حسب السلامة",
+      "totals": "المجموع",
+      "clean": "سليمة",
+      "minor": "ملاحظة طفيفة",
+      "needsReview": "بحاجة إلى مراجعة",
+      "noData": "لا توجد بيانات"
+    }
+  }
+}

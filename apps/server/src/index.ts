@@ -1,26 +1,20 @@
-import { devToolsMiddleware } from "@ai-sdk/devtools";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { appRouter } from "@nationa/api/routers/index";
 import { OpenAPIHandler } from "@orpc/openapi/fetch";
 import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
-import {
-  createUIMessageStreamResponse,
-  streamText,
-  toUIMessageStream,
-  convertToModelMessages,
-  wrapLanguageModel,
-} from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
-import { createContext } from "./context";
+import { createAuthMiddleware } from "./auth";
+import { createContext, type AppHonoEnv } from "./context";
 import { env } from "./env.server";
+import { registerAssistantRoutes } from "./routes/ai";
+import { registerFileRoutes } from "./routes/files";
 
-const app = new Hono();
+const app = new Hono<AppHonoEnv>();
 
 app.use(logger());
 app.use(
@@ -28,8 +22,10 @@ app.use(
   cors({
     origin: env.CORS_ORIGIN,
     allowMethods: ["GET", "POST", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization"],
   }),
 );
+app.use("/*", createAuthMiddleware());
 
 export const apiHandler = new OpenAPIHandler(appRouter, {
   plugins: [
@@ -76,25 +72,8 @@ app.use("/*", async (c, next) => {
   await next();
 });
 
-app.post("/ai", async (c) => {
-  const body = await c.req.json();
-  const uiMessages = body.messages || [];
-  const google = createGoogleGenerativeAI({
-    apiKey: env.GOOGLE_GENERATIVE_AI_API_KEY,
-  });
-  const model = wrapLanguageModel({
-    model: google("gemini-2.5-flash"),
-    middleware: devToolsMiddleware(),
-  });
-  const result = streamText({
-    model,
-    messages: await convertToModelMessages(uiMessages),
-  });
-
-  return createUIMessageStreamResponse({
-    stream: toUIMessageStream({ stream: result.stream }),
-  });
-});
+registerFileRoutes(app);
+registerAssistantRoutes(app);
 
 app.get("/", (c) => {
   return c.text("OK");

@@ -1,0 +1,93 @@
+{
+  "invoices": {
+    "title": "Factures",
+    "subtitle": "Importez, vérifiez et suivez les factures d'achat et de vente.",
+    "count": "{count} facture(s)",
+    "loading": "Chargement des factures…",
+    "empty": "Aucune facture",
+    "emptyHint": "Importez une facture fournisseur pour commencer.",
+    "direction": {
+      "purchase": "Achat",
+      "sale": "Vente"
+    },
+    "status": {
+      "extracted": "Extraite",
+      "needs_review": "À vérifier",
+      "verified": "Vérifiée"
+    },
+    "upload": {
+      "title": "Importer une facture",
+      "subtitle": "Déposez une facture pour l'extraire automatiquement.",
+      "button": "Importer et extraire",
+      "uploading": "Téléversement…",
+      "processing": "Extraction…",
+      "success": "Facture extraite.",
+      "noFile": "Sélectionnez un fichier.",
+      "failed": "L'extraction de la facture a échoué."
+    },
+    "table": {
+      "number": "N° facture",
+      "supplier": "Fournisseur",
+      "issueDate": "Date",
+      "direction": "Sens",
+      "total": "Total",
+      "status": "Statut",
+      "actions": "Actions",
+      "empty": "Aucune facture pour le moment."
+    },
+    "form": {
+      "newTitle": "Nouvelle facture",
+      "editTitle": "Modifier la facture",
+      "direction": "Sens",
+      "supplierName": "Fournisseur",
+      "supplierTaxId": "Matricule fiscal",
+      "invoiceNumber": "Numéro",
+      "issueDate": "Date d'émission",
+      "dueDate": "Date d'échéance",
+      "currency": "Devise",
+      "subtotal": "Total HT",
+      "taxAmount": "TVA",
+      "total": "Total TTC",
+      "lines": "Lignes",
+      "description": "Description",
+      "quantity": "Qté",
+      "unitPrice": "P.U. HT",
+      "taxRate": "Taux %",
+      "lineTax": "TVA ligne",
+      "lineTotal": "Total ligne",
+      "addLine": "Ajouter une ligne",
+      "removeLine": "Retirer",
+      "save": "Enregistrer",
+      "cancel": "Annuler"
+    },
+    "detail": {
+      "title": "Détail de la facture",
+      "lines": "Lignes",
+      "noLines": "Aucune ligne",
+      "provenance": "Provenance des champs"
+    },
+    "actions": {
+      "verify": "Vérifier",
+      "edit": "Modifier",
+      "remove": "Supprimer",
+      "close": "Fermer",
+      "new": "Nouvelle facture",
+      "refresh": "Actualiser"
+    },
+    "provenance": {
+      "source": "Source",
+      "confidence": "Confiance",
+      "document": "Document",
+      "user": "Saisie manuelle",
+      "ai": "Assistant",
+      "system": "Système",
+      "import": "Import"
+    },
+    "errors": {
+      "loadFailed": "Impossible de charger les factures.",
+      "saveFailed": "Impossible d'enregistrer la facture.",
+      "verifyFailed": "Impossible de vérifier la facture.",
+      "removeFailed": "Impossible de supprimer la facture."
+    }
+  }
+}

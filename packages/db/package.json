@@ -14,20 +14,22 @@
   "scripts": {
     "build": "tsc -b",
     "check-types": "tsc -b",
+    "parse:procedures": "bun src/seed/scripts/parse-procedures.ts",
     "db:push": "drizzle-kit push",
+    "db:seed": "bun src/seed/index.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate:deploy": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "drizzle-orm": "^0.45.2",
+    "drizzle-orm": "1.0.0-rc.4",
     "postgres": "^3.4.9",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@nationa/config": "workspace:*",
-    "drizzle-kit": "^0.31.10",
+    "drizzle-kit": "1.0.0-rc.4",
     "typescript": "catalog:",
     "varlock": "catalog:"
   }

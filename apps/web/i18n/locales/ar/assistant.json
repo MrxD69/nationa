@@ -1,0 +1,71 @@
+{
+  "assistant": {
+    "title": "المساعد",
+    "subtitle": "اطرح أسئلتك الجبائية والقانونية مع مصادر رسمية.",
+    "newConversation": "محادثة جديدة",
+    "conversations": "المحادثات",
+    "noConversations": "لا توجد محادثات",
+    "loading": "جارٍ التحميل…",
+    "delete": "حذف",
+    "deleteConfirm": "حذف هذه المحادثة؟",
+    "emptyTitle": "كيف يمكنني مساعدتك؟",
+    "emptySubtitle": "اطرح سؤالاً حول التزاماتك أو مواعيدك أو إجراءاتك. يستشهد المساعد بمصادره ولا يتخذ القرار نيابة عنك.",
+    "placeholder": "اطرح سؤالك…",
+    "send": "إرسال",
+    "stop": "إيقاف",
+    "regenerate": "إعادة التوليد",
+    "thinking": "جارٍ التفكير…",
+    "messages": "{count} رسالة",
+    "tools": {
+      "title": "الأدوات المستخدمة",
+      "searchRules": "البحث في القواعد",
+      "lookupObligations": "البحث في الالتزامات",
+      "getCompanyProfile": "ملف الشركة",
+      "getUpcomingDeadlines": "المواعيد القادمة",
+      "citeRule": "استشهاد",
+      "proposeCaseFieldFills": "اقتراح حقول",
+      "requestClarification": "طلب توضيح",
+      "flagDelicateMatter": "مسألة حساسة",
+      "running": "جارٍ التنفيذ…",
+      "done": "اكتمل",
+      "error": "فشل"
+    },
+    "citation": {
+      "title": "المصادر",
+      "open": "فتح المصدر",
+      "empty": "لا توجد مصادر"
+    },
+    "proposal": {
+      "title": "اقتراح",
+      "draft": "مسودة",
+      "accepted": "مقبول",
+      "rejected": "مرفوض",
+      "superseded": "مستبدل",
+      "accept": "قبول",
+      "reject": "رفض",
+      "fields": "{count} حقل/حقول",
+      "acceptedToast": "تم قبول الاقتراح",
+      "rejectedToast": "تم رفض الاقتراح"
+    },
+    "clarification": {
+      "title": "توضيحات مطلوبة",
+      "hint": "أجب عن هذه الأسئلة للمتابعة."
+    },
+    "delicate": {
+      "title": "نقطة انتباه"
+    },
+    "disclaimer": "المساعد لا يقرر ولا يرسل أي شيء نيابة عنك. تحقق دائمًا من المعلومات المقدمة.",
+    "notifications": {
+      "title": "الإشعارات",
+      "empty": "لا توجد إشعارات",
+      "markAllRead": "تعليم الكل كمقروء",
+      "loading": "جارٍ التحميل…"
+    },
+    "errors": {
+      "loadFailed": "تعذر تحميل المحادثة",
+      "sendFailed": "تعذر إرسال الرسالة",
+      "acceptFailed": "تعذر قبول الاقتراح",
+      "rejectFailed": "تعذر رفض الاقتراح"
+    }
+  }
+}

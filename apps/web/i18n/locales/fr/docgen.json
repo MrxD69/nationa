@@ -1,0 +1,86 @@
+{
+  "docgen": {
+    "title": "Génération de documents",
+    "subtitle": "Choisissez un modèle officiel ou laissez l'IA préparer un projet à partir du dossier, puis vérifiez et approuvez chaque champ.",
+    "loading": "Chargement…",
+    "scope": {
+      "missingTitle": "Contexte requis",
+      "missingDescription": "Ouvrez cette page depuis un dossier ou une entreprise pour générer un document."
+    },
+    "workspace": {
+      "title": "Espace de préparation",
+      "subtitle": "Complétez les champs manquants, vérifiez les données saisies par l'IA puis approuvez le document."
+    },
+    "picker": {
+      "title": "Modèle et mode",
+      "subtitle": "Un modèle classique à compléter, ou une version assistée par IA qui pose des questions et cite les textes de loi.",
+      "language": "Langue du document",
+      "mode": "Mode de génération",
+      "modeTemplate": "Modèle classique",
+      "modeTemplateDescription": "Le document officiel avec les champs vides à compléter.",
+      "modeAi": "Assisté par IA",
+      "modeAiDescription": "L'IA propose les champs manquants, cite les textes et pose des questions.",
+      "fields": "{count} champs",
+      "empty": "Aucun modèle de document disponible.",
+      "selectTemplate": "Sélectionnez un modèle",
+      "generate": "Générer le document",
+      "provenanceNotice": "L'IA ne décide jamais à votre place et n'envoie rien automatiquement. Chaque champ indique sa provenance et doit être approuvé par vous."
+    },
+    "questionnaire": {
+      "title": "Informations manquantes",
+      "subtitle": "Répondez à ces questions pour compléter le document. Laissez vide si l'information n'est pas disponible.",
+      "answerPlaceholder": "Votre réponse",
+      "empty": "Aucune question : tous les champs sont renseignés."
+    },
+    "preview": {
+      "title": "Aperçu du document",
+      "subtitle": "Les champs complétés par l'IA sont surlignés et leurs sources juridiques sont citées.",
+      "citations": "Références légales",
+      "rationale": "Justification de l'IA",
+      "delicateTitle": "Point sensible détecté"
+    },
+    "editor": {
+      "title": "Correction des champs",
+      "subtitle": "Modifiez les valeurs si nécessaire. Vos modifications sont marquées comme saisies par vous.",
+      "placeholder": "Valeur du champ",
+      "citations": "{count} référence(s)",
+      "save": "Enregistrer les modifications"
+    },
+    "approval": {
+      "title": "Approbation",
+      "disclaimer": "En approuvant, le document est finalisé et enregistré. Aucune démarche n'est transmise automatiquement.",
+      "reasonPlaceholder": "Motif du rejet (facultatif)",
+      "approve": "Approuver et générer",
+      "reject": "Rejeter",
+      "approvedToast": "Document généré et enregistré.",
+      "rejectedToast": "Brouillon rejeté."
+    },
+    "artifact": {
+      "generated": "Document généré",
+      "print": "Imprimer / PDF",
+      "documentId": "Identifiant du document",
+      "storageKey": "Clé de stockage"
+    },
+    "source": {
+      "user": "Saisi",
+      "document": "Document",
+      "ai": "IA",
+      "import": "Import",
+      "system": "Fiche",
+      "blank": "À compléter"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "accepted": "Approuvé",
+      "rejected": "Rejeté",
+      "superseded": "Remplacé"
+    },
+    "errors": {
+      "loadFailed": "Impossible de charger le brouillon",
+      "generateFailed": "Échec de la génération du document",
+      "updateFailed": "Échec de l'enregistrement des modifications",
+      "approveFailed": "Échec de l'approbation du document",
+      "rejectFailed": "Échec du rejet du brouillon"
+    }
+  }
+}

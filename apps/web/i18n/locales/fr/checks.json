@@ -1,0 +1,146 @@
+{
+  "checks": {
+    "title": "Constats",
+    "subtitle": "Vérification déterministe de la conformité du dossier",
+    "rerun": "Relancer les vérifications",
+    "running": "Vérification en cours…",
+    "loading": "Chargement…",
+    "empty": "Aucun constat",
+    "emptyDescription": "Aucune anomalie détectée pour ce sujet.",
+    "missingSubject": "Sélectionnez une entreprise et un sujet pour afficher les constats.",
+    "loadError": "Impossible de charger les constats.",
+    "latestRun": "Dernière exécution",
+    "noRun": "Aucune vérification n'a encore été exécutée.",
+    "findingsCount": "{count} constat(s)",
+    "blockingCount": "{count} bloquant(s)",
+    "groups": {
+      "blocker": "Bloquants",
+      "error": "Erreurs",
+      "warning": "Avertissements",
+      "info": "Informations"
+    },
+    "severity": {
+      "blocker": "Bloquant",
+      "error": "Erreur",
+      "warning": "Avertissement",
+      "info": "Information"
+    },
+    "status": {
+      "open": "Ouvert",
+      "resolved": "Résolu",
+      "waived": "Levé",
+      "acknowledged": "Pris en compte"
+    },
+    "runStatus": {
+      "queued": "En attente",
+      "running": "En cours",
+      "passed": "Réussi",
+      "failed": "Anomalies détectées",
+      "error": "Erreur"
+    },
+    "sources": {
+      "companies": "Fiche entreprise",
+      "persons": "Fiche personne",
+      "company_persons": "Associés",
+      "extracted_fields": "Valeur extraite",
+      "company_registry_snapshots": "Extrait RNE",
+      "document_versions": "Version du document",
+      "document_types": "Type de document",
+      "documents": "Documents déposés",
+      "procedure_steps": "Étape de procédure",
+      "obligations": "Obligation",
+      "filings": "Déclarations"
+    },
+    "fields": {
+      "documentType": "Pièce requise",
+      "presentDocuments": "Pièces déposées",
+      "uploadedAt": "Date de dépôt",
+      "validityDays": "Durée de validité (jours)",
+      "legalName": "Dénomination sociale",
+      "capitalAmount": "Capital social",
+      "legalForm": "Forme juridique",
+      "nationalId": "Numéro d'identité",
+      "beneficialOwners": "Bénéficiaires effectifs",
+      "lastBeneficialDeclarationDate": "Date de déclaration des bénéficiaires",
+      "deadlineRule": "Règle d'échéance",
+      "filingStatus": "Déclaration complétée"
+    },
+    "actions": {
+      "rerun": "Relancer",
+      "resolve": "Marquer comme résolu",
+      "reopen": "Réouvrir",
+      "waive": "Lever",
+      "acknowledge": "Prendre en compte",
+      "addNote": "Ajouter une note",
+      "sendNote": "Publier",
+      "back": "Retour aux constats"
+    },
+    "compared": {
+      "title": "Valeurs comparées",
+      "empty": "Aucune valeur à comparer.",
+      "mismatch": "Divergence"
+    },
+    "notes": {
+      "title": "Historique des notes",
+      "empty": "Aucune note pour ce constat.",
+      "placeholder": "Ajouter une explication…",
+      "kind": {
+        "note": "Note",
+        "explanation": "Explication"
+      }
+    },
+    "detail": {
+      "title": "Détail du constat",
+      "suggestedFix": "Correction suggérée",
+      "notFound": "Constat introuvable.",
+      "code": "Code",
+      "createdAt": "Créé le"
+    },
+    "readiness": {
+      "ready": "Prêt à soumettre",
+      "blocked": "Bloqué par {count} constat(s) bloquant(s)"
+    },
+    "findings": {
+      "required_document_missing": {
+        "title": "Pièce requise manquante : {documentType}",
+        "message": "La pièce « {documentType} » est exigée par la procédure, mais aucun document correspondant n'a été déposé.",
+        "fix": "Téléversez la pièce « {documentType} » dans le dossier avant de le soumettre."
+      },
+      "document_expired": {
+        "title": "Document expiré : {documentType}",
+        "message": "Le document « {documentType} » a expiré le {expiredOn} (validité de {validityDays} jours).",
+        "fix": "Téléversez une version récente et valide du document « {documentType} »."
+      },
+      "company_name_mismatch": {
+        "title": "Divergence de dénomination sociale",
+        "message": "La dénomination sociale enregistrée (« {expected} ») diffère de la valeur extraite (« {actual} »).",
+        "fix": "Vérifiez la dénomination sociale et mettez à jour la fiche entreprise ou corrigez l'extraction."
+      },
+      "person_national_id_mismatch": {
+        "title": "Divergence du numéro d'identité",
+        "message": "Le numéro d'identité enregistré (« {expected} ») diffère de la valeur extraite (« {actual} »).",
+        "fix": "Vérifiez le numéro de la carte d'identité et corrigez la fiche personne ou l'extraction."
+      },
+      "capital_mismatch": {
+        "title": "Divergence du capital social",
+        "message": "Le capital enregistré (« {expected} ») diffère de la valeur extraite (« {actual} »).",
+        "fix": "Vérifiez le montant du capital et mettez à jour la fiche entreprise ou corrigez l'extraction."
+      },
+      "legal_form_mismatch": {
+        "title": "Divergence de forme juridique",
+        "message": "La forme juridique enregistrée (« {expected} ») diffère de la valeur extraite (« {actual} »).",
+        "fix": "Vérifiez la forme juridique et mettez à jour la fiche entreprise ou corrigez l'extraction."
+      },
+      "beneficial_owner_declaration_missing": {
+        "title": "Déclaration des bénéficiaires effectifs manquante",
+        "message": "La société « {companyName} » compte {ownerCount} bénéficiaire(s) effectif(s) mais aucune déclaration n'a été enregistrée.",
+        "fix": "Déposez la déclaration des bénéficiaires effectifs et renseignez sa date."
+      },
+      "obligation_deadline_not_met": {
+        "title": "Échéance non respectée : {obligation}",
+        "message": "L'obligation « {obligation} » ({agency}) était due le {dueDate} et aucune déclaration complétée n'a été trouvée.",
+        "fix": "Préparez et soumettez la déclaration correspondante auprès de {agency}."
+      }
+    }
+  }
+}

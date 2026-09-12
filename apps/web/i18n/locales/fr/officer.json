@@ -1,0 +1,107 @@
+{
+  "officer": {
+    "title": "Back-office",
+    "subtitle": "Traitement et analyse des soumissions",
+    "nav": {
+      "queue": "File de traitement",
+      "analytics": "Analytique"
+    },
+    "common": {
+      "backToWorkspace": "Espace de travail",
+      "loading": "Chargement…",
+      "retry": "Réessayer",
+      "cancel": "Annuler",
+      "back": "Retour"
+    },
+    "agency": {
+      "label": "Organisme",
+      "placeholder": "Choisir un organisme",
+      "none": "Aucun organisme actif pour votre compte."
+    },
+    "queue": {
+      "title": "File de traitement",
+      "subtitle": "Soumissions en attente de décision",
+      "error": "Impossible de charger la file.",
+      "empty": "Aucune soumission",
+      "emptyDescription": "Aucune soumission ne correspond aux filtres.",
+      "company": "Entreprise",
+      "submitted": "Soumis",
+      "cleanliness": "Propreté",
+      "findings": "Constats",
+      "status": "Statut",
+      "age": "Ancienneté",
+      "ageDays": "{count} j",
+      "sort": "Trier",
+      "sortCleanliness": "Propreté",
+      "sortSubmitted": "Date de soumission",
+      "filters": "Filtres",
+      "statusFilter": "Statut",
+      "tierFilter": "Propreté",
+      "allStatuses": "Tous les statuts",
+      "allTiers": "Toutes",
+      "open": "Examiner",
+      "loadMore": "Charger plus"
+    },
+    "review": {
+      "title": "Examen de la soumission",
+      "notFound": "Soumission introuvable.",
+      "company": "Entreprise",
+      "submitter": "Soumis par",
+      "submittedAt": "Soumis le",
+      "case": "Dossier",
+      "cleanliness": "Propreté",
+      "documents": "Documents",
+      "noDocuments": "Aucun document",
+      "findings": "Constats",
+      "noFindings": "Aucun constat",
+      "blockers": "Constats bloquants",
+      "timeline": "Activité",
+      "noActivity": "Aucune activité",
+      "pattern": "Tendance de l'entreprise",
+      "patternDescription": "Problèmes récurrents observés pour cette entreprise.",
+      "patternFindings": "Constats fréquents",
+      "patternReasons": "Motifs de rejet fréquents",
+      "noPattern": "Aucune tendance",
+      "decision": "Décision",
+      "reason": "Motif",
+      "reasonPlaceholder": "Expliquez la décision…",
+      "notes": "Notes internes",
+      "notesPlaceholder": "Notes (optionnel)",
+      "submit": "Confirmer",
+      "cancel": "Annuler",
+      "openDocument": "Ouvrir dans un nouvel onglet",
+      "previewUnavailable": "Aperçu indisponible pour ce type de fichier.",
+      "back": "Retour à la file",
+      "submittedBy": "Auteur"
+    },
+    "decision": {
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "return_for_correction": "Renvoyer pour correction",
+      "escalate": "Escalader"
+    },
+    "analytics": {
+      "title": "Analytique",
+      "subtitle": "Indicateurs de traitement de l'organisme",
+      "error": "Impossible de charger l'analytique.",
+      "empty": "Aucune donnée",
+      "supervisorOnly": "Réservé aux superviseurs et administrateurs.",
+      "kpi": {
+        "submissions": "Soumissions",
+        "commonFindings": "Constats fréquents",
+        "commonReasons": "Motifs de rejet fréquents",
+        "caughtByChecks": "Problèmes détectés",
+        "timeSaved": "Temps estimé économisé",
+        "minutes": "{count} min"
+      },
+      "volume": "Volume des soumissions",
+      "quality": "Qualité (score moyen)",
+      "byTier": "Répartition par propreté",
+      "totals": "Total",
+      "clean": "Propres",
+      "minor": "Léger risque",
+      "needsReview": "À vérifier",
+      "noData": "Aucune donnée"
+    }
+  }
+}

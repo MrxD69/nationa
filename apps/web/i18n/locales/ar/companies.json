@@ -1,0 +1,166 @@
+{
+  "companies": {
+    "title": "الشركات",
+    "subtitle": "أدر شركاتك وبياناتها القانونية.",
+    "new": "شركة جديدة",
+    "connect": "ربط شركة موجودة",
+    "viewAll": "الكل",
+    "accountantView": "محفظة المحاسب",
+    "loading": "جارٍ تحميل الشركات…",
+    "empty": {
+      "title": "لا توجد شركات بعد",
+      "description": "أنشئ شركتك الأولى أو اربطها بشركة موجودة.",
+      "cta": "إنشاء شركة"
+    },
+    "error": {
+      "title": "تعذّر تحميل الشركات",
+      "description": "تحقق من اتصالك ثم حاول مجددًا."
+    },
+    "connectModal": {
+      "title": "ربط شركة",
+      "description": "أدخل المعرّف الفريد (RNE) للشركة التي تريد الارتباط بها.",
+      "identifier": "المعرّف الفريد",
+      "identifierPlaceholder": "مثال: 1234567/A/M/000",
+      "submit": "ربط",
+      "cancel": "إلغاء"
+    },
+    "card": {
+      "role": "الدور",
+      "status": "الحالة",
+      "open": "فتح"
+    },
+    "create": {
+      "title": "شركة جديدة",
+      "subtitle": "أدخل المعلومات القانونية للشركة.",
+      "portfolio": "أنا محاسب وأنشئ هذه الشركة لعميل",
+      "submit": "إنشاء الشركة"
+    },
+    "edit": {
+      "title": "تعديل الشركة",
+      "subtitle": "حدّث المعلومات القانونية. يتم تتبّع كل حقل مُعدّل.",
+      "submit": "حفظ التعديلات"
+    },
+    "detail": {
+      "title": "بطاقة الشركة",
+      "back": "رجوع إلى الشركات",
+      "edit": "تعديل",
+      "access": "إدارة الوصول",
+      "documents": "الوثائق",
+      "cases": "الملفات",
+      "checks": "عمليات التحقق",
+      "invoices": "الفواتير",
+      "filings": "التصاريح",
+      "notFound": "الشركة غير موجودة",
+      "overview": "المعلومات القانونية",
+      "provenance": "المصدر",
+      "noValue": "—",
+      "role": "دورك",
+      "scopes": "الصلاحيات"
+    },
+    "access": {
+      "title": "الوصول",
+      "subtitle": "ادعُ متعاونين وأدر صلاحياتهم.",
+      "members": "الأعضاء",
+      "invite": "دعوة عضو",
+      "inviteTitle": "دعوة عضو",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "name@example.com",
+      "role": "الدور",
+      "expiresIn": "ينتهي خلال (أيام)",
+      "send": "إرسال الدعوة",
+      "cancel": "إلغاء",
+      "revoke": "إلغاء",
+      "noMembers": "لا يوجد أعضاء بعد.",
+      "tokenTitle": "رابط الدعوة",
+      "tokenHelp": "شارك هذا الرابط مع المدعو. ينتهي قريبًا.",
+      "copy": "نسخ",
+      "copied": "تم النسخ",
+      "close": "إغلاق",
+      "status": "الحالة",
+      "empty": "لا توجد صلاحيات مسجّلة."
+    },
+    "roles": {
+      "owner": "مالك",
+      "admin": "مسؤول",
+      "employee": "موظف",
+      "accountant": "محاسب",
+      "accountant_assistant": "مساعد محاسب"
+    },
+    "status": {
+      "draft": "مسودة",
+      "active": "نشط",
+      "suspended": "موقوف",
+      "radiated": "مشطوب"
+    },
+    "boolean": {
+      "yes": "نعم",
+      "no": "لا"
+    },
+    "registryType": {
+      "societe": "شركة",
+      "entreprise": "مؤسسة"
+    },
+    "registryState": {
+      "actif": "نشط",
+      "suspendu": "موقوف",
+      "radie": "مشطوب"
+    },
+    "fiscalDefault": {
+      "none": "لا يوجد",
+      "months_12_24": "من 12 إلى 24 شهرًا",
+      "over_24_months": "أكثر من 24 شهرًا",
+      "unknown": "غير معروفة"
+    },
+    "provenance": {
+      "label": "المصدر",
+      "user": "إدخال يدوي",
+      "document": "وثيقة",
+      "ai": "ذكاء اصطناعي",
+      "import": "استيراد",
+      "system": "النظام",
+      "confidence": "الثقة"
+    },
+    "acceptInvite": {
+      "title": "دعوة",
+      "working": "جارٍ التحقق من الدعوة…",
+      "success": "تم قبول الدعوة. أصبح لديك صلاحية الوصول إلى الشركة.",
+      "error": "تعذّر قبول الدعوة",
+      "open": "فتح الشركة",
+      "missing": "لم يتم توفير رمز الدعوة."
+    },
+    "form": {
+      "groups": {
+        "identity": "الهوية",
+        "registry": "السجل والجباية",
+        "activity": "النشاط",
+        "address": "العناوين",
+        "flags": "المؤشرات"
+      },
+      "legalName": "الاسم القانوني",
+      "legalNameAr": "الاسم القانوني بالعربية",
+      "tradeName": "الاسم التجاري",
+      "brandName": "العلامة التجارية",
+      "legalForm": "الشكل القانوني",
+      "capitalAmount": "رأس المال",
+      "currency": "العملة",
+      "durationYears": "المدة",
+      "publicationDate": "تاريخ النشر",
+      "headquartersAddress": "المقر الاجتماعي",
+      "activityAddress": "عنوان النشاط",
+      "mainActivityLabel": "النشاط الرئيسي",
+      "mainActivityLabelAr": "النشاط الرئيسي بالعربية",
+      "mainActivityCode": "رمز النشاط",
+      "activityStartDate": "تاريخ بداية النشاط",
+      "registryState": "الحالة في السجل",
+      "secondaryEstablishmentsCount": "المؤسسات الثانوية",
+      "leasing": "الكراء المالي",
+      "hasPledge": "الرهن",
+      "fiscalDefault": "التقصير الجبائي",
+      "mentionDate": "تاريخ التسمية",
+      "uniqueIdentifier": "المعرف الفريد",
+      "internalManagementNumber": "رقم التصرف الداخلي",
+      "registryType": "نوع السجل",
+      "taxId": "المعرف الجبائي"
+    }
+  }
+}

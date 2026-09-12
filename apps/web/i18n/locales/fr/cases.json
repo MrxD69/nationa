@@ -1,0 +1,102 @@
+{
+  "cases": {
+    "list": {
+      "title": "Mes dossiers",
+      "subtitle": "Suivez vos démarches en cours et reprenez-les là où vous les avez laissées.",
+      "new": "Nouveau dossier",
+      "loading": "Chargement des dossiers…",
+      "error": "Impossible de charger les dossiers",
+      "retry": "Réessayer",
+      "empty": "Aucun dossier pour le moment. Commencez une démarche pour en créer un."
+    },
+    "new": {
+      "title": "Nouvelle démarche",
+      "subtitle": "Choisissez une procédure pour démarrer un dossier.",
+      "loading": "Chargement des procédures…",
+      "start": "Démarrer",
+      "steps": "{count} étapes",
+      "days": "{count} jours estimés",
+      "empty": "Aucune procédure disponible."
+    },
+    "runner": {
+      "loading": "Chargement du dossier…",
+      "cancel": "Annuler le dossier",
+      "skip": "Ignorer",
+      "continue": "Continuer",
+      "step": "Étape {position}",
+      "notFound": "Dossier introuvable"
+    },
+    "sections": {
+      "addresses": "Adresses"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "in_progress": "En cours",
+      "awaiting_user": "En attente du client",
+      "awaiting_review": "En attente de vérification",
+      "submitted": "Soumis",
+      "approved": "Approuvé",
+      "rejected": "Rejeté",
+      "cancelled": "Annulé"
+    },
+    "stepStatus": {
+      "locked": "Verrouillée",
+      "available": "À faire",
+      "in_progress": "En cours",
+      "completed": "Terminée",
+      "skipped": "Ignorée"
+    },
+    "provenance": {
+      "user": "Saisi",
+      "document": "Document",
+      "ai": "IA",
+      "import": "Import",
+      "system": "Système"
+    },
+    "citations": {
+      "title": "Références légales",
+      "source": "Consulter la source"
+    },
+    "upload": {
+      "label": "Déposer un fichier",
+      "hint": "Glissez-déposez ou cliquez pour sélectionner un fichier.",
+      "success": "Fichier téléversé.",
+      "uploaded": "Documents téléversés",
+      "status": {
+        "uploaded": "Téléversé",
+        "processing": "En cours d'analyse",
+        "extracted": "Analysé",
+        "needs_review": "À vérifier",
+        "verified": "Vérifié",
+        "failed": "Échec"
+      }
+    },
+    "payment": {
+      "loading": "Calcul des frais…",
+      "total": "Total",
+      "empty": "Aucun frais à payer pour cette étape.",
+      "stubTitle": "Paiement simulé",
+      "stub": "Le paiement en ligne n'est pas encore activé. Vous pouvez continuer pour l'instant.",
+      "companylessTitle": "Paiement après immatriculation",
+      "companyless": "Les frais seront rattachés à la société une fois le dossier transmis."
+    },
+    "review": {
+      "valuesTitle": "Récapitulatif des informations",
+      "empty": "Aucune information saisie pour le moment.",
+      "checksTitle": "Contrôles automatiques",
+      "runChecks": "Lancer les contrôles",
+      "noFindings": "Aucune anomalie détectée.",
+      "suggestedFix": "Correction suggérée",
+      "severity": {
+        "info": "Information",
+        "warning": "Avertissement",
+        "error": "Erreur",
+        "blocker": "Bloquant"
+      }
+    },
+    "submission": {
+      "checklist": "Liste de préparation",
+      "submit": "Soumettre le dossier"
+    }
+  }
+}

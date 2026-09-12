@@ -1,0 +1,72 @@
+{
+  "common": {
+    "appName": "Nationa",
+    "loading": "جارٍ التحميل…",
+    "nav": {
+      "home": "الرئيسية",
+      "companies": "الشركات",
+      "cases": "الملفات",
+      "documents": "المستندات",
+      "assistant": "المساعد",
+      "invoices": "الفواتير",
+      "filings": "التصاريح",
+      "contributions": "الاشتراكات",
+      "employees": "الموظفون",
+      "applications": "الطلبات",
+      "incentives": "الحوافز",
+      "checks": "عمليات التحقق",
+      "submissions": "المُقدَّمات",
+      "workspace": "مساحة العمل"
+    },
+    "actions": {
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "continue": "متابعة",
+      "back": "رجوع",
+      "upload": "رفع",
+      "submit": "إرسال",
+      "signIn": "تسجيل الدخول",
+      "signOut": "تسجيل الخروج",
+      "profile": "الملف الشخصي",
+      "account": "الحساب"
+    },
+    "user": {
+      "guest": "ضيف"
+    },
+    "bodies": {
+      "title": "الهيئات",
+      "rne": "RNE",
+      "dgi": "DGI",
+      "cnss": "CNSS",
+      "apii": "APII",
+      "bct": "BCT",
+      "descriptions": {
+        "rne": "السجل الوطني للمؤسسات",
+        "dgi": "المديرية العامة للضرائب",
+        "cnss": "الصندوق الوطني للضمان الاجتماعي",
+        "apii": "وكالة النهوض بالصناعة والابتكار",
+        "bct": "البنك المركزي التونسي"
+      }
+    },
+    "status": {
+      "draft": "مسودة",
+      "pending": "قيد الانتظار",
+      "inProgress": "قيد المعالجة",
+      "approved": "مقبول",
+      "rejected": "مرفوض",
+      "completed": "مكتمل",
+      "active": "نشط"
+    },
+    "workspace": {
+      "title": "مساحة العمل"
+    },
+    "footer": {
+      "rights": "جميع الحقوق محفوظة."
+    },
+    "language": {
+      "label": "اللغة",
+      "fr": "الفرنسية",
+      "ar": "العربية"
+    }
+  }
+}

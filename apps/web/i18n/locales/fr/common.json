@@ -1,0 +1,72 @@
+{
+  "common": {
+    "appName": "Nationa",
+    "loading": "Chargement…",
+    "nav": {
+      "home": "Accueil",
+      "companies": "Entreprises",
+      "cases": "Dossiers",
+      "documents": "Documents",
+      "assistant": "Assistant",
+      "invoices": "Factures",
+      "filings": "Déclarations",
+      "contributions": "Cotisations",
+      "employees": "Employés",
+      "applications": "Demandes",
+      "incentives": "Incitations",
+      "checks": "Vérifications",
+      "submissions": "Soumissions",
+      "workspace": "Espace de travail"
+    },
+    "actions": {
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "continue": "Continuer",
+      "back": "Retour",
+      "upload": "Téléverser",
+      "submit": "Soumettre",
+      "signIn": "Se connecter",
+      "signOut": "Se déconnecter",
+      "profile": "Profil",
+      "account": "Compte"
+    },
+    "user": {
+      "guest": "Invité"
+    },
+    "bodies": {
+      "title": "Institutions",
+      "rne": "RNE",
+      "dgi": "DGI",
+      "cnss": "CNSS",
+      "apii": "APII",
+      "bct": "BCT",
+      "descriptions": {
+        "rne": "Registre national des entreprises",
+        "dgi": "Direction générale des impôts",
+        "cnss": "Caisse nationale de sécurité sociale",
+        "apii": "Agence de promotion de l'industrie et de l'innovation",
+        "bct": "Banque centrale de Tunisie"
+      }
+    },
+    "status": {
+      "draft": "Brouillon",
+      "pending": "En attente",
+      "inProgress": "En cours",
+      "approved": "Approuvé",
+      "rejected": "Rejeté",
+      "completed": "Terminé",
+      "active": "Actif"
+    },
+    "workspace": {
+      "title": "Espace de travail"
+    },
+    "footer": {
+      "rights": "Tous droits réservés."
+    },
+    "language": {
+      "label": "Langue",
+      "fr": "Français",
+      "ar": "العربية"
+    }
+  }
+}

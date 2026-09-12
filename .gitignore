@@ -16,6 +16,7 @@ local.db-*
 # Environment variables
 .env
 .env*.local
+docs/
 
 # IDEs and editors
 .vscode/*
@@ -45,7 +46,6 @@ lerna-debug.log*
 
 # Better-T-Stack
 .alchemy
-.vercel
 
 # Testing
 coverage

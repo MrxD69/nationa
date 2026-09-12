@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import SubmissionCard from "~/components/submission/SubmissionCard.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const { t } = useI18n();
 const api = useApi();
@@ -41,7 +41,7 @@ onMounted(load);
 </script>
 
 <template>
-  <UContainer class="max-w-5xl space-y-6 py-8">
+  <div class="mx-auto w-full max-w-5xl space-y-6">
     <div class="space-y-1">
       <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
         {{ t("submissions.title") }}
@@ -87,5 +87,5 @@ onMounted(load);
         :submission="submission"
       />
     </div>
-  </UContainer>
+  </div>
 </template>

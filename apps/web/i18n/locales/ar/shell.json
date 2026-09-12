@@ -1,0 +1,50 @@
+{
+  "shell": {
+    "rail": {
+      "companies": "الشركات",
+      "submissions": "المُقدَّمات",
+      "notifications": "الإشعارات",
+      "search": "بحث",
+      "settings": "الإعدادات",
+      "help": "المساعدة",
+      "profile": "الملف الشخصي",
+      "logoLabel": "الصفحة الرئيسية لـ Nationa"
+    },
+    "company": {
+      "select": "اختر شركة",
+      "noCompany": "لم يتم اختيار أي شركة",
+      "more": "المزيد",
+      "portfolio": "المحفظة",
+      "tabs": {
+        "overview": "نظرة عامة",
+        "papers": "المستندات",
+        "invoices": "الفواتير",
+        "filings": "التصاريح",
+        "actions": "الإجراءات",
+        "cases": "الملفات",
+        "checks": "عمليات التحقق",
+        "docgen": "توليد الوثائق"
+      }
+    },
+    "companyEmpty": {
+      "title": "لا توجد شركة",
+      "description": "أنشئ شركتك الأولى أو اربط شركة موجودة للبدء.",
+      "create": "إنشاء شركة",
+      "connect": "ربط شركة"
+    },
+    "ai": {
+      "open": "فتح المساعد",
+      "close": "إغلاق المساعد",
+      "title": "مساعد الذكاء الاصطناعي"
+    },
+    "command": {
+      "placeholder": "ابحث عن شركة أو صفحة أو إجراء…",
+      "groups": {
+        "companies": "الشركات",
+        "navigation": "التنقل",
+        "actions": "الإجراءات"
+      },
+      "empty": "لا توجد نتائج"
+    }
+  }
+}

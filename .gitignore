@@ -14,7 +14,6 @@ local.db
 local.db-*
 
 # Environment variables
-.env
 .env*.local
 docs/
 

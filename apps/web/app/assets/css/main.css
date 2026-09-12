@@ -26,7 +26,7 @@
 :root,
 .light {
   /* Slightly tighter than the default 0.75rem for a crisper, institutional feel. */
-  --ui-radius: 0.625rem;
+  --ui-radius: 0.5rem;
 
   /* --- Semantic surface tokens (light is the default) --- */
   --ui-bg: #ffffff;

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useMutation } from "@tanstack/vue-query";
 import { COMPANY_FIELD_KEYS } from "@nationa/api/domain/fields";
+import { resolveCompanyPath } from "~/constants/navigation";
 import CompanyForm from "~/components/company/CompanyForm.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const orpc = useApiUtils();
+const { selectCompany } = useSelectedCompany();
 const { t } = useI18n();
 
 type FormState = Record<string, unknown>;
@@ -58,7 +60,8 @@ async function submit() {
       ...buildPayload(form.value),
       asPortfolio: asPortfolio.value,
     } as never);
-    await navigateTo(`/companies/${result.companyId}`);
+    selectCompany(result.companyId);
+    await navigateTo(resolveCompanyPath("/companies/:companyId", result.companyId));
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : String(cause);
   }
@@ -66,7 +69,7 @@ async function submit() {
 </script>
 
 <template>
-  <UContainer class="max-w-4xl py-8">
+  <div class="mx-auto w-full max-w-4xl">
     <div class="grid gap-6">
       <div class="flex items-center gap-2">
         <UButton
@@ -75,6 +78,7 @@ async function submit() {
           variant="ghost"
           icon="i-tabler-arrow-left"
           size="sm"
+          class="rtl:rotate-180"
           :label="t('companies.detail.back')"
         />
       </div>
@@ -99,5 +103,5 @@ async function submit() {
         />
       </UCard>
     </div>
-  </UContainer>
+  </div>
 </template>

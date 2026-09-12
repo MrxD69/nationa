@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import type { ProcedureListItem } from "@nationa/api/services/procedures";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const { locale, t } = useI18n();
-const route = useRoute();
+const { selectedCompanyId } = useSelectedCompany();
 const api = useCase();
 
-const companyId = computed(() => {
-  const value = route.query.companyId;
-  return typeof value === "string" && value.length > 0 ? value : undefined;
-});
+const companyId = computed(() => selectedCompanyId.value ?? undefined);
 
 const { data, isLoading } = api.proceduresQuery();
 const start = api.startMutation();
@@ -82,7 +79,7 @@ async function startCase(template: ProcedureListItem): Promise<void> {
 </script>
 
 <template>
-  <UContainer class="space-y-6 py-8">
+  <div class="mx-auto w-full max-w-7xl space-y-6">
     <div class="space-y-1">
       <h1 class="text-2xl font-semibold text-highlighted">{{ t("cases.new.title") }}</h1>
       <p class="text-sm text-muted">{{ t("cases.new.subtitle") }}</p>
@@ -153,5 +150,5 @@ async function startCase(template: ProcedureListItem): Promise<void> {
         :title="t('cases.new.empty')"
       />
     </div>
-  </UContainer>
+  </div>
 </template>

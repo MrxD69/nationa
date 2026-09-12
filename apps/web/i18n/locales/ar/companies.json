@@ -64,7 +64,7 @@
       "invite": "دعوة عضو",
       "inviteTitle": "دعوة عضو",
       "email": "البريد الإلكتروني",
-      "emailPlaceholder": "name@example.com",
+      "emailPlaceholder": "name{'@'}example.com",
       "role": "الدور",
       "expiresIn": "ينتهي خلال (أيام)",
       "send": "إرسال الدعوة",

@@ -122,7 +122,7 @@ async function onStart(): Promise<void> {
         variant="soft"
         size="sm"
         :label="t('actions.hub.retry')"
-        @click="refetch"
+        @click="refetch()"
       />
     </template>
   </UAlert>

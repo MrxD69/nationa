@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { COMPANY_FIELD_KEYS, type CompanyFieldKey } from "@nationa/api/domain/fields";
 
-const model = defineModel<Record<string, unknown>>({ required: true });
+const model = defineModel<Record<string, any>>({ required: true });
 const asPortfolio = defineModel<boolean>("asPortfolio", { default: false });
 
 const props = defineProps<{

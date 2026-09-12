@@ -21,25 +21,30 @@ type CheckRun = {
   completedAt: string | Date | null;
 };
 
+definePageMeta({ layout: "app", middleware: "auth" });
+
 const route = useRoute();
 const api = useApi();
 const { t } = useI18n();
+const { selectedCompanyId } = useSelectedCompany();
 
-const companyId = computed(() =>
-  typeof route.query.companyId === "string" ? route.query.companyId : "",
-);
+const companyId = computed(() => selectedCompanyId.value ?? "");
 
 const subjectType = computed<FindingSubjectType | null>(() => {
   const value = route.query.subjectType;
   if (value === "case" || value === "submission" || value === "company" || value === "document") {
     return value;
   }
-  return null;
+  return selectedCompanyId.value ? "company" : null;
 });
 
-const subjectId = computed(() =>
-  typeof route.query.subjectId === "string" ? route.query.subjectId : "",
-);
+const subjectId = computed(() => {
+  const value = route.query.subjectId;
+  if (typeof value === "string" && value.length > 0) {
+    return value;
+  }
+  return selectedCompanyId.value ?? "";
+});
 
 const valid = computed(() => Boolean(companyId.value && subjectType.value && subjectId.value));
 
@@ -103,7 +108,7 @@ async function rerun() {
 </script>
 
 <template>
-  <UContainer class="py-6 sm:py-8">
+  <div class="mx-auto w-full max-w-7xl">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
         <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
@@ -165,5 +170,5 @@ async function rerun() {
         :description="t('checks.emptyDescription')"
       />
     </template>
-  </UContainer>
+  </div>
 </template>

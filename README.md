@@ -15,7 +15,7 @@ Nationa is a platform for managing companies, compliance cases, and administrati
 - **Oxlint** - Oxlint + Oxfmt (linting & formatting)
 - **Turborepo** - Optimized monorepo build system
 
-## Getting Started
+## Running locally
 
 First, install the dependencies:
 
@@ -23,27 +23,39 @@ First, install the dependencies:
 pnpm install
 ```
 
-## Database Setup
+Two development modes are available.
 
-This project uses PostgreSQL with Drizzle ORM.
-
-1. Make sure you have a PostgreSQL database set up.
-2. Update your `apps/server/.env` file with your PostgreSQL connection details.
-
-3. Apply the schema to your database:
+### Fast local dev
 
 ```bash
-pnpm run db:push
+pnpm dev:local
 ```
 
-Then, run the development server:
+Runs both apps on Bun without Cloudflare: Nuxt on [http://localhost:3001](http://localhost:3001) and the Hono API on [http://localhost:3000](http://localhost:3000). Uses R2 via S3 keys, Supabase Postgres over TCP, and OpenRouter.
+
+### Alchemy / Cloudflare dev
 
 ```bash
-pnpm run dev
+pnpm dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
-The API is running at [http://localhost:3000](http://localhost:3000).
+Runs both apps on the local `workerd` runtime through Alchemy and talks to your Cloudflare account. This is not a production deploy. It requires a configured provider profile:
+
+```bash
+alchemy profile edit --profile default --add Cloudflare
+```
+
+Run individual processes with `pnpm dev:web` (Nuxt only) or `pnpm dev:server` (API only).
+
+> **Troubleshooting ports:** run only one dev stack at a time. The earlier `pnpm dev` (Alchemy) keeps a watcher alive, so stop it before starting `pnpm dev:local`. If you see `EADDRINUSE` (e.g. `Port 3000 is already in use`), run `pnpm dev:stop` — it runs `lsof -ti:3000 -ti:3001 | xargs -r kill`, killing whatever holds the two dev ports.
+
+### Database
+
+`DATABASE_URL` must be an IPv4-reachable Supabase **pooler** connection string. Apply the schema and seed data with:
+
+```bash
+pnpm db:migrate && pnpm db:seed
+```
 
 ## Environment Configuration
 
@@ -95,7 +107,8 @@ nationa/
 
 ## Available Scripts
 
-- `pnpm run dev`: Start all applications in development mode
+- `pnpm run dev`: Start all applications on the local `workerd` runtime via Alchemy/Cloudflare
+- `pnpm run dev:local`: Start both applications locally on Bun without Cloudflare
 - `pnpm run build`: Build all applications
 - `pnpm run dev:web`: Start only the web application
 - `pnpm run dev:server`: Start only the server

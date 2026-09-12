@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/vue-query";
 import { COMPANY_FIELD_KEYS } from "@nationa/api/domain/fields";
 import CompanyForm from "~/components/company/CompanyForm.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const orpc = useApiUtils();
 const route = useRoute();
@@ -105,7 +105,7 @@ async function submit() {
 </script>
 
 <template>
-  <UContainer class="max-w-4xl py-8">
+  <div class="mx-auto w-full max-w-4xl">
     <div class="grid gap-6">
       <div class="flex items-center gap-2">
         <UButton
@@ -114,6 +114,7 @@ async function submit() {
           variant="ghost"
           icon="i-tabler-arrow-left"
           size="sm"
+          class="rtl:rotate-180"
           :label="t('companies.detail.back')"
         />
       </div>
@@ -141,5 +142,5 @@ async function submit() {
         />
       </UCard>
     </div>
-  </UContainer>
+  </div>
 </template>

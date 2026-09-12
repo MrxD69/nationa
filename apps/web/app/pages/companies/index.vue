@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useMutation, useQuery } from "@tanstack/vue-query";
 import CompanyList from "~/components/company/CompanyList.vue";
+import AppCompanyEmpty from "~/components/shell/AppCompanyEmpty.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const orpc = useApiUtils();
 const route = useRoute();
@@ -47,7 +48,7 @@ async function submitConnect() {
 </script>
 
 <template>
-  <UContainer class="max-w-6xl py-8">
+  <div class="mx-auto w-full max-w-6xl">
     <div class="flex flex-col gap-6">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-1">
@@ -96,6 +97,8 @@ async function submitConnect() {
         :title="t('companies.error.title')"
         :description="t('companies.error.description')"
       />
+
+      <AppCompanyEmpty v-else-if="!loading && (companies?.length ?? 0) === 0" />
 
       <CompanyList v-else :companies="companies ?? []" :loading="loading" />
     </div>
@@ -149,5 +152,5 @@ async function submitConnect() {
         </UCard>
       </template>
     </UModal>
-  </UContainer>
+  </div>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useMutation, useQuery } from "@tanstack/vue-query";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "auth", middleware: "auth" });
 
 type Choice = "has_company" | "no_company" | "accountant";
 type Step = "choice" | "consent" | "finish";

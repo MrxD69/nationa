@@ -1,0 +1,24 @@
+{
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Personnalisez votre espace de travail.",
+    "preferences": "Préférences",
+    "theme": {
+      "label": "Thème",
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
+    },
+    "language": {
+      "label": "Langue"
+    },
+    "aiInstructions": {
+      "label": "Instructions de l'assistant",
+      "placeholder": "Ex. Réponds toujours en français et cite les articles de loi pertinents.",
+      "description": "Ces instructions sont transmises à l'assistant pour chaque conversation."
+    },
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "error": "Impossible d'enregistrer les paramètres."
+  }
+}

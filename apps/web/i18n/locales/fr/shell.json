@@ -1,0 +1,50 @@
+{
+  "shell": {
+    "rail": {
+      "companies": "Entreprises",
+      "submissions": "Soumissions",
+      "notifications": "Notifications",
+      "search": "Rechercher",
+      "settings": "Paramètres",
+      "help": "Aide",
+      "profile": "Profil",
+      "logoLabel": "Accueil Nationa"
+    },
+    "company": {
+      "select": "Sélectionner une entreprise",
+      "noCompany": "Aucune entreprise sélectionnée",
+      "more": "Plus",
+      "portfolio": "Portefeuille",
+      "tabs": {
+        "overview": "Vue d'ensemble",
+        "papers": "Documents",
+        "invoices": "Factures",
+        "filings": "Déclarations",
+        "actions": "Démarches",
+        "cases": "Dossiers",
+        "checks": "Vérifications",
+        "docgen": "Génération de documents"
+      }
+    },
+    "companyEmpty": {
+      "title": "Aucune entreprise",
+      "description": "Créez votre première entreprise ou connectez une entreprise existante pour commencer.",
+      "create": "Créer une entreprise",
+      "connect": "Connecter une entreprise"
+    },
+    "ai": {
+      "open": "Ouvrir l'assistant",
+      "close": "Fermer l'assistant",
+      "title": "Assistant IA"
+    },
+    "command": {
+      "placeholder": "Rechercher une entreprise, une page ou une action…",
+      "groups": {
+        "companies": "Entreprises",
+        "navigation": "Navigation",
+        "actions": "Actions"
+      },
+      "empty": "Aucun résultat"
+    }
+  }
+}

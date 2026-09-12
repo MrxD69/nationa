@@ -29,6 +29,9 @@
     "db:seed": {
       "cache": false
     },
+    "db:seed:demo": {
+      "cache": false
+    },
     "db:generate": {
       "cache": false,
       "interactive": true
@@ -68,5 +71,6 @@
     "SUPABASE_URL",
     "_VARLOCK_ENV_KEY"
   ],
+  "globalPassThroughEnv": ["PORT"],
   "globalDependencies": [".env*", "apps/*/.env*", "packages/*/.env*"]
 }

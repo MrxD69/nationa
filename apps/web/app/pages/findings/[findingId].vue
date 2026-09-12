@@ -32,14 +32,15 @@ type CheckRun = {
   subjectId: string;
 };
 
+definePageMeta({ layout: "app", middleware: "auth" });
+
 const route = useRoute();
 const api = useApi();
 const { t } = useI18n();
+const { selectedCompanyId } = useSelectedCompany();
 
 const findingId = computed(() => String(route.params.findingId ?? ""));
-const companyId = computed(() =>
-  typeof route.query.companyId === "string" ? route.query.companyId : "",
-);
+const companyId = computed(() => selectedCompanyId.value ?? "");
 const valid = computed(() => Boolean(companyId.value && findingId.value));
 
 const { data, pending, error, refresh } = await useAsyncData(
@@ -122,7 +123,7 @@ async function addNote(body: string) {
 </script>
 
 <template>
-  <UContainer class="py-6 sm:py-8">
+  <div class="mx-auto w-full max-w-7xl">
     <UButton
       :to="backLink"
       icon="i-tabler-arrow-left"
@@ -130,6 +131,7 @@ async function addNote(body: string) {
       variant="ghost"
       size="sm"
       class="mb-4"
+      :ui="{ leadingIcon: 'rtl:rotate-180' }"
     >
       {{ t("checks.actions.back") }}
     </UButton>
@@ -163,5 +165,5 @@ async function addNote(body: string) {
 
       <FindingNotesHistory :notes="notes" :busy="busy" @add="addNote" />
     </div>
-  </UContainer>
+  </div>
 </template>

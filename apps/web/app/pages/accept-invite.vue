@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useMutation } from "@tanstack/vue-query";
+import { resolveCompanyPath } from "~/constants/navigation";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "auth", middleware: "auth" });
 
 const orpc = useApiUtils();
 const route = useRoute();
@@ -55,7 +56,7 @@ onMounted(async () => {
         <UAlert color="success" variant="subtle" :title="t('companies.acceptInvite.success')" />
         <UButton
           v-if="result"
-          :to="`/companies/${result.companyId}`"
+          :to="resolveCompanyPath('/companies/:companyId', result.companyId)"
           icon="i-tabler-arrow-right"
           block
           :label="t('companies.acceptInvite.open')"

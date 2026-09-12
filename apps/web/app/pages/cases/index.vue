@@ -1,17 +1,18 @@
 <script setup lang="ts">
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const { locale, t } = useI18n();
-const route = useRoute();
+const { selectedCompanyId } = useSelectedCompany();
 const api = useCase();
 
-const companyId = computed(() => {
-  const value = route.query.companyId;
-  return typeof value === "string" && value.length > 0 ? value : undefined;
-});
+const companyId = computed(() => selectedCompanyId.value ?? undefined);
 
 const { data, isLoading, isError, error, refetch } = api.casesQuery({
   companyId: companyId.value,
+});
+
+watch(selectedCompanyId, () => {
+  void refetch();
 });
 
 const cases = computed(() => data.value ?? []);
@@ -58,7 +59,7 @@ function formatDate(value: string | Date | null | undefined): string {
 </script>
 
 <template>
-  <UContainer class="space-y-6 py-8">
+  <div class="mx-auto w-full max-w-7xl space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div class="space-y-1">
         <h1 class="text-2xl font-semibold text-highlighted">{{ t("cases.list.title") }}</h1>
@@ -85,7 +86,7 @@ function formatDate(value: string | Date | null | undefined): string {
           variant="soft"
           size="sm"
           :label="t('cases.list.retry')"
-          @click="refetch"
+          @click="refetch()"
         />
       </template>
     </UAlert>
@@ -121,5 +122,5 @@ function formatDate(value: string | Date | null | undefined): string {
         </UCard>
       </NuxtLink>
     </div>
-  </UContainer>
+  </div>
 </template>

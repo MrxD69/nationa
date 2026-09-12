@@ -55,12 +55,6 @@
       "title": "Point d'attention"
     },
     "disclaimer": "L'assistant ne décide pas et ne soumet rien à votre place. Vérifiez toujours les informations fournies.",
-    "notifications": {
-      "title": "Notifications",
-      "empty": "Aucune notification",
-      "markAllRead": "Tout marquer comme lu",
-      "loading": "Chargement…"
-    },
     "errors": {
       "loadFailed": "Impossible de charger la conversation",
       "sendFailed": "Échec de l'envoi du message",

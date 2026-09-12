@@ -4,7 +4,7 @@ import FilingPeriodPicker from "~/components/filing/FilingPeriodPicker.vue";
 import FilingPreview from "~/components/filing/FilingPreview.vue";
 import FilingStatusBadge from "~/components/filing/FilingStatusBadge.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const route = useRoute();
 const client = useApi();
@@ -13,12 +13,12 @@ const toast = useToast();
 
 const companyId = computed(() => String(route.params.companyId ?? ""));
 
-type FilingRow = Record<string, any>;
+type FilingRecord = Record<string, any> & { id: string };
 
 const obligations = ref<
   Array<{ id: string; code: string; nameFr: string; nameAr?: string | null }>
 >([]);
-const filings = ref<FilingRow[]>([]);
+const filings = ref<FilingRecord[]>([]);
 const loading = ref(false);
 const preview = ref<{
   totals: Record<string, any>;
@@ -32,7 +32,7 @@ const periodEnd = ref("");
 const obligationId = ref<string | null>(null);
 
 const selectedId = ref<string | null>(null);
-const detail = ref<{ filing: FilingRow; invoices: FilingRow[] } | null>(null);
+const detail = ref<{ filing: FilingRecord; invoices: FilingRecord[] } | null>(null);
 const detailLoading = ref(false);
 const inviteOpen = ref(false);
 const inviteMessage = ref("");
@@ -66,7 +66,7 @@ async function loadList() {
   try {
     filings.value = (await client.filings.list({
       companyId: companyId.value,
-    })) as unknown as FilingRow[];
+    })) as unknown as FilingRecord[];
   } catch {
     toast.add({ title: t("filings.errors.loadFailed"), color: "error" });
   } finally {
@@ -104,7 +104,7 @@ async function createDraft() {
       periodStart: periodStart.value,
       periodEnd: periodEnd.value,
       obligationId: obligationId.value ?? undefined,
-    })) as unknown as { filing: FilingRow };
+    })) as unknown as { filing: FilingRecord };
     await loadList();
     if (result?.filing?.id) {
       await selectFiling(String(result.filing.id));
@@ -124,7 +124,7 @@ async function selectFiling(id: string) {
     detail.value = (await client.filings.get({
       companyId: companyId.value,
       filingId: id,
-    })) as unknown as { filing: FilingRow; invoices: FilingRow[] };
+    })) as unknown as { filing: FilingRecord; invoices: FilingRecord[] };
   } catch {
     detail.value = null;
   } finally {

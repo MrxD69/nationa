@@ -1,0 +1,8 @@
+{
+  "notifications": {
+    "title": "Notifications",
+    "empty": "Aucune notification pour le moment.",
+    "loading": "Chargement des notifications…",
+    "markAllRead": "Tout marquer comme lu"
+  }
+}

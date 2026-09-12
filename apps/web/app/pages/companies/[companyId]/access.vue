@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/vue-query";
 import AccessInviteModal from "~/components/company/AccessInviteModal.vue";
 import AccessMemberList from "~/components/company/AccessMemberList.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const orpc = useApiUtils();
 const route = useRoute();
@@ -42,7 +42,7 @@ async function onRevoke(userId: string) {
 </script>
 
 <template>
-  <UContainer class="max-w-4xl py-8">
+  <div class="mx-auto w-full max-w-4xl">
     <div class="grid gap-6">
       <div class="flex items-center gap-2">
         <UButton
@@ -51,6 +51,7 @@ async function onRevoke(userId: string) {
           variant="ghost"
           icon="i-tabler-arrow-left"
           size="sm"
+          class="rtl:rotate-180"
           :label="t('companies.detail.back')"
         />
       </div>
@@ -95,5 +96,5 @@ async function onRevoke(userId: string) {
     </div>
 
     <AccessInviteModal v-model:open="inviteOpen" :company-id="companyId" @invited="refetch()" />
-  </UContainer>
+  </div>
 </template>

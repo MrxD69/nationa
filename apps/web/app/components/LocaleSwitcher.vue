@@ -1,8 +1,10 @@
 <script setup lang="ts">
+type AppLocale = "fr" | "ar";
+
 const { locale, locales, setLocale, t } = useI18n();
 
 const items = computed(() =>
-  (locales.value as Array<{ code: string; name?: string }>).map((l) => ({
+  (locales.value as Array<{ code: AppLocale; name?: string }>).map((l) => ({
     label: l.name ?? l.code,
     value: l.code,
   })),
@@ -10,7 +12,7 @@ const items = computed(() =>
 
 const currentLocale = computed({
   get: () => locale.value,
-  set: (value: string) => {
+  set: (value: AppLocale) => {
     void setLocale(value);
   },
 });

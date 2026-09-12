@@ -1,0 +1,20 @@
+{
+  "help": {
+    "title": "Aide",
+    "subtitle": "Trouvez des réponses aux questions fréquentes.",
+    "faq": {
+      "q1": "Comment créer une entreprise ?",
+      "q2": "Comment connecter une entreprise existante ?",
+      "q3": "Comment fonctionne l'assistant IA ?",
+      "q4": "Comment inviter un collaborateur ?",
+      "a1": "Depuis l'espace des entreprises, cliquez sur « Nouvelle entreprise » puis renseignez les informations légales.",
+      "a2": "Ouvrez « Connecter une entreprise existante » et saisissez l'identifiant unique (RNE) de la société.",
+      "a3": "L'assistant s'appuie sur les données de votre entreprise et sur la réglementation pour vous guider. Il ne remplace pas un conseil professionnel.",
+      "a4": "Dans la fiche de l'entreprise, ouvrez « Gérer les accès » puis invitez un membre par e-mail."
+    },
+    "contact": {
+      "label": "Contacter le support",
+      "description": "Une question sans réponse ? Écrivez-nous et nous vous répondrons rapidement."
+    }
+  }
+}

@@ -6,25 +6,30 @@ import CleanlinessBadge from "~/components/submission/CleanlinessBadge.vue";
 import SubmissionTimeline from "~/components/submission/SubmissionTimeline.vue";
 import DocumentViewer from "~/components/officer/DocumentViewer.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const { t, locale } = useI18n();
 const route = useRoute();
 const api = useApi();
+const { selectedCompanyId } = useSelectedCompany();
 
 const submissionId = computed(() => String(route.params.submissionId ?? ""));
-const companyId = computed(() =>
-  typeof route.query.companyId === "string" ? route.query.companyId : "",
-);
+const companyId = computed(() => {
+  if (selectedCompanyId.value) {
+    return selectedCompanyId.value;
+  }
+  const value = route.query.companyId;
+  return typeof value === "string" ? value : "";
+});
 
-type Finding = {
+type SubmissionFinding = {
   id: string;
   severity: "info" | "warning" | "error" | "blocker";
   code: string;
   title: string;
   messagePlain: string;
   suggestedFix?: string | null;
-  comparedRefs?: unknown;
+  comparedRefs: unknown;
   status: "open" | "resolved" | "waived" | "acknowledged";
 };
 
@@ -43,7 +48,7 @@ const cleanlinessScore = computed(() => {
 });
 const company = computed(() => data.value?.company ?? null);
 const agency = computed(() => data.value?.agency ?? null);
-const findings = computed(() => (data.value?.findings ?? []) as Finding[]);
+const findings = computed(() => (data.value?.findings ?? []) as SubmissionFinding[]);
 const reviews = computed(() => (data.value?.reviews ?? []) as any[]);
 const activity = computed(() => (data.value?.activity ?? []) as any[]);
 const documents = computed(() => (data.value?.documents ?? []) as any[]);
@@ -140,7 +145,7 @@ onMounted(load);
 </script>
 
 <template>
-  <UContainer class="max-w-5xl space-y-6 py-8">
+  <div class="mx-auto w-full max-w-5xl space-y-6">
     <div class="flex items-center gap-2">
       <UButton
         to="/submissions"
@@ -149,6 +154,7 @@ onMounted(load);
         icon="i-tabler-arrow-left"
         size="sm"
         :label="t('submissions.back')"
+        :ui="{ leadingIcon: 'rtl:rotate-180' }"
       />
     </div>
 
@@ -251,5 +257,5 @@ onMounted(load);
 
       <DocumentViewer :documents="documents" :company-id="companyId" />
     </template>
-  </UContainer>
+  </div>
 </template>

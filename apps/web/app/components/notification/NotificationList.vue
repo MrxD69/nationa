@@ -29,26 +29,24 @@ function formatDate(value?: string | Date | null) {
 <template>
   <div class="flex max-h-96 w-80 flex-col">
     <div class="flex items-center justify-between gap-2 border-b border-default px-3 py-2">
-      <span class="text-sm font-semibold text-highlighted">{{
-        t("assistant.notifications.title")
-      }}</span>
+      <span class="text-sm font-semibold text-highlighted">{{ t("notifications.title") }}</span>
       <UButton
         color="neutral"
         variant="ghost"
         size="xs"
         icon="i-tabler-checks"
-        :label="t('assistant.notifications.markAllRead')"
+        :label="t('notifications.markAllRead')"
         @click="emit('markAllRead')"
       />
     </div>
 
     <div v-if="loading" class="flex items-center gap-2 px-3 py-6 text-xs text-muted">
       <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
-      {{ t("assistant.notifications.loading") }}
+      {{ t("notifications.loading") }}
     </div>
 
     <div v-else-if="items.length === 0" class="px-3 py-6 text-center text-xs text-muted">
-      {{ t("assistant.notifications.empty") }}
+      {{ t("notifications.empty") }}
     </div>
 
     <ul v-else class="min-h-0 flex-1 divide-y divide-default overflow-y-auto">

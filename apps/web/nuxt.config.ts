@@ -22,6 +22,11 @@ export default defineNuxtConfig({
     fallback: "light",
     classSuffix: "",
   },
+  routeRules: {
+    // The AI assistant now lives in the unified shell's panel, open by default.
+    "/ai": { redirect: "/" },
+    "/assistant": { redirect: "/" },
+  },
   i18n: {
     strategy: "no_prefix",
     defaultLocale: "fr",
@@ -48,6 +53,10 @@ export default defineNuxtConfig({
           "fr/filings.json",
           "fr/actions.json",
           "fr/docgen.json",
+          "fr/shell.json",
+          "fr/settings.json",
+          "fr/help.json",
+          "fr/notifications.json",
         ],
       },
       {
@@ -70,6 +79,10 @@ export default defineNuxtConfig({
           "ar/filings.json",
           "ar/actions.json",
           "ar/docgen.json",
+          "ar/shell.json",
+          "ar/settings.json",
+          "ar/help.json",
+          "ar/notifications.json",
         ],
       },
     ],

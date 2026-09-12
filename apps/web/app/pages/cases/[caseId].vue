@@ -1,14 +1,28 @@
 <script setup lang="ts">
 import CaseRunner from "~/components/case/CaseRunner.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const route = useRoute();
+const { selectedCompanyId, selectCompany } = useSelectedCompany();
+const api = useCase();
+
 const caseId = computed(() => String(route.params.caseId ?? ""));
+const { data } = api.caseQuery(caseId.value);
+
+watch(
+  () => data.value?.case?.companyId,
+  (companyId) => {
+    if (companyId && !selectedCompanyId.value) {
+      selectCompany(companyId);
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
-  <UContainer class="py-8">
+  <div class="mx-auto w-full max-w-7xl">
     <CaseRunner v-if="caseId" :key="caseId" :case-id="caseId" />
-  </UContainer>
+  </div>
 </template>

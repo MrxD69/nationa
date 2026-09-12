@@ -12,6 +12,13 @@ const model = defineModel<string | null>({ default: null });
 
 const { t, locale } = useI18n();
 
+const selected = computed<string | undefined>({
+  get: () => model.value ?? undefined,
+  set: (value) => {
+    model.value = value ?? null;
+  },
+});
+
 const options = computed(() =>
   props.agencies.map((agency) => ({
     label:
@@ -25,7 +32,7 @@ const options = computed(() =>
 
 <template>
   <USelect
-    v-model="model"
+    v-model="selected"
     :items="options"
     :placeholder="t('officer.agency.placeholder')"
     icon="i-tabler-building-bank"

@@ -12,6 +12,13 @@ const obligationId = defineModel<string | null>("obligationId", { default: null 
 const periodStart = defineModel<string>("periodStart", { default: "" });
 const periodEnd = defineModel<string>("periodEnd", { default: "" });
 
+const selectedObligationId = computed<string | undefined>({
+  get: () => obligationId.value ?? undefined,
+  set: (value) => {
+    obligationId.value = value ?? null;
+  },
+});
+
 const obligationOptions = computed(() =>
   props.obligations.map((obligation) => ({
     label: locale.value === "ar" && obligation.nameAr ? obligation.nameAr : obligation.nameFr,
@@ -31,7 +38,7 @@ const obligationOptions = computed(() =>
       </UFormField>
       <UFormField :label="t('filings.period.obligation')">
         <USelect
-          v-model="obligationId"
+          v-model="selectedObligationId"
           :items="obligationOptions"
           :placeholder="t('filings.period.selectObligation')"
           class="w-full"

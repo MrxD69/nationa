@@ -6,7 +6,7 @@ import DocgenDraftPreview from "~/components/docgen/DocgenDraftPreview.vue";
 import DocgenFieldEditor from "~/components/docgen/DocgenFieldEditor.vue";
 import DocgenQuestionnaire from "~/components/docgen/DocgenQuestionnaire.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const route = useRoute();
 const { t } = useI18n();
@@ -16,7 +16,7 @@ const proposalId = computed(() => String(route.params.proposalId ?? ""));
 
 const { draftsQuery, updateMutation, approveMutation, rejectMutation } = useDocgen();
 
-const { data, pending, refetch } = draftsQuery({ proposalId: proposalId.value });
+const { data, isPending, refetch } = draftsQuery({ proposalId: proposalId.value });
 
 const draft = computed<DocgenDraftView | null>(() => data.value?.[0] ?? null);
 const payload = computed(() => draft.value?.payload ?? null);
@@ -144,7 +144,7 @@ const artifactView = computed(() => approved.value ?? draft.value);
 </script>
 
 <template>
-  <UContainer class="max-w-4xl space-y-6 py-8">
+  <div class="mx-auto w-full max-w-4xl space-y-6">
     <div class="flex flex-wrap items-start justify-between gap-3">
       <div class="space-y-1">
         <div class="flex items-center gap-2">
@@ -165,7 +165,7 @@ const artifactView = computed(() => approved.value ?? draft.value);
       </div>
     </div>
 
-    <div v-if="pending && !draft" class="flex items-center gap-2 py-8 text-sm text-muted">
+    <div v-if="isPending && !draft" class="flex items-center gap-2 py-8 text-sm text-muted">
       <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
       {{ t("docgen.loading") }}
     </div>
@@ -217,5 +217,5 @@ const artifactView = computed(() => approved.value ?? draft.value);
         />
       </div>
     </template>
-  </UContainer>
+  </div>
 </template>

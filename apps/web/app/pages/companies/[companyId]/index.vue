@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/vue-query";
 import { COMPANY_FIELD_KEYS, type CompanyFieldKey } from "@nationa/api/domain/fields";
 import ProvenanceBadge from "~/components/company/ProvenanceBadge.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const orpc = useApiUtils();
 const route = useRoute();
@@ -19,9 +19,15 @@ const company = computed(() => (data.value?.company ?? null) as Record<string, u
 const role = computed(() => (data.value?.role ?? null) as string | null);
 const scopes = computed(() => (data.value?.scopes ?? []) as string[]);
 
-const provenanceByField = computed<Record<string, Record<string, unknown>>>(() => {
-  const map: Record<string, Record<string, unknown>> = {};
-  for (const row of (data.value?.provenance ?? []) as Record<string, unknown>[]) {
+type ProvenanceRow = {
+  fieldKey?: unknown;
+  sourceKind?: unknown;
+  confidence?: number | string | null;
+};
+
+const provenanceByField = computed<Record<string, ProvenanceRow>>(() => {
+  const map: Record<string, ProvenanceRow> = {};
+  for (const row of (data.value?.provenance ?? []) as ProvenanceRow[]) {
     const fieldKey = String(row.fieldKey ?? "");
     if (fieldKey && !map[fieldKey]) {
       map[fieldKey] = row;
@@ -132,7 +138,7 @@ function formatValue(key: string, value: unknown): string {
 </script>
 
 <template>
-  <UContainer class="max-w-5xl py-8">
+  <div class="mx-auto w-full max-w-5xl">
     <div class="grid gap-6">
       <div class="flex items-center gap-2">
         <UButton
@@ -141,6 +147,7 @@ function formatValue(key: string, value: unknown): string {
           variant="ghost"
           icon="i-tabler-arrow-left"
           size="sm"
+          class="rtl:rotate-180"
           :label="t('companies.detail.back')"
         />
       </div>
@@ -202,49 +209,6 @@ function formatValue(key: string, value: unknown): string {
           </div>
         </div>
 
-        <div class="flex flex-wrap gap-2">
-          <UButton
-            :to="`/companies/${companyId}/documents`"
-            color="neutral"
-            variant="outline"
-            icon="i-tabler-files"
-            size="sm"
-            :label="t('companies.detail.documents')"
-          />
-          <UButton
-            :to="`/cases?companyId=${companyId}`"
-            color="neutral"
-            variant="outline"
-            icon="i-tabler-list-check"
-            size="sm"
-            :label="t('companies.detail.cases')"
-          />
-          <UButton
-            :to="`/findings?companyId=${companyId}&subjectType=company&subjectId=${companyId}`"
-            color="neutral"
-            variant="outline"
-            icon="i-tabler-shield-check"
-            size="sm"
-            :label="t('companies.detail.checks')"
-          />
-          <UButton
-            :to="`/companies/${companyId}/invoices`"
-            color="neutral"
-            variant="outline"
-            icon="i-tabler-file-invoice"
-            size="sm"
-            :label="t('companies.detail.invoices')"
-          />
-          <UButton
-            :to="`/companies/${companyId}/filings`"
-            color="neutral"
-            variant="outline"
-            icon="i-tabler-file-check"
-            size="sm"
-            :label="t('companies.detail.filings')"
-          />
-        </div>
-
         <UCard v-for="group in DETAIL_GROUPS" :key="group.id">
           <template #header>
             <h2 class="text-sm font-semibold text-highlighted">{{ t(group.titleKey) }}</h2>
@@ -266,5 +230,5 @@ function formatValue(key: string, value: unknown): string {
         </UCard>
       </template>
     </div>
-  </UContainer>
+  </div>
 </template>

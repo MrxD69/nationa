@@ -1,13 +1,14 @@
 import type { Database } from "@nationa/db";
 import type { LanguageModel } from "ai";
 
+import type { AccountType } from "../domain/account";
 import type { StoragePort } from "../storage/port";
 
 export type AuthUser = {
   id: string;
   email?: string;
   role?: string;
-  accountType?: string;
+  accountType?: AccountType;
 };
 
 export type Context = {

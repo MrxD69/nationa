@@ -1,19 +1,19 @@
 <script setup lang="ts">
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "auth", middleware: "auth" });
 
 const { $orpc } = useNuxtApp();
 const { t } = useI18n();
 
-const { data: onboarding } = await useAsyncData("entry-onboarding-status", async () => {
+const { data: landing } = await useAsyncData("entry-landing", async () => {
   try {
-    return await $orpc.onboarding.get.call();
+    const session = await $orpc.session.get.call();
+    return session.landing;
   } catch {
-    return null;
+    return "/companies";
   }
 });
 
-const status = onboarding.value?.status;
-await navigateTo(status && status !== "completed" ? "/onboarding" : "/actions");
+await navigateTo(landing.value ?? "/companies");
 </script>
 
 <template>

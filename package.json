@@ -8,14 +8,17 @@
   "type": "module",
   "scripts": {
     "dev": "turbo run dev",
+    "dev:local": "turbo run dev:bare -F web -F server",
     "build": "turbo run build",
     "check-types": "turbo run check-types",
     "postinstall": "tsc -b packages/api && varlock codegen --path ./apps/web/ && varlock codegen --path ./apps/server/ && varlock codegen --path ./packages/db/",
     "dev:types": "tsc -b packages/api --watch",
     "dev:web": "turbo run dev:bare -F web --",
     "dev:server": "turbo run dev:bare -F server --",
+    "dev:stop": "lsof -ti:3000 -ti:3001 | xargs -r kill",
     "db:push": "turbo run db:push -F @nationa/db --",
     "db:seed": "turbo run db:seed -F @nationa/db --",
+    "db:seed:demo": "turbo run db:seed:demo -F @nationa/db --",
     "db:studio": "turbo run db:studio -F @nationa/db --",
     "db:generate": "turbo run db:generate -F @nationa/db --",
     "db:migrate": "turbo run db:migrate -F @nationa/db --",
@@ -37,9 +40,6 @@
     "turbo": "^2.10.12",
     "typescript": "catalog:",
     "varlock": "catalog:"
-  },
-  "overrides": {
-    "@vue/devtools-api": "^8.2.1"
   },
   "packageManager": "pnpm@12.4.1+sha512.2e81e399d73fe8390dab25e06aa788ab7a5908248d2f5a370f82b481147a6a7a367bf8048f9a6fdb6460f21a66f0542dedb8b94ca2c8723596741920b1656d4c"
 }

@@ -2,6 +2,7 @@ import { createRemoteJWKSet, jwtVerify, type JWTPayload } from "jose";
 import type { Context, Next } from "hono";
 
 import type { AuthUser } from "@nationa/api/context";
+import { parseAccountType } from "@nationa/api/domain/account";
 
 import type { AppHonoEnv } from "./context";
 import { env, type ServerRuntimeEnv } from "./env.server";
@@ -31,6 +32,14 @@ function getJwks(runtimeEnv: ServerRuntimeEnv): ReturnType<typeof createRemoteJW
   return jwks;
 }
 
+function readAccountType(payload: JWTPayload): AuthUser["accountType"] {
+  const metadata = payload.user_metadata;
+  if (typeof metadata !== "object" || metadata === null) {
+    return undefined;
+  }
+  return parseAccountType((metadata as Record<string, unknown>).accountType) ?? undefined;
+}
+
 function toAuthUser(payload: JWTPayload): AuthUser {
   const id = typeof payload.sub === "string" ? payload.sub : undefined;
   if (!id) {
@@ -38,7 +47,7 @@ function toAuthUser(payload: JWTPayload): AuthUser {
   }
   const email = typeof payload.email === "string" ? payload.email : undefined;
   const role = typeof payload.role === "string" ? payload.role : undefined;
-  return { id, email, role };
+  return { id, email, role, accountType: readAccountType(payload) };
 }
 
 /**

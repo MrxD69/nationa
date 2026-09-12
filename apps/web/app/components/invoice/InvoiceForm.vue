@@ -1,11 +1,11 @@
 <script setup lang="ts">
 type LineRow = {
-  description?: string | null;
-  quantity?: number | null;
-  unitPrice?: number | null;
-  taxRate?: number | null;
-  taxAmount?: number | null;
-  lineTotal?: number | null;
+  description?: string;
+  quantity?: number;
+  unitPrice?: number;
+  taxRate?: number;
+  taxAmount?: number;
+  lineTotal?: number;
 };
 
 type InvoiceLike = {
@@ -68,11 +68,11 @@ function reset() {
   form.currency = invoice?.currency ?? "TND";
   lineItems.value = (props.lines ?? []).map((line) => ({
     description: line.description ?? "",
-    quantity: toNumberOrNull(line.quantity),
-    unitPrice: toNumberOrNull(line.unitPrice),
-    taxRate: toNumberOrNull(line.taxRate),
-    taxAmount: toNumberOrNull(line.taxAmount),
-    lineTotal: toNumberOrNull(line.lineTotal),
+    quantity: toNumberOrNull(line.quantity) ?? undefined,
+    unitPrice: toNumberOrNull(line.unitPrice) ?? undefined,
+    taxRate: toNumberOrNull(line.taxRate) ?? undefined,
+    taxAmount: toNumberOrNull(line.taxAmount) ?? undefined,
+    lineTotal: toNumberOrNull(line.lineTotal) ?? undefined,
   }));
   if (lineItems.value.length === 0) {
     addLine();
@@ -88,8 +88,6 @@ function addLine() {
     quantity: 1,
     unitPrice: 0,
     taxRate: 19,
-    taxAmount: null,
-    lineTotal: null,
   });
 }
 

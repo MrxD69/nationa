@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
+const VueQueryDevtools = import.meta.dev
+  ? defineAsyncComponent(() =>
+      import("@tanstack/vue-query-devtools").then((m) => m.VueQueryDevtools),
+    )
+  : null;
 
 const { locale } = useI18n();
 
@@ -20,5 +24,5 @@ useHead(() => ({
       <NuxtPage />
     </NuxtLayout>
   </UApp>
-  <VueQueryDevtools />
+  <component :is="VueQueryDevtools" v-if="VueQueryDevtools" />
 </template>

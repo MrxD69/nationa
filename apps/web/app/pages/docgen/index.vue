@@ -3,25 +3,24 @@ import type { DocgenMode } from "~/composables/useDocgen";
 import type { DocLang } from "@nationa/api/documents/templates/types";
 import DocgenTemplatePicker from "~/components/docgen/DocgenTemplatePicker.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
 const toast = useToast();
 const { templatesQuery, generateMutation, defaultLanguage } = useDocgen();
+const { selectedCompanyId } = useSelectedCompany();
 
 const caseId = computed(() =>
   typeof route.query.caseId === "string" ? route.query.caseId : undefined,
 );
-const companyId = computed(() =>
-  typeof route.query.companyId === "string" ? route.query.companyId : undefined,
-);
+const companyId = computed(() => selectedCompanyId.value ?? undefined);
 const stepId = computed(() =>
   typeof route.query.stepId === "string" ? route.query.stepId : undefined,
 );
 
-const { data: templates, pending } = templatesQuery();
+const { data: templates, isPending } = templatesQuery();
 
 const picker = ref<{ templateCode: string | null; language: DocLang; mode: DocgenMode }>({
   templateCode: null,
@@ -63,7 +62,7 @@ async function onGenerate(): Promise<void> {
 </script>
 
 <template>
-  <UContainer class="max-w-4xl space-y-6 py-8">
+  <div class="mx-auto w-full max-w-4xl space-y-6">
     <div class="space-y-1">
       <h1 class="text-xl font-semibold tracking-tight text-highlighted">{{ t("docgen.title") }}</h1>
       <p class="text-sm text-muted">{{ t("docgen.subtitle") }}</p>
@@ -78,7 +77,7 @@ async function onGenerate(): Promise<void> {
       :description="t('docgen.scope.missingDescription')"
     />
 
-    <DocgenTemplatePicker v-model="picker" :templates="templates ?? []" :loading="pending" />
+    <DocgenTemplatePicker v-model="picker" :templates="templates ?? []" :loading="isPending" />
 
     <div class="flex items-center justify-end">
       <UButton
@@ -90,5 +89,5 @@ async function onGenerate(): Promise<void> {
         @click="onGenerate"
       />
     </div>
-  </UContainer>
+  </div>
 </template>

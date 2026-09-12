@@ -14,7 +14,9 @@ import { invoicesRouter } from "./procedures/invoices";
 import { notificationsRouter } from "./procedures/notifications";
 import { officerRouter } from "./procedures/officer";
 import { onboardingRouter } from "./procedures/onboarding";
+import { preferencesRouter } from "./procedures/preferences";
 import { proceduresRouter } from "./procedures/procedures";
+import { sessionRouter } from "./procedures/session";
 import { submissionsRouter } from "./procedures/submissions";
 
 export const router = {
@@ -34,6 +36,8 @@ export const router = {
   ai: aiRouter,
   invoices: invoicesRouter,
   filings: filingsRouter,
+  session: sessionRouter,
+  preferences: preferencesRouter,
 };
 
 export type AppRouter = typeof router;

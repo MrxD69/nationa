@@ -3,6 +3,7 @@ import { ORPCError } from "@orpc/server";
 import type { NewProfile, OnboardingAnswers, Profile } from "@nationa/db";
 
 import { requireUser } from "../../auth/access";
+import { parseAccountType } from "../../domain/account";
 import type { Context } from "../context";
 import * as repo from "../repositories/profiles.repo";
 
@@ -20,7 +21,10 @@ export async function ensureProfile(context: Context): Promise<Profile> {
     return existing;
   }
 
-  const created = await repo.insertProfile(context.db, { userId: user.id });
+  const created = await repo.insertProfile(context.db, {
+    userId: user.id,
+    accountType: parseAccountType(user.accountType) ?? "owner",
+  });
 
   if (created) {
     return created;

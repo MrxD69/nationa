@@ -4,7 +4,7 @@ import InvoiceStatusBadge from "~/components/invoice/InvoiceStatusBadge.vue";
 import InvoiceTable from "~/components/invoice/InvoiceTable.vue";
 import InvoiceUploader from "~/components/invoice/InvoiceUploader.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 const route = useRoute();
 const client = useApi();
@@ -13,15 +13,17 @@ const toast = useToast();
 
 const companyId = computed(() => String(route.params.companyId ?? ""));
 
-type InvoiceRow = Record<string, any>;
+type InvoiceRecord = Record<string, any> & { id: string };
 type InvoiceLine = Record<string, any>;
 
-const items = ref<InvoiceRow[]>([]);
+const items = ref<InvoiceRecord[]>([]);
 const loading = ref(false);
 const selectedId = ref<string | null>(null);
-const detail = ref<{ invoice: InvoiceRow; lines: InvoiceLine[]; provenance: InvoiceRow[] } | null>(
-  null,
-);
+const detail = ref<{
+  invoice: InvoiceRecord;
+  lines: InvoiceLine[];
+  provenance: InvoiceRecord[];
+} | null>(null);
 const detailLoading = ref(false);
 const showForm = ref(false);
 const saving = ref(false);
@@ -31,7 +33,7 @@ async function loadList() {
   try {
     items.value = (await client.invoices.list({
       companyId: companyId.value,
-    })) as unknown as InvoiceRow[];
+    })) as unknown as InvoiceRecord[];
   } catch {
     toast.add({ title: t("invoices.errors.loadFailed"), color: "error" });
   } finally {
@@ -47,7 +49,7 @@ async function selectInvoice(id: string) {
     detail.value = (await client.invoices.get({
       companyId: companyId.value,
       invoiceId: id,
-    })) as unknown as { invoice: InvoiceRow; lines: InvoiceLine[]; provenance: InvoiceRow[] };
+    })) as unknown as { invoice: InvoiceRecord; lines: InvoiceLine[]; provenance: InvoiceRecord[] };
   } catch {
     detail.value = null;
   } finally {

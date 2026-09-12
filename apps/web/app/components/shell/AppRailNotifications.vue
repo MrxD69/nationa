@@ -82,7 +82,9 @@ onUnmounted(() => {
       color="neutral"
       variant="ghost"
       square
-      :aria-label="t('assistant.notifications.title')"
+      :aria-label="t('notifications.title')"
+      :title="t('notifications.title')"
+      class="relative"
     >
       <UIcon name="i-tabler-bell" class="size-5" />
       <span
@@ -103,9 +105,3 @@ onUnmounted(() => {
     </template>
   </UPopover>
 </template>
-
-<style scoped>
-button {
-  position: relative;
-}
-</style>

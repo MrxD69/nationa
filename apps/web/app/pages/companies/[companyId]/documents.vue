@@ -10,7 +10,7 @@ import DocumentList from "~/components/document/DocumentList.vue";
 import ExtractedFieldsTable from "~/components/document/ExtractedFieldsTable.vue";
 import ExtractionStatus from "~/components/document/ExtractionStatus.vue";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ layout: "app", middleware: "auth" });
 
 type DocumentDetailShape = DocumentBundleItem & {
   fields: ExtractedFieldItem[];

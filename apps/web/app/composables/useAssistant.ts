@@ -76,7 +76,7 @@ export function useAssistant(
 
   const transport = new DefaultChatTransport({
     api: `${(config.public.serverUrl as string | undefined) ?? ""}/assistant/chat`,
-    headers: async () => {
+    headers: async (): Promise<Record<string, string>> => {
       const token = await resolveAccessToken();
       return token ? { authorization: `Bearer ${token}` } : {};
     },

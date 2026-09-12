@@ -64,7 +64,7 @@
       "invite": "Inviter un membre",
       "inviteTitle": "Inviter un membre",
       "email": "Adresse e-mail",
-      "emailPlaceholder": "nom@exemple.com",
+      "emailPlaceholder": "nom{'@'}exemple.com",
       "role": "Rôle",
       "expiresIn": "Expire dans (jours)",
       "send": "Envoyer l'invitation",

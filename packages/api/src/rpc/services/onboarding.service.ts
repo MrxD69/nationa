@@ -1,6 +1,7 @@
 import { ORPCError } from "@orpc/server";
 
 import { requireUser } from "../../auth/access";
+import { isProvisionedAccountType } from "../../domain/account";
 import {
   ACCOUNT_TYPE_BY_CHOICE,
   deriveOnboardingStatus,
@@ -16,26 +17,36 @@ export async function getOnboarding(context: Context) {
   const user = requireUser(context);
   const profile = await ensureProfile(context);
   const hasCompany = await userHasActiveCompany(context, { userId: user.id });
+  const provisioned = isProvisionedAccountType(profile.accountType);
 
   return {
     status: deriveOnboardingStatus(profile),
     accountType: profile.accountType,
+    requiresOnboarding: !provisioned && !isOnboardingCompleted(profile),
     answers: profile.onboardingAnswers ?? {},
     hasCompany,
   };
 }
 
 export async function saveOnboardingAnswers(context: Context, input: { choice: OnboardingChoice }) {
+  const profile = await ensureProfile(context);
+
+  if (isProvisionedAccountType(profile.accountType)) {
+    throw new ORPCError("PRECONDITION_FAILED", {
+      message: "Back-office accounts do not use owner onboarding",
+    });
+  }
+
   const accountType = ACCOUNT_TYPE_BY_CHOICE[input.choice];
-  const profile = await mergeOnboardingAnswers(context, {
+  const updated = await mergeOnboardingAnswers(context, {
     patch: { choice: input.choice, accountType },
     extras: { accountType },
   });
 
   return {
-    status: deriveOnboardingStatus(profile),
+    status: deriveOnboardingStatus(updated),
     accountType,
-    answers: profile.onboardingAnswers ?? {},
+    answers: updated.onboardingAnswers ?? {},
   };
 }
 

@@ -6,10 +6,41 @@ import type { DatabaseConfig } from "./config";
 export * from "./schema";
 export type { DatabaseConfig } from "./config";
 
-export function createDb(env: DatabaseConfig) {
-  const client = postgres(env.DATABASE_URL || "", { max: 1 });
+type GlobalDbCache = {
+  __nationaDb?: Database;
+  __nationaDbUrl?: string;
+};
 
-  return drizzle({ client });
+function getGlobalCache(): GlobalDbCache {
+  return globalThis as GlobalDbCache;
 }
 
-export type Database = ReturnType<typeof createDb>;
+export function createDb(env: DatabaseConfig): Database {
+  const url = env.DATABASE_URL || "";
+  const g = getGlobalCache();
+
+  if (g.__nationaDb && g.__nationaDbUrl === url) {
+    return g.__nationaDb;
+  }
+
+  const client = postgres(url, {
+    max: 5,
+    idle_timeout: 20,
+    connect_timeout: 10,
+    max_lifetime: 60 * 30,
+    prepare: false,
+    onnotice: () => {},
+  });
+
+  const db = drizzle({ client });
+  g.__nationaDb = db;
+  g.__nationaDbUrl = url;
+
+  return db;
+}
+
+export function getCachedDb(): Database | undefined {
+  return getGlobalCache().__nationaDb;
+}
+
+export type Database = ReturnType<typeof drizzle>;

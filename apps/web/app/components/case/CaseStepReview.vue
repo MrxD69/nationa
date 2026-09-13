@@ -71,7 +71,7 @@ function humanize(value: unknown): string {
   if (typeof value === "object") {
     const record = value as Record<string, unknown>;
     if ("fr" in record || "ar" in record || "raw" in record) {
-      const address = formatAddress(record);
+      const address = formatAddressLines(record).join(" · ");
       if (address) {
         return address;
       }
@@ -84,7 +84,7 @@ function humanize(value: unknown): string {
   return "—";
 }
 
-function formatAddress(value: Record<string, unknown>): string {
+function formatAddressLines(value: Record<string, unknown>): string[] {
   const chunks: string[] = [];
   for (const part of ["fr", "ar"] as const) {
     const localeParts = value[part];
@@ -98,17 +98,70 @@ function formatAddress(value: Record<string, unknown>): string {
     }
   }
   if (typeof value.raw === "string" && value.raw.trim()) {
-    chunks.push(value.raw);
+    chunks.push(value.raw.trim());
   }
-  return chunks.join(" · ");
+  return chunks;
 }
 
-function displayValue(field: ReviewField): string {
+function displayLines(field: ReviewField): string[] {
   if (field.valueText) {
-    return field.valueText;
+    return [field.valueText];
   }
-  return humanize(field.valueJsonb);
+  const value = field.valueJsonb;
+  if (value === null || value === undefined || value === "") {
+    return ["—"];
+  }
+  if (typeof value === "string") {
+    return [value];
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return [String(value)];
+  }
+  if (Array.isArray(value)) {
+    const parts = value.map((item) => humanize(item)).filter((item) => item !== "—");
+    return parts.length ? parts : ["—"];
+  }
+  if (typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    if ("fr" in record || "ar" in record || "raw" in record) {
+      const lines = formatAddressLines(record);
+      if (lines.length) {
+        return lines;
+      }
+    }
+    const entries = Object.entries(record)
+      .filter(([, item]) => item !== null && item !== undefined && item !== "")
+      .map(([key, item]) => `${fieldLabel(key)} : ${humanize(item)}`);
+    return entries.length ? entries : ["—"];
+  }
+  return ["—"];
 }
+
+const GROUP_ORDER = ["blocker", "error", "warning", "info"] as const;
+
+const groupIcons: Record<string, string> = {
+  blocker: "i-tabler-octagon-minus",
+  error: "i-tabler-octagon-minus",
+  warning: "i-tabler-alert-triangle",
+  info: "i-tabler-info-circle",
+};
+
+const groupedFindings = computed<{ bucket: string; items: Finding[] }[]>(() => {
+  const buckets = new Map<string, Finding[]>();
+  for (const finding of findings.value) {
+    const bucket = GROUP_ORDER.includes(finding.severity as (typeof GROUP_ORDER)[number])
+      ? finding.severity
+      : "info";
+    if (!buckets.has(bucket)) {
+      buckets.set(bucket, []);
+    }
+    buckets.get(bucket)!.push(finding);
+  }
+  return GROUP_ORDER.filter((bucket) => (buckets.get(bucket)?.length ?? 0) > 0).map((bucket) => ({
+    bucket,
+    items: buckets.get(bucket)!,
+  }));
+});
 
 async function loadFindings(): Promise<void> {
   loading.value = true;
@@ -151,7 +204,15 @@ async function runChecks(): Promise<void> {
       >
         <div class="text-base text-muted">{{ fieldLabel(field.fieldKey) }}</div>
         <div class="grid gap-1">
-          <div class="text-base text-highlighted">{{ displayValue(field) }}</div>
+          <ul class="grid gap-1">
+            <li
+              v-for="(line, index) in displayLines(field)"
+              :key="index"
+              class="text-base leading-6 break-words text-highlighted"
+            >
+              {{ line }}
+            </li>
+          </ul>
           <CaseFieldProvenance :provenance="field.provenance" />
         </div>
       </div>
@@ -159,21 +220,35 @@ async function runChecks(): Promise<void> {
         v-if="props.fields.length === 0"
         color="neutral"
         variant="subtle"
+        icon="i-tabler-inbox"
         :title="t('cases.review.empty')"
+        :description="t('cases.review.emptyHint')"
       />
     </div>
 
-    <div class="grid gap-3">
-      <div class="flex items-center justify-between gap-2">
-        <h3 class="text-base font-medium text-highlighted">{{ t("cases.review.checksTitle") }}</h3>
-        <UButton
-          color="neutral"
-          variant="outline"
-          icon="i-tabler-shield-check"
-          :loading="running"
-          :label="t('cases.review.runChecks')"
-          @click="runChecks"
-        />
+    <div class="grid gap-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="grid gap-0.5">
+          <h3 class="text-base font-medium text-highlighted">
+            {{ t("cases.review.checksTitle") }}
+          </h3>
+          <p class="text-sm text-muted">{{ t("cases.review.checksSubtitle") }}</p>
+        </div>
+        <div class="ms-auto flex flex-wrap items-center gap-2">
+          <UBadge v-if="hasRun && findings.length > 0" color="neutral" variant="soft" size="lg">
+            {{ t("cases.review.findingsCount", { count: findings.length }) }}
+          </UBadge>
+          <UButton
+            color="primary"
+            variant="solid"
+            size="lg"
+            icon="i-tabler-shield-check"
+            class="press min-h-11"
+            :loading="running"
+            :label="hasRun ? t('cases.review.rerun') : t('cases.review.runChecks')"
+            @click="runChecks"
+          />
+        </div>
       </div>
 
       <UAlert v-if="error" color="error" variant="subtle" :title="error" />
@@ -193,21 +268,50 @@ async function runChecks(): Promise<void> {
         :title="t('cases.review.running')"
       />
 
-      <div
-        v-for="finding in findings"
-        :key="finding.id"
-        class="rounded-lg border border-default p-3"
-      >
-        <div class="flex items-center gap-2">
-          <UBadge :color="severityColor[finding.severity] ?? 'neutral'" variant="subtle" size="lg">
-            {{ t(`cases.review.severity.${finding.severity}`, finding.severity) }}
-          </UBadge>
-          <span class="text-base font-medium text-highlighted">{{ finding.title }}</span>
+      <div v-if="hasRun && !running" class="grid gap-4">
+        <div v-for="group in groupedFindings" :key="group.bucket" class="grid gap-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <UIcon
+              :name="groupIcons[group.bucket] ?? 'i-tabler-info-circle'"
+              class="size-4 shrink-0 text-muted"
+            />
+            <span class="text-sm font-semibold text-highlighted">{{
+              t(`cases.review.group.${group.bucket}`, group.bucket)
+            }}</span>
+            <UBadge color="neutral" variant="soft" size="md">{{ group.items.length }}</UBadge>
+          </div>
+
+          <div
+            v-for="finding in group.items"
+            :key="finding.id"
+            class="grid gap-2 rounded-xl border border-default bg-default p-4"
+          >
+            <div class="flex flex-wrap items-center gap-2">
+              <UBadge
+                :color="severityColor[finding.severity] ?? 'neutral'"
+                variant="subtle"
+                size="lg"
+              >
+                {{ t(`cases.review.severity.${finding.severity}`, finding.severity) }}
+              </UBadge>
+              <UBadge v-if="finding.status" color="neutral" variant="outline" size="md">
+                {{ t(`cases.review.status.${finding.status}`, finding.status) }}
+              </UBadge>
+              <span v-if="finding.code" class="ms-auto text-xs text-muted">{{ finding.code }}</span>
+            </div>
+            <p class="text-base font-medium text-highlighted">{{ finding.title }}</p>
+            <p class="text-base leading-6 text-muted">{{ finding.messagePlain }}</p>
+            <div
+              v-if="finding.suggestedFix"
+              class="flex items-start gap-2 rounded-lg bg-elevated/60 px-3 py-2"
+            >
+              <UIcon name="i-tabler-bulb" class="mt-0.5 size-4 shrink-0 text-muted" />
+              <p class="text-sm text-muted">
+                {{ t("cases.review.suggestedFix") }} : {{ finding.suggestedFix }}
+              </p>
+            </div>
+          </div>
         </div>
-        <p class="mt-1 text-base leading-6 text-muted">{{ finding.messagePlain }}</p>
-        <p v-if="finding.suggestedFix" class="mt-1 text-sm text-muted">
-          {{ t("cases.review.suggestedFix") }}: {{ finding.suggestedFix }}
-        </p>
       </div>
 
       <UAlert

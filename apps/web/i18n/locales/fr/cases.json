@@ -30,7 +30,10 @@
       "cancelBody": "Le dossier sera annulé et ne pourra plus être soumis.",
       "cancelConfirm": "Oui, annuler",
       "cancelKeep": "Non, continuer",
-      "required": "Complétez les champs obligatoires avant de continuer."
+      "required": "Complétez les champs obligatoires avant de continuer.",
+      "includedChecks": "Vérifications incluses ({count})",
+      "showAll": "Tout afficher ({count})",
+      "showFewer": "Afficher moins"
     },
     "sections": {
       "addresses": "Adresses"
@@ -104,8 +107,12 @@
     "review": {
       "valuesTitle": "Récapitulatif des informations",
       "empty": "Aucune information saisie pour le moment.",
+      "emptyHint": "Revenez aux étapes précédentes pour renseigner les champs, puis vérifiez ici.",
       "checksTitle": "Contrôles automatiques",
+      "checksSubtitle": "Vérifiez la cohérence du dossier avant de continuer.",
       "runChecks": "Lancer les contrôles",
+      "rerun": "Relancer les contrôles",
+      "findingsCount": "{count} constat(s)",
       "noFindings": "Aucune anomalie détectée.",
       "running": "Contrôles en cours…",
       "notRun": "Lancez les contrôles pour vérifier ce dossier.",
@@ -116,11 +123,26 @@
         "warning": "Avertissement",
         "error": "Erreur",
         "blocker": "Bloquant"
+      },
+      "group": {
+        "blocker": "Bloquants",
+        "error": "Erreurs",
+        "warning": "Avertissements",
+        "info": "Informations"
+      },
+      "status": {
+        "open": "Ouvert",
+        "resolved": "Résolu",
+        "waived": "Ignoré",
+        "acknowledged": "Vu"
       }
     },
     "submission": {
       "checklist": "Liste de préparation",
-      "submit": "Soumettre le dossier"
+      "submit": "Soumettre le dossier",
+      "readinessTitle": "Prêt pour l'envoi ?",
+      "readyHint": "Toutes les étapes sont terminées. Vous pouvez soumettre le dossier.",
+      "notReadyHint": "Terminez toutes les étapes ci-dessous pour débloquer l'envoi."
     },
     "docgen": {
       "previewTitle": "Statuts de la SARL",

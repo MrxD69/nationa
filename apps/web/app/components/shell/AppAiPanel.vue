@@ -37,9 +37,9 @@ const caseId = computed(() => {
       :default-size="26"
       :min-size="22"
       :max-size="36"
-      class="max-lg:h-full"
+      class="max-lg:h-full overflow-hidden"
       :ui="{
-        body: 'flex min-h-0 flex-1 flex-col gap-0 overflow-hidden p-0',
+        body: 'flex min-h-0 flex-1 flex-col gap-0 overflow-hidden overflow-y-hidden p-0 sm:gap-0 sm:p-0',
         handle: 'max-lg:hidden',
       }"
     >

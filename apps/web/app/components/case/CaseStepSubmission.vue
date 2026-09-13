@@ -31,6 +31,15 @@ function isReady(step: SubmissionStep): boolean {
 
 <template>
   <div class="grid gap-4">
+    <UAlert
+      :color="props.ready ? 'success' : 'warning'"
+      variant="subtle"
+      :icon="props.ready ? 'i-tabler-shield-check' : 'i-tabler-alert-triangle'"
+      :title="t('cases.submission.readinessTitle')"
+      :description="
+        props.ready ? t('cases.submission.readyHint') : t('cases.submission.notReadyHint')
+      "
+    />
     <div class="grid gap-2">
       <h3 class="text-base font-medium text-highlighted">{{ t("cases.submission.checklist") }}</h3>
       <div
@@ -54,8 +63,10 @@ function isReady(step: SubmissionStep): boolean {
 
     <UButton
       color="primary"
+      size="lg"
       icon="i-tabler-send"
       block
+      class="press min-h-11"
       :loading="props.submitting"
       :disabled="!props.ready"
       :label="t('cases.submission.submit')"

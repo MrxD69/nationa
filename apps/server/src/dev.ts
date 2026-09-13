@@ -49,3 +49,8 @@ try {
 }
 
 console.log(`[server] listening on http://localhost:${server.port}`);
+
+// ponytail: one log line, no deps. Masked host only — never print password.
+const dbUrl = process.env.DATABASE_URL ?? "";
+const masked = dbUrl ? dbUrl.replace(/:[^@]+@/, "://***@") : "(DATABASE_URL unset)";
+console.log(`[server] db ${masked} (pool max:5 direct local; prod use 6543?pgbouncer=true)`);

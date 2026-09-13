@@ -10,6 +10,10 @@ export default defineNuxtPlugin((nuxt) => {
     defaultOptions: {
       queries: {
         staleTime: 5_000,
+        gcTime: 30_000,
+        retry: 1,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
       },
     },
     queryCache: new QueryCache({

@@ -11,6 +11,7 @@
     "emptyTitle": "Comment puis-je vous aider ?",
     "emptySubtitle": "Posez une question sur vos obligations, échéances ou procédures. L'assistant cite ses sources et ne décide jamais à votre place.",
     "placeholder": "Posez votre question…",
+    "composerHint": "Entrée pour envoyer · Maj + Entrée pour un saut de ligne",
     "send": "Envoyer",
     "stop": "Arrêter",
     "regenerate": "Régénérer",

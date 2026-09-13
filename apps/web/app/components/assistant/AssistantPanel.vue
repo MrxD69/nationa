@@ -341,62 +341,64 @@ onMounted(() => {
 
 <template>
   <div class="relative flex h-full min-h-0 flex-1 flex-col">
-    <div class="flex shrink-0 items-center gap-1.5 border-b border-default px-3 py-2">
-      <UPopover :content="{ align: 'start' }">
+    <div class="shrink-0 border-b border-default">
+      <div class="flex items-center gap-1.5 px-3 py-2">
+        <UPopover :content="{ align: 'start' }">
+          <UButton
+            color="neutral"
+            variant="ghost"
+            class="min-w-0 flex-1 justify-start"
+            :aria-label="t('assistant.conversations')"
+          >
+            <UIcon name="i-tabler-messages" class="size-4 shrink-0" />
+            <span class="min-w-0 truncate">
+              {{ activeConversation?.title || t("assistant.conversations") }}
+            </span>
+            <UIcon name="i-tabler-chevron-down" class="ms-auto size-4 shrink-0" />
+          </UButton>
+
+          <template #content="{ close: closeConversations }">
+            <div class="flex max-h-80 w-72 max-w-[80vw] flex-col p-2">
+              <ConversationList
+                :conversations="conversations"
+                :active-id="conversationId"
+                :loading="conversationsLoading"
+                @select="
+                  (id) => {
+                    void onSelectConversation(id);
+                    closeConversations?.();
+                  }
+                "
+                @new="
+                  () => {
+                    onNewConversation();
+                    closeConversations?.();
+                  }
+                "
+                @delete="onDeleteConversation"
+              />
+            </div>
+          </template>
+        </UPopover>
+
+        <UButton
+          color="primary"
+          variant="soft"
+          square
+          icon="i-tabler-plus"
+          :aria-label="t('assistant.newConversation')"
+          @click="onNewConversation"
+        />
+
         <UButton
           color="neutral"
           variant="ghost"
-          class="min-w-0 flex-1 justify-start"
-          :aria-label="t('assistant.conversations')"
-        >
-          <UIcon name="i-tabler-messages" class="size-4 shrink-0" />
-          <span class="min-w-0 truncate">
-            {{ activeConversation?.title || t("assistant.conversations") }}
-          </span>
-          <UIcon name="i-tabler-chevron-down" class="ms-auto size-4 shrink-0" />
-        </UButton>
-
-        <template #content="{ close: closeConversations }">
-          <div class="flex max-h-80 w-72 max-w-[80vw] flex-col p-2">
-            <ConversationList
-              :conversations="conversations"
-              :active-id="conversationId"
-              :loading="conversationsLoading"
-              @select="
-                (id) => {
-                  void onSelectConversation(id);
-                  closeConversations?.();
-                }
-              "
-              @new="
-                () => {
-                  onNewConversation();
-                  closeConversations?.();
-                }
-              "
-              @delete="onDeleteConversation"
-            />
-          </div>
-        </template>
-      </UPopover>
-
-      <UButton
-        color="primary"
-        variant="soft"
-        square
-        icon="i-tabler-plus"
-        :aria-label="t('assistant.newConversation')"
-        @click="onNewConversation"
-      />
-
-      <UButton
-        color="neutral"
-        variant="ghost"
-        square
-        icon="i-tabler-x"
-        :aria-label="t('shell.ai.close')"
-        @click="emit('close')"
-      />
+          square
+          icon="i-tabler-x"
+          :aria-label="t('shell.ai.close')"
+          @click="emit('close')"
+        />
+      </div>
     </div>
 
     <div
@@ -462,29 +464,30 @@ onMounted(() => {
       @click="scrollToBottom"
     />
 
-    <div class="shrink-0 border-t border-default p-2.5">
-      <UAlert
-        v-if="error"
-        color="error"
-        variant="soft"
-        icon="i-tabler-alert-circle"
-        class="mb-2 rounded-lg"
-        :title="t('assistant.errors.sendFailed')"
-        :description="error.message"
-      >
-        <template #actions>
-          <UButton
-            color="error"
-            variant="soft"
-            icon="i-tabler-refresh"
-            :label="t('assistant.retry')"
-            @click="() => regenerate()"
-          />
-        </template>
-      </UAlert>
+    <div class="shrink-0 border-t border-default">
+      <div v-if="error" class="px-3 pt-2">
+        <UAlert
+          color="error"
+          variant="soft"
+          icon="i-tabler-alert-circle"
+          class="mb-2 rounded-lg"
+          :title="t('assistant.errors.sendFailed')"
+          :description="error.message"
+        >
+          <template #actions>
+            <UButton
+              color="error"
+              variant="soft"
+              icon="i-tabler-refresh"
+              :label="t('assistant.retry')"
+              @click="() => regenerate()"
+            />
+          </template>
+        </UAlert>
+      </div>
 
       <form
-        class="flex items-end gap-2 rounded-xl border border-default bg-elevated/40 p-2 transition-control focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30"
+        class="flex items-end gap-2 border-0 bg-transparent px-3 pe-3 ps-4 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))]"
         @submit.prevent="handleSubmit"
       >
         <UTextarea
@@ -497,7 +500,9 @@ onMounted(() => {
           :disabled="isStreaming"
           :placeholder="t('assistant.placeholder')"
           class="min-w-0 flex-1"
-          :ui="{ base: 'px-1.5 py-1 min-h-11' }"
+          :ui="{
+            base: 'bg-transparent border-0 shadow-none px-0 py-2.5 min-h-11 text-base leading-6 focus:ring-0',
+          }"
           @keydown="onComposerKeydown"
           @compositionstart="onCompositionStart"
           @compositionend="onCompositionEnd"
@@ -510,7 +515,7 @@ onMounted(() => {
           size="md"
           square
           icon="i-tabler-player-stop"
-          class="press shrink-0 self-end size-11"
+          class="press mb-0.5 size-11 shrink-0 self-end rounded-full"
           :aria-label="t('assistant.stop')"
           @click="stop"
         />
@@ -521,11 +526,14 @@ onMounted(() => {
           size="md"
           square
           icon="i-tabler-arrow-up"
-          class="press shrink-0 self-end size-11"
-          :disabled="!input.trim()"
+          class="press mb-0.5 size-11 shrink-0 self-end rounded-full"
+          :disabled="!input.trim() || isStreaming"
           :aria-label="t('assistant.send')"
         />
       </form>
+      <p class="truncate px-3 pb-2 text-xs text-muted">
+        {{ t("assistant.composerHint") }}
+      </p>
     </div>
   </div>
 </template>

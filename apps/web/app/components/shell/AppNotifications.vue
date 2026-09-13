@@ -23,11 +23,19 @@ const loading = ref(false);
 const loaded = ref(false);
 const open = ref(false);
 
+let inFlight = false;
+
 async function refreshUnread() {
+  // ponytail: inFlight dedupe, no retry loop
+  if (inFlight) return;
+  if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
+  inFlight = true;
   try {
     unread.value = Number(await client.notifications.unreadCount({}));
   } catch {
     unread.value = 0;
+  } finally {
+    inFlight = false;
   }
 }
 

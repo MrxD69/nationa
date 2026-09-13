@@ -52,6 +52,33 @@ const infoStep = computed(() =>
     : null,
 );
 
+const CHECKLIST_LIMIT = 8;
+const checksExpanded = ref(false);
+
+const descriptionChecks = computed<string[] | null>(() => {
+  const raw = currentStep.value?.template?.description ?? "";
+  if (!raw) {
+    return null;
+  }
+  const parts = raw
+    .split(/[·•]/)
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+  return parts.length > 1 ? parts : null;
+});
+
+const visibleChecks = computed(() =>
+  !descriptionChecks.value
+    ? []
+    : checksExpanded.value
+      ? descriptionChecks.value
+      : descriptionChecks.value.slice(0, CHECKLIST_LIMIT),
+);
+
+watch(currentStep, () => {
+  checksExpanded.value = false;
+});
+
 const docgenTemplateCode = computed(() => {
   const documentTypeCode = currentStep.value?.requiredDocumentType?.code;
   if (!documentTypeCode) {
@@ -332,9 +359,51 @@ async function cancel(): Promise<void> {
               t("cases.runner.step", { position: currentStep.position })
             }}
           </h2>
-          <p v-if="currentStep.template?.description" class="text-base leading-6 text-muted">
+          <p
+            v-if="currentStep.template?.description && !descriptionChecks"
+            class="text-base leading-6 text-muted"
+          >
             {{ currentStep.template.description }}
           </p>
+          <div v-else-if="descriptionChecks" class="space-y-3">
+            <p class="text-sm font-medium text-highlighted">
+              {{ t("cases.runner.includedChecks", { count: descriptionChecks.length }) }}
+            </p>
+            <ul id="step-checks" class="grid grid-cols-1 gap-x-6 md:grid-cols-2">
+              <li
+                v-for="(check, index) in visibleChecks"
+                :key="index"
+                class="flex items-start gap-2.5 border-t border-default py-2.5 pe-2"
+              >
+                <UIcon
+                  name="i-tabler-minus"
+                  class="mt-1 size-4 shrink-0 text-muted"
+                  aria-hidden="true"
+                />
+                <span class="min-w-0 flex-1 break-words text-base leading-6 text-default">
+                  {{ check }}
+                </span>
+              </li>
+            </ul>
+            <UButton
+              v-if="descriptionChecks.length > CHECKLIST_LIMIT"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              class="min-h-11 transition-[color,background-color,border-color] duration-150"
+              :icon="checksExpanded ? 'i-tabler-chevron-up' : 'i-tabler-chevron-down'"
+              :label="
+                checksExpanded
+                  ? t('cases.runner.showFewer')
+                  : t('cases.runner.showAll', {
+                      count: descriptionChecks.length - CHECKLIST_LIMIT,
+                    })
+              "
+              :aria-expanded="checksExpanded"
+              aria-controls="step-checks"
+              @click="checksExpanded = !checksExpanded"
+            />
+          </div>
         </div>
 
         <CaseStepInfo

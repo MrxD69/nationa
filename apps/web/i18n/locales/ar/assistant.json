@@ -11,6 +11,7 @@
     "emptyTitle": "كيف يمكنني مساعدتك؟",
     "emptySubtitle": "اطرح سؤالاً حول التزاماتك أو مواعيدك أو إجراءاتك. يستشهد المساعد بمصادره ولا يتخذ القرار نيابة عنك.",
     "placeholder": "اكتب سؤالك حول obligations أو échéances…",
+    "composerHint": "Enter للإرسال · Shift + Enter لسطر جديد",
     "send": "إرسال",
     "stop": "إيقاف",
     "regenerate": "إعادة التوليد",

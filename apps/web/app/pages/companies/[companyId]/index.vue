@@ -196,49 +196,6 @@ function formatValue(key: string, value: unknown): string {
   return String(value);
 }
 
-function stringValue(value: unknown): string | null {
-  return typeof value === "string" && value.length > 0 ? value : null;
-}
-
-function factValue(key: CompanyFieldKey): string {
-  const record = company.value;
-  if (key === "capitalAmount") {
-    const raw = record?.capitalAmount;
-    const amount = raw == null || raw === "" ? null : String(raw);
-    const currency = stringValue(record?.currency);
-    if (!amount) {
-      return t("companies.detail.noValue");
-    }
-    return currency ? `${amount} ${currency}` : amount;
-  }
-  if (key === "mainActivityLabel") {
-    const ar = stringValue(record?.mainActivityLabelAr);
-    const fr = stringValue(record?.mainActivityLabel);
-    const value = locale.value.startsWith("ar") ? ar || fr : fr;
-    return value ?? t("companies.detail.noValue");
-  }
-  return formatValue(key, record?.[key]);
-}
-
-type FactTile = { key: CompanyFieldKey; labelKey: string; ltr?: boolean };
-
-const FACT_TILES: FactTile[] = [
-  { key: "capitalAmount", labelKey: "companies.form.capitalAmount", ltr: true },
-  { key: "legalForm", labelKey: "companies.form.legalForm" },
-  { key: "registryState", labelKey: "companies.form.registryState" },
-  { key: "mainActivityLabel", labelKey: "companies.form.mainActivityLabel" },
-];
-
-const factTiles = computed(() =>
-  FACT_TILES.map((tile) => {
-    const populated =
-      tile.key === "mainActivityLabel"
-        ? hasValue("mainActivityLabel") || hasValue("mainActivityLabelAr")
-        : hasValue(tile.key);
-    return { ...tile, value: factValue(tile.key), populated };
-  }).filter((tile) => showAll.value || tile.populated),
-);
-
 const renderedGroups = computed(() =>
   DETAIL_GROUPS.map((group) => ({
     ...group,
@@ -248,7 +205,7 @@ const renderedGroups = computed(() =>
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-5xl space-y-6">
+  <div class="mx-auto w-full max-w-5xl space-y-8">
     <div v-if="isPending" class="flex flex-col items-center justify-center gap-3 py-10">
       <UIcon name="i-tabler-loader-2" class="size-6 animate-spin text-muted" />
       <p class="text-base text-muted">{{ t("companies.loading") }}</p>
@@ -278,56 +235,27 @@ const renderedGroups = computed(() =>
           />
         </template>
 
-        <template #meta>
-          <div class="space-y-4">
-            <div class="flex flex-wrap items-center gap-2">
-              <UBadge
-                v-if="company.status"
-                color="neutral"
-                variant="subtle"
-                size="lg"
-                :label="t(`companies.status.${company.status}`)"
-              />
-              <UBadge
-                v-if="role"
-                color="neutral"
-                variant="outline"
-                size="lg"
-                :label="t(`companies.roles.${role}`)"
-              />
-              <span
-                v-if="company.uniqueIdentifier"
-                class="text-sm text-muted tabular-nums"
-                dir="ltr"
-              >
-                {{ company.uniqueIdentifier }}
-              </span>
-            </div>
-
-            <div v-if="factTiles.length" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <div
-                v-for="tile in factTiles"
-                :key="tile.key"
-                class="rounded-lg border border-default p-4"
-              >
-                <p class="text-sm text-dimmed">{{ t(tile.labelKey) }}</p>
-                <p
-                  class="mt-1 text-base"
-                  :class="[
-                    tile.populated ? 'font-semibold text-highlighted' : 'font-normal text-dimmed',
-                    { 'tabular-nums': tile.ltr },
-                  ]"
-                  :dir="tile.ltr ? 'ltr' : undefined"
-                >
-                  {{ tile.value }}
-                </p>
-              </div>
-            </div>
+        <template v-if="company.status || role" #meta>
+          <div class="flex flex-wrap items-center gap-2">
+            <UBadge
+              v-if="company.status"
+              color="neutral"
+              variant="subtle"
+              size="lg"
+              :label="t(`companies.status.${company.status}`)"
+            />
+            <UBadge
+              v-if="role"
+              color="neutral"
+              variant="outline"
+              size="lg"
+              :label="t(`companies.roles.${role}`)"
+            />
           </div>
         </template>
       </PageHeader>
 
-      <div class="flex justify-end">
+      <div class="flex justify-end border-t border-default pt-4">
         <UButton
           :icon="showAll ? 'i-tabler-eye-off' : 'i-tabler-eye'"
           color="neutral"
@@ -351,9 +279,13 @@ const renderedGroups = computed(() =>
       >
         <h2 class="text-lg font-semibold text-highlighted">{{ t(group.titleKey) }}</h2>
 
-        <dl class="grid gap-4 sm:grid-cols-2">
-          <div v-for="key in group.fields" :key="key" class="space-y-1">
-            <dt class="flex items-center gap-2 text-sm font-medium text-dimmed">
+        <dl class="divide-y divide-default border-t border-default">
+          <div
+            v-for="key in group.fields"
+            :key="key"
+            class="flex flex-col gap-1 py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
+          >
+            <dt class="flex shrink-0 items-center gap-2 text-sm font-medium text-dimmed">
               <span>{{ t(`companies.form.${key}`) }}</span>
               <ProvenanceBadge
                 v-if="provenanceByField[key] && hasValue(key)"
@@ -367,7 +299,7 @@ const renderedGroups = computed(() =>
               />
             </dt>
             <dd
-              class="text-base"
+              class="text-base sm:max-w-[60%] sm:text-end"
               :class="hasValue(key) ? 'font-semibold text-highlighted' : 'font-normal text-dimmed'"
             >
               {{ formatValue(key, company[key]) }}

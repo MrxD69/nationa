@@ -35,23 +35,29 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <UInput
-    :model-value="props.modelValue"
-    :placeholder="props.placeholder ?? t('actions.search.placeholder')"
-    :aria-label="t('actions.filters.searchLabel')"
-    icon="i-tabler-search"
-    class="w-full"
-    :ui="{ base: 'w-full' }"
-    @update:model-value="onInput"
-  >
-    <template v-if="props.modelValue" #trailing>
-      <UButton
-        color="neutral"
-        variant="ghost"
-        icon="i-tabler-x"
-        :aria-label="t('actions.filters.clear')"
-        @click="clear"
-      />
-    </template>
-  </UInput>
+  <search class="block" v-reveal="{ y: 10, duration: 0.4 }">
+    <UInput
+      :model-value="props.modelValue"
+      type="search"
+      size="xl"
+      autocomplete="off"
+      :placeholder="props.placeholder ?? t('actions.search.placeholder')"
+      :aria-label="t('actions.filters.searchLabel')"
+      icon="i-tabler-search"
+      class="w-full"
+      :ui="{ base: 'w-full' }"
+      @update:model-value="onInput"
+    >
+      <template v-if="props.modelValue" #trailing>
+        <UButton
+          color="neutral"
+          variant="ghost"
+          size="sm"
+          icon="i-tabler-x"
+          :aria-label="t('actions.search.clear')"
+          @click="clear"
+        />
+      </template>
+    </UInput>
+  </search>
 </template>

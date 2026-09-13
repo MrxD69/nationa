@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import ActionAgencyNav from "~/components/action/ActionAgencyNav.vue";
-import ActionOutstandingList from "~/components/action/ActionOutstandingList.vue";
 import ActionRow from "~/components/action/ActionRow.vue";
 import ActionSearchIntent from "~/components/action/ActionSearchIntent.vue";
-import RecommendedActionCard from "~/components/action/RecommendedActionCard.vue";
 import type { ActionCatalogItem } from "~/composables/useActions";
 import EmptyState from "~/components/ui/EmptyState.vue";
 import LoadingState from "~/components/ui/LoadingState.vue";
+import PageHeader from "~/components/ui/PageHeader.vue";
 import SectionHeader from "~/components/ui/SectionHeader.vue";
 
 /**
@@ -20,12 +19,13 @@ type CatalogItem = ActionCatalogItem & {
 
 type AgencyGroup = {
   id: string;
+  label: string;
   items: CatalogItem[];
 };
 
 const props = defineProps<{ companyId?: string }>();
 
-const { t } = useI18n();
+const { locale, t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const actions = useActions();
@@ -73,6 +73,16 @@ const outstandingItems = computed(() => outstanding.data.value ?? []);
 const showingSearch = computed(() => query.value.trim().length > 0);
 const searchItems = computed<CatalogItem[]>(() => (search.data.value ?? []) as CatalogItem[]);
 
+/*
+ * Group headings get the administration's full name — "Registre National des
+ * Entreprises" reads far better as a heading than the acronym the filter chips
+ * use — and fall back to the translated abbreviation when the payload has none.
+ */
+function agencyName(item: CatalogItem): string {
+  const name = locale.value === "ar" ? (item.agencyNameAr ?? item.agencyNameFr) : item.agencyNameFr;
+  return name ?? t(`actions.agencies.${item.agencyId}`, item.agencyId);
+}
+
 const agencies = computed(() => {
   const seen = new Map<string, { id: string; nameFr: string | null; nameAr: string | null }>();
   for (const item of items.value) {
@@ -101,6 +111,13 @@ const recommendedItems = computed(() =>
   displayItems.value.filter((item) => item.recommended === true),
 );
 
+/*
+ * Grouping only earns its keep while the whole catalogue is on screen. Once a
+ * single administration is selected, every heading would repeat the filter, so
+ * the list stays flat.
+ */
+const grouped = computed(() => !selectedAgency.value);
+
 const agencyGroups = computed<AgencyGroup[]>(() => {
   const groups = new Map<string, AgencyGroup>();
   for (const item of displayItems.value) {
@@ -108,18 +125,18 @@ const agencyGroups = computed<AgencyGroup[]>(() => {
     if (group) {
       group.items.push(item);
     } else {
-      groups.set(item.agencyId, { id: item.agencyId, items: [item] });
+      groups.set(item.agencyId, { id: item.agencyId, label: agencyName(item), items: [item] });
     }
   }
   return [...groups.values()];
 });
 
-function agencyLabel(agencyId: string): string {
-  return t(`actions.agencies.${agencyId}`, agencyId);
-}
-
 const hasFilters = computed(
   () => query.value.trim().length > 0 || selectedAgency.value !== undefined,
+);
+
+const catalogCount = computed(() =>
+  t("actions.hub.count", { count: displayItems.value.length }, displayItems.value.length),
 );
 
 const isLoading = computed(() =>
@@ -147,21 +164,24 @@ function clearFilters(): void {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <header class="space-y-2" v-reveal="{ y: 12, duration: 0.45 }">
-      <h1 class="page-title">{{ t("actions.title") }}</h1>
-      <p class="max-w-prose text-base text-muted">{{ t("actions.subtitle") }}</p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader
+      :title="t('actions.title')"
+      :subtitle="t('actions.subtitle')"
+      icon="i-tabler-file-description"
+      max-width="max-w-6xl"
+    />
 
     <ActionSearchIntent v-model="query" />
 
-    <LoadingState v-if="isLoading" variant="skeleton-rows" :count="8" />
+    <LoadingState v-if="isLoading" variant="skeleton-list" :count="6" />
 
     <UAlert
       v-else-if="isError"
       class="rounded-lg"
       color="error"
       variant="subtle"
+      icon="i-tabler-alert-triangle"
       :title="t('actions.hub.error')"
       :description="error?.message"
     >
@@ -170,26 +190,71 @@ function clearFilters(): void {
       </template>
     </UAlert>
 
-    <template v-else-if="showingSearch">
-      <section class="space-y-3">
-        <SectionHeader
-          :title="t('actions.search.results')"
-          icon="i-tabler-search"
-          :count="displayItems.length"
-        />
+    <!-- Search replaces the whole catalogue: one list, one question answered. -->
+    <section v-else-if="showingSearch" class="space-y-3">
+      <SectionHeader
+        :title="t('actions.search.results')"
+        icon="i-tabler-search"
+        :count="catalogCount"
+      >
+        <template #actions>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            icon="i-tabler-x"
+            :label="t('actions.search.clear')"
+            @click="clearFilters"
+          />
+        </template>
+      </SectionHeader>
 
-        <EmptyState
-          v-if="displayItems.length === 0"
-          icon="i-tabler-search-off"
-          :title="t('actions.search.empty')"
+      <EmptyState
+        v-if="displayItems.length === 0"
+        icon="i-tabler-search-off"
+        :title="t('actions.search.empty')"
+        :description="t('actions.search.emptyHint')"
+      >
+        <UButton
+          color="neutral"
+          variant="outline"
+          icon="i-tabler-arrow-back-up"
+          :label="t('actions.search.clear')"
+          @click="clearFilters"
+        />
+      </EmptyState>
+
+      <div
+        v-else
+        v-reveal.stagger="{ y: 8, duration: 0.35 }"
+        class="divide-y divide-default overflow-hidden rounded-lg border border-default"
+      >
+        <ActionRow
+          v-for="item in displayItems"
+          :key="item.id"
+          data-reveal-item
+          :item="item"
+          :company-id="props.companyId"
+          show-agency
+        />
+      </div>
+    </section>
+
+    <template v-else>
+      <!-- Unfinished work first: it is the only thing on this page that is
+           already waiting on the person reading it. -->
+      <section v-if="outstandingItems.length" class="space-y-3">
+        <SectionHeader
+          :title="t('actions.hub.outstanding')"
+          :description="t('actions.hub.outstandingHint')"
+          icon="i-tabler-player-play"
+          :count="outstandingItems.length"
         />
         <div
-          v-else
           v-reveal.stagger="{ y: 8, duration: 0.35 }"
           class="divide-y divide-default overflow-hidden rounded-lg border border-default"
         >
           <ActionRow
-            v-for="item in displayItems"
+            v-for="item in outstandingItems"
             :key="item.id"
             data-reveal-item
             :item="item"
@@ -198,12 +263,11 @@ function clearFilters(): void {
           />
         </div>
       </section>
-    </template>
 
-    <template v-else>
       <section v-if="recommendedItems.length" class="space-y-3">
         <SectionHeader
           :title="t('actions.hub.recommended')"
+          :description="t('actions.hub.recommendedHint')"
           icon="i-tabler-sparkles"
           :count="recommendedItems.length"
         />
@@ -211,31 +275,25 @@ function clearFilters(): void {
           v-reveal.stagger="{ y: 8, duration: 0.35 }"
           class="divide-y divide-default overflow-hidden rounded-lg border border-default"
         >
-          <RecommendedActionCard
+          <ActionRow
             v-for="item in recommendedItems"
             :key="item.id"
             data-reveal-item
             :item="item"
             :reason="item.recommendationReason"
             :company-id="props.companyId"
+            show-agency
+            highlight
           />
         </div>
       </section>
 
-      <section v-if="outstandingItems.length" class="space-y-3">
-        <SectionHeader
-          :title="t('actions.hub.outstanding')"
-          icon="i-tabler-alert-circle"
-          :count="outstandingItems.length"
-        />
-        <ActionOutstandingList :items="outstandingItems" :company-id="props.companyId" />
-      </section>
-
-      <section class="space-y-3">
+      <section class="space-y-4">
         <SectionHeader
           :title="t('actions.hub.allActions')"
+          :description="t('actions.hub.allActionsHint')"
           icon="i-tabler-list-details"
-          :count="t('actions.hub.count', { count: displayItems.length })"
+          :count="catalogCount"
         >
           <template v-if="hasFilters" #actions>
             <UButton
@@ -258,17 +316,25 @@ function clearFilters(): void {
           v-if="displayItems.length === 0"
           icon="i-tabler-inbox"
           :title="t('actions.hub.empty')"
-        />
-        <div v-else class="space-y-5">
+          :description="t('actions.hub.emptyHint')"
+        >
+          <UButton
+            color="neutral"
+            variant="outline"
+            icon="i-tabler-filter-off"
+            :label="t('actions.filters.clear')"
+            @click="clearFilters"
+          />
+        </EmptyState>
+
+        <div v-else-if="grouped" class="space-y-6">
           <div v-for="group in agencyGroups" :key="group.id" class="space-y-2">
-            <div class="flex items-center gap-2 px-1">
-              <h3 class="text-sm font-semibold text-toned">
-                {{ agencyLabel(group.id) }}
-              </h3>
-              <UBadge color="neutral" variant="soft" size="sm">
-                {{ group.items.length }}
-              </UBadge>
-            </div>
+            <h3
+              class="flex items-baseline gap-2 px-1 text-sm font-semibold tracking-wide text-dimmed uppercase"
+            >
+              {{ group.label }}
+              <span class="tabular font-medium normal-case">{{ group.items.length }}</span>
+            </h3>
             <div
               v-reveal.stagger="{ y: 8, duration: 0.35 }"
               class="divide-y divide-default overflow-hidden rounded-lg border border-default"
@@ -282,6 +348,20 @@ function clearFilters(): void {
               />
             </div>
           </div>
+        </div>
+
+        <div
+          v-else
+          v-reveal.stagger="{ y: 8, duration: 0.35 }"
+          class="divide-y divide-default overflow-hidden rounded-lg border border-default"
+        >
+          <ActionRow
+            v-for="item in displayItems"
+            :key="item.id"
+            data-reveal-item
+            :item="item"
+            :company-id="props.companyId"
+          />
         </div>
       </section>
     </template>

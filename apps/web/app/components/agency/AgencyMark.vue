@@ -8,7 +8,7 @@
 const props = withDefaults(
   defineProps<{
     agencyId: string;
-    size?: "sm" | "md" | "lg";
+    size?: "xs" | "sm" | "md" | "lg";
     alt?: string;
   }>(),
   { size: "lg" },
@@ -20,13 +20,15 @@ const LOGOS: Record<string, string> = {
   apii: "/agencies/apii.png",
 };
 
-const BOX_CLASS: Record<"sm" | "md" | "lg", string> = {
+const BOX_CLASS: Record<"xs" | "sm" | "md" | "lg", string> = {
+  xs: "size-6",
   sm: "size-10",
   md: "size-14",
   lg: "size-18",
 };
 
-const TEXT_CLASS: Record<"sm" | "md" | "lg", string> = {
+const TEXT_CLASS: Record<"xs" | "sm" | "md" | "lg", string> = {
+  xs: "text-[0.625rem]",
   sm: "text-xs",
   md: "text-sm",
   lg: "text-base",
@@ -50,7 +52,7 @@ watch(logo, () => {
     :class="[
       BOX_CLASS[props.size],
       'inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md border border-default',
-      showLogo ? 'bg-white p-1.5' : 'bg-elevated',
+      showLogo ? (props.size === 'xs' ? 'bg-white p-0.5' : 'bg-white p-1.5') : 'bg-elevated',
     ]"
   >
     <img

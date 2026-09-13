@@ -15,7 +15,7 @@ const name = computed(() =>
     :href="props.form.pdf"
     target="_blank"
     rel="noopener"
-    class="hover-lift flex items-center gap-4 rounded-lg border border-default p-3 hover:border-primary"
+    class="hover-lift flex items-center gap-4 rounded-lg border border-default p-3 transition-control hover:border-primary"
   >
     <img
       :src="props.form.thumb"
@@ -27,11 +27,11 @@ const name = computed(() =>
       class="img-outline h-34 w-24 shrink-0 rounded-md bg-white object-cover object-top"
     />
 
-    <span class="min-w-0 flex-1 space-y-1">
-      <span class="block text-base font-semibold text-highlighted">{{ name }}</span>
-      <span class="block text-base text-muted">{{ t("actions.step.formHint") }}</span>
-      <span class="inline-flex items-center gap-1.5 text-base font-medium text-primary">
-        <UIcon name="i-tabler-external-link" class="size-5" />
+    <span class="min-w-0 flex-1 space-y-1.5">
+      <span class="block text-base leading-6 font-semibold text-highlighted">{{ name }}</span>
+      <span class="block text-sm leading-6 text-muted">{{ t("actions.step.formHint") }}</span>
+      <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
+        <UIcon name="i-tabler-external-link" class="size-4" />
         {{ t("actions.step.openForm") }}
       </span>
     </span>

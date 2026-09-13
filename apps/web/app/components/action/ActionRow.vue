@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import AgencyMark from "~/components/agency/AgencyMark.vue";
 import type { ActionCatalogItem } from "~/composables/useActions";
+import ActionMeta from "~/components/action/ActionMeta.vue";
 import ActionStatusBadge from "~/components/action/ActionStatusBadge.vue";
-import ActionWhenToUse from "~/components/action/ActionWhenToUse.vue";
 
 const props = defineProps<{
   item: ActionCatalogItem;
   companyId?: string;
   showAgency?: boolean;
+  highlight?: boolean;
+  reason?: string | null;
 }>();
 
 const { locale, t } = useI18n();
+const actionPurpose = useActionPurpose();
 
 const name = computed(() =>
   locale.value === "ar" ? (props.item.nameAr ?? props.item.nameFr) : props.item.nameFr,
@@ -22,83 +25,111 @@ const agencyName = computed(() =>
     : (props.item.agencyNameFr ?? props.item.agencyId),
 );
 
+/*
+ * The administrative name rarely tells a first-time filer what the démarche is
+ * for, so the row leads with the plain-language sentence instead of hiding it
+ * behind a tooltip nobody hovers.
+ */
+const purpose = computed(
+  () => props.reason ?? actionPurpose(props.item.code, props.item.description),
+);
+
 const to = computed(() => ({
   path: `/actions/${props.item.id}`,
   query: props.companyId ? { companyId: props.companyId } : {},
 }));
 
+const progress = computed(() => Math.min(100, Math.max(0, Math.round(props.item.progress))));
+
+const started = computed(() => props.item.status !== "not_started" || progress.value > 0);
+
 const cta = computed(() => {
-  if (props.item.status === "not_started") return t("actions.hub.start");
-  if (props.item.progress > 0 && props.item.progress < 100) return t("actions.hub.resume");
+  if (!started.value) return t("actions.hub.start");
+  if (progress.value < 100) return t("actions.hub.resume");
   return t("actions.hub.open");
 });
-
-const progress = computed(() => Math.min(100, Math.max(0, Math.round(props.item.progress))));
-const showProgress = computed(() => props.item.status !== "not_started" || props.item.progress > 0);
 </script>
 
 <template>
-  <div class="hover-surface group relative">
+  <div class="hover-surface group relative transition-control">
+    <!-- One target for the whole row: the visible chrome stays inert so the
+         hit area never breaks into competing links. -->
     <NuxtLink
       :to="to"
-      class="absolute inset-0 z-0 rounded-md focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset focus-visible:outline-none"
+      class="absolute inset-0 z-0 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset focus-visible:outline-none"
       :aria-label="`${cta} — ${name}`"
     />
 
-    <div class="pointer-events-none relative z-10 flex items-center gap-3 px-4 py-3">
-      <AgencyMark :agency-id="props.item.agencyId" size="sm" :alt="agencyName" />
+    <div class="pointer-events-none relative z-10 flex items-start gap-4 px-4 py-4 sm:px-5">
+      <!-- When the row spells out the administration, the logo is decorative. -->
+      <AgencyMark
+        :agency-id="props.item.agencyId"
+        size="sm"
+        :alt="props.showAgency ? '' : agencyName"
+        class="mt-0.5"
+      />
 
-      <div class="min-w-0 flex-1">
-        <div class="flex items-center gap-1.5">
-          <span class="truncate text-base font-semibold text-highlighted" :title="name">
+      <div class="min-w-0 flex-1 space-y-1.5">
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <h3 class="min-w-0 text-base leading-6 font-semibold text-highlighted">
             {{ name }}
+          </h3>
+          <UBadge
+            v-if="props.highlight"
+            color="primary"
+            variant="subtle"
+            size="sm"
+            class="shrink-0"
+          >
+            {{ t("actions.hub.recommendedBadge") }}
+          </UBadge>
+          <ActionStatusBadge v-if="started" :state="props.item.status" size="sm" class="shrink-0" />
+        </div>
+
+        <p class="line-clamp-2 text-sm leading-6 text-muted">{{ purpose }}</p>
+
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <span v-if="props.showAgency" class="inline-flex items-center gap-1.5 text-sm text-muted">
+            <UIcon name="i-tabler-building-bank" class="size-4 shrink-0 text-dimmed" />
+            {{ agencyName }}
           </span>
-          <ActionWhenToUse
-            class="pointer-events-auto shrink-0"
-            :code="props.item.code"
-            :description="props.item.description"
+          <ActionMeta
+            :steps="props.item.stepCount"
+            :documents="props.item.requiredDocumentCount"
+            :days="props.item.estimatedDays"
           />
         </div>
 
-        <div class="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-sm text-muted">
-          <span v-if="props.showAgency" class="inline-flex items-center gap-1">
-            <UIcon name="i-tabler-building" class="size-3.5 shrink-0" />
-            {{ agencyName }}
-          </span>
-          <span class="inline-flex items-center gap-1">
-            <UIcon name="i-tabler-list-numbers" class="size-3.5 shrink-0" />
-            {{ t("actions.hub.steps", { count: props.item.stepCount }) }}
-          </span>
-          <span v-if="props.item.estimatedDays" class="inline-flex items-center gap-1">
-            <UIcon name="i-tabler-clock" class="size-3.5 shrink-0" />
-            {{ t("actions.hub.days", { count: props.item.estimatedDays }) }}
-          </span>
-          <span class="inline-flex items-center gap-1">
-            <UIcon name="i-tabler-file-text" class="size-3.5 shrink-0" />
-            {{ t("actions.hub.docsRequired", { count: props.item.requiredDocumentCount }) }}
-          </span>
+        <!-- Progress belongs under the title on narrow screens, where the
+             right-hand column has collapsed away. -->
+        <div v-if="started" class="flex items-center gap-2 pt-0.5 sm:hidden">
+          <UProgress :model-value="progress" size="sm" class="max-w-40" />
+          <span class="tabular text-sm text-muted">{{ progress }}%</span>
         </div>
       </div>
 
-      <div class="flex shrink-0 items-center gap-3">
-        <div v-if="showProgress" class="hidden items-center gap-2 sm:flex">
-          <UProgress :model-value="progress" size="sm" class="w-16" />
-          <span class="tabular text-sm text-muted">{{ progress }}%</span>
+      <div class="flex shrink-0 items-center gap-4">
+        <div v-if="started" class="hidden w-28 flex-col items-end gap-1 sm:flex">
+          <span class="tabular text-sm font-medium text-toned">
+            {{ t("actions.hub.progressLabel", { percent: progress }) }}
+          </span>
+          <UProgress :model-value="progress" size="sm" class="w-full" />
         </div>
 
-        <ActionStatusBadge
-          v-if="props.item.status !== 'not_started'"
-          :state="props.item.status"
-          size="sm"
-        />
-
-        <span class="inline-flex items-center gap-1 text-sm font-semibold text-primary">
+        <span
+          class="hidden items-center gap-1 rounded-md border border-default px-3 py-1.5 text-sm font-semibold text-primary transition-control group-hover:border-primary group-hover:bg-primary/5 sm:inline-flex"
+        >
           {{ cta }}
           <UIcon
             name="i-tabler-chevron-right"
             class="size-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5"
           />
         </span>
+
+        <UIcon
+          name="i-tabler-chevron-right"
+          class="size-5 shrink-0 text-dimmed sm:hidden rtl:rotate-180"
+        />
       </div>
     </div>
   </div>

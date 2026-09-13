@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, isNull, type SQL } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, ne, type SQL } from "drizzle-orm";
 
 import {
   agencies,
@@ -61,7 +61,9 @@ export async function listTemplateStepFacts(db: Db, templateIds: string[]) {
       requiredDocumentTypeId: procedureSteps.requiredDocumentTypeId,
     })
     .from(procedureSteps)
-    .where(inArray(procedureSteps.templateId, templateIds))
+    .where(
+      and(inArray(procedureSteps.templateId, templateIds), ne(procedureSteps.stepType, "review")),
+    )
     .orderBy(procedureSteps.position);
 }
 
@@ -97,7 +99,7 @@ export async function listTemplateStepsDetailed(db: Db, templateId: string) {
     .select({ step: procedureSteps, documentType: documentTypes })
     .from(procedureSteps)
     .leftJoin(documentTypes, eq(procedureSteps.requiredDocumentTypeId, documentTypes.id))
-    .where(eq(procedureSteps.templateId, templateId))
+    .where(and(eq(procedureSteps.templateId, templateId), ne(procedureSteps.stepType, "review")))
     .orderBy(procedureSteps.position);
 }
 

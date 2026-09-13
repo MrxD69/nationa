@@ -17,7 +17,7 @@ const caseId = computed(() => {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-6xl">
+  <div class="w-full">
     <ActionStepTracker
       v-if="templateId"
       :key="`${templateId}:${caseId ?? ''}`"

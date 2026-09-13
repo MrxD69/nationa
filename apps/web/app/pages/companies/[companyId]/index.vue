@@ -255,16 +255,6 @@ const renderedGroups = computed(() =>
         </template>
       </PageHeader>
 
-      <div class="flex justify-end border-t border-default pt-4">
-        <UButton
-          :icon="showAll ? 'i-tabler-eye-off' : 'i-tabler-eye'"
-          color="neutral"
-          variant="ghost"
-          :label="showAll ? t('companies.detail.showLess') : t('companies.detail.showAll')"
-          @click="showAll = !showAll"
-        />
-      </div>
-
       <EmptyState
         v-if="renderedGroups.length === 0"
         size="sm"
@@ -277,7 +267,17 @@ const renderedGroups = computed(() =>
         :key="group.id"
         class="space-y-4 border-t border-default pt-6"
       >
-        <h2 class="text-lg font-semibold text-highlighted">{{ t(group.titleKey) }}</h2>
+        <div class="flex items-center justify-between gap-4">
+          <h2 class="text-lg font-semibold text-highlighted">{{ t(group.titleKey) }}</h2>
+          <UButton
+            v-if="group.id === 'identity'"
+            :icon="showAll ? 'i-tabler-eye-off' : 'i-tabler-eye'"
+            color="neutral"
+            variant="ghost"
+            :label="showAll ? t('companies.detail.showLess') : t('companies.detail.showAll')"
+            @click="showAll = !showAll"
+          />
+        </div>
 
         <dl class="divide-y divide-default border-t border-default">
           <div

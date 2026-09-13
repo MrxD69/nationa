@@ -1,0 +1,162 @@
+{
+  "officerOps": {
+    "common": {
+      "retry": "إعادة المحاولة",
+      "loading": "جارٍ التحميل…",
+      "back": "رجوع",
+      "cancel": "إلغاء",
+      "close": "إغلاق",
+      "optional": "اختياري"
+    },
+    "sla": {
+      "onTime": "ضمن المهلة",
+      "atRisk": "المهلة تقترب",
+      "breached": "تجاوز المهلة",
+      "unknown": "المهلة غير معروفة",
+      "days": "{count} يوم",
+      "dueOn": "المهلة: {date}"
+    },
+    "queue": {
+      "title": "الملفات المطلوب معالجتها",
+      "subtitle": "افرز الملفات المودعة وتولَّ معالجتها وافحصها.",
+      "teamAction": "عرض الفريق",
+      "filters": {
+        "title": "عوامل التصفية",
+        "status": "حالة الملف",
+        "tier": "الجودة",
+        "sla": "المهلة",
+        "assignment": "التكليف",
+        "sort": "الترتيب حسب"
+      },
+      "allStatuses": "كل الحالات",
+      "allTiers": "كل مستويات الجودة",
+      "allSla": "كل المهل",
+      "allAssignments": "كل التكليفات",
+      "sortPriority": "الأولوية",
+      "sortSubmitted": "تاريخ الإيداع",
+      "sortQuality": "الجودة",
+      "columns": {
+        "company": "الشركة",
+        "submitted": "أُودع في",
+        "sla": "المهلة",
+        "cleanliness": "الجودة",
+        "findings": "الملاحظات",
+        "status": "الحالة",
+        "assignment": "التكليف",
+        "actions": "إجراءات"
+      },
+      "empty": "لا توجد ملفات",
+      "emptyDescription": "لا يوجد ملف يطابق هذه المعايير. جرّب توسيع البحث.",
+      "loadMore": "تحميل المزيد",
+      "take": "تولَّ هذا الملف",
+      "examine": "فحص",
+      "mine": "ملفاتي",
+      "unassigned": "غير معيّن",
+      "claimSuccess": "تم تولّي الملف.",
+      "claimError": "تعذّر تولّي هذا الملف.",
+      "noAgencies": "لا توجد وكالة مرتبطة",
+      "noAgenciesDescription": "لا توجد وكالة مرتبطة بحسابك. تواصل مع المسؤول للحصول على صلاحية الوصول.",
+      "agencyError": "تعذّر تحميل وكالاتك. أعد المحاولة.",
+      "error": "تعذّر تحميل الملفات.",
+      "blockers": "{count} عائق",
+      "findingsCount": "{count} ملاحظة",
+      "ageDays": "{count} يوم",
+      "mobileList": "قائمة الملفات"
+    },
+    "counters": {
+      "total": "قيد المعالجة",
+      "breached": "تجاوز المهلة",
+      "atRisk": "المهلة تقترب",
+      "unassigned": "غير معيّنة",
+      "mine": "ملفاتي",
+      "returned": "المُعادة"
+    },
+    "team": {
+      "title": "عبء عمل الفريق",
+      "subtitle": "توزيع الملفات المفتوحة والقرارات على الأعوان.",
+      "note": "هذه الصفحة مخصصة لمسؤولي الوكالة.",
+      "kpi": {
+        "open": "ملفات مفتوحة",
+        "unassigned": "غير معيّنة",
+        "active": "أعوان نشطون"
+      },
+      "columns": {
+        "member": "العون",
+        "role": "الدور",
+        "open": "ملفات مفتوحة",
+        "decided": "القرارات",
+        "avg": "متوسط المدة",
+        "load": "العبء"
+      },
+      "roles": {
+        "officer": "عون",
+        "supervisor": "مسؤول",
+        "admin": "مدير",
+        "owner": "مالك"
+      },
+      "hours": "{value} س",
+      "days": "{value} يوم",
+      "empty": "لا يوجد أعوان نشطون",
+      "emptyDescription": "لا يوجد أي عون لديه ملفات قيد المعالجة حالياً.",
+      "forbidden": "لا تسمح صلاحياتك بالاطلاع على عبء عمل الفريق.",
+      "error": "تعذّر تحميل عبء عمل الفريق."
+    },
+    "assignment": {
+      "take": "تولَّ هذا الملف",
+      "release": "إزالة تكليفي",
+      "assignTo": "إسناد إلى…",
+      "current": "مُكلَّف إلى",
+      "mine": "أنا",
+      "unassigned": "غير معيّن",
+      "anotherAgent": "عون آخر",
+      "chooseAgent": "اختر عوناً",
+      "searchPlaceholder": "ابحث عن عون",
+      "success": "تم تحديث التكليف.",
+      "claimed": "تولّيت هذا الملف.",
+      "released": "لم تعد تتابع هذا الملف.",
+      "assigned": "تم إسناد الملف.",
+      "error": "تعذّر تعديل التكليف."
+    },
+    "deficiency": {
+      "title": "طلب تصحيح",
+      "subtitle": "حدّد ما يجب على المودِع تصحيحه والمهلة الممنوحة.",
+      "entry": "طلب تصحيح",
+      "entryHint": "أرسل طلباً مفصّلاً مع تحديد مهلة للرد.",
+      "templateLabel": "سبب الطلب",
+      "reasonLabel": "الرسالة المرسلة إلى المودِع",
+      "reasonPlaceholder": "صف ما يجب تصحيحه…",
+      "checklistLabel": "النقاط المطلوب تصحيحها",
+      "checklistHint": "أزل التحديد عن النقاط غير المنطبقة.",
+      "dueLabel": "مهلة الرد",
+      "dueNone": "دون مهلة",
+      "dueIn": "{count} أيام",
+      "notesLabel": "ملاحظة داخلية (لا يراها المودِع)",
+      "notesPlaceholder": "أضف ملاحظة للفريق…",
+      "submit": "إرسال الطلب",
+      "cancel": "إلغاء",
+      "back": "تعديل",
+      "confirmTitle": "تأكيد طلب التصحيح",
+      "confirmBody": "سيتلقى المودِع هذه الرسالة وعليه الرد قبل التاريخ المحدد.",
+      "applicantWillReceive": "الرسالة التي سيتلقاها المودِع",
+      "deadline": "الرد متوقع قبل {date}",
+      "deadlineNone": "لا توجد مهلة محددة",
+      "success": "تم إرسال طلب التصحيح.",
+      "error": "تعذّر إرسال الطلب.",
+      "noTemplates": "لا توجد قوالب متاحة. عُد لاحقاً.",
+      "decision": {
+        "return_for_correction": "إعادة للتصحيح",
+        "reject": "رفض"
+      },
+      "severity": {
+        "warning": "للمراقبة",
+        "error": "خطأ",
+        "blocker": "مانع"
+      }
+    },
+    "review": {
+      "slaBanner": "مهلة المعالجة",
+      "deficiencyBanner": "طُلب تصحيح — الرد متوقع قبل {date}",
+      "assignmentLabel": "التكليف"
+    }
+  }
+}

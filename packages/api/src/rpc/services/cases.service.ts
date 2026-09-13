@@ -15,6 +15,7 @@ import { assertCompanyPermission, requireUser } from "../../auth/access";
 import { assertCaseAccess, assertCasePermission } from "../../auth/case-access";
 import { COMPANY_FIELD_KEYS, normalizeFieldKey, type CanonicalFieldKey } from "../../domain/fields";
 import { parseFormSchema } from "../../domain/procedure-forms";
+import { stepGuidance } from "../../domain/step-guidance";
 import type { CompanyPermission } from "../../permissions";
 import type { Context } from "../context";
 import * as repo from "../repositories/cases.repo";
@@ -236,14 +237,23 @@ export async function getCaseDetail(context: Context, caseId: string) {
     documentTypesById.set(row.id, row);
   }
 
-  const steps = caseStepRows.map((caseStep) => {
-    const templateStep = caseStep.templateStepId
-      ? templateStepsById.get(caseStep.templateStepId)
-      : undefined;
+  // Drop case steps whose template step no longer exists (orphans from removed review steps).
+  const visibleCaseSteps = caseStepRows.filter((caseStep) =>
+    caseStep.templateStepId ? templateStepsById.has(caseStep.templateStepId) : false,
+  );
+
+  const steps = visibleCaseSteps.map((caseStep, index) => {
+    const templateStep = templateStepsById.get(caseStep.templateStepId as string);
     const requiredTypeId = templateStep?.requiredDocumentTypeId ?? null;
     return {
       ...caseStep,
-      template: templateStep ?? null,
+      position: index + 1,
+      template: templateStep
+        ? {
+            ...templateStep,
+            description: stepGuidance(template.code, templateStep.code, templateStep.description),
+          }
+        : null,
       formSchema: parseFormSchema(templateStep?.formSchema),
       citations: templateStep ? (citationsByStep.get(templateStep.id) ?? []) : [],
       requiredDocumentType: requiredTypeId ? (documentTypesById.get(requiredTypeId) ?? null) : null,

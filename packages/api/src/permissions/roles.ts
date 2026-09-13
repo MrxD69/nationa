@@ -58,6 +58,13 @@ export const ALL_AGENCY_PERMISSIONS = [
   "officer.document.read",
   "officer.company_patterns.read",
   "officer.analytics.read",
+  "officer.queue.assign",
+  "officer.deficiency.manage",
+  "officer.conditions.read",
+  "officer.registry.read",
+  "officer.dossier.read",
+  "officer.integrity.read",
+  "officer.ai.use",
 ] as const satisfies readonly AgencyPermission[];
 
 export const ALL_PLATFORM_PERMISSIONS = [
@@ -77,6 +84,13 @@ const AGENCY_OFFICER_PERMISSIONS = [
   "officer.review.decide",
   "officer.document.read",
   "officer.company_patterns.read",
+  "officer.queue.assign",
+  "officer.deficiency.manage",
+  "officer.conditions.read",
+  "officer.registry.read",
+  "officer.dossier.read",
+  "officer.integrity.read",
+  "officer.ai.use",
 ] as const satisfies readonly AgencyPermission[];
 
 export const COMPANY_ROLE_PERMISSIONS = {

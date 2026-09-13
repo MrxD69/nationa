@@ -7,7 +7,6 @@ import DocgenFieldEditor from "~/components/docgen/DocgenFieldEditor.vue";
 import DocgenQuestionnaire from "~/components/docgen/DocgenQuestionnaire.vue";
 import PageHeader from "~/components/ui/PageHeader.vue";
 import LoadingState from "~/components/ui/LoadingState.vue";
-import StickyActionBar from "~/components/ui/StickyActionBar.vue";
 
 definePageMeta({ layout: "app", middleware: "auth" });
 
@@ -147,12 +146,14 @@ const artifactView = computed(() => approved.value ?? draft.value);
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-5xl space-y-6">
+  <div class="mx-auto w-full max-w-[100rem] space-y-3">
     <PageHeader
       :title="t('docgen.workspace.title')"
       :subtitle="t('docgen.workspace.subtitle')"
       icon="i-tabler-file-text"
       back-to="/docgen"
+      dense
+      max-width="max-w-[100rem]"
     >
       <template #actions>
         <UBadge
@@ -182,12 +183,12 @@ const artifactView = computed(() => approved.value ?? draft.value);
       :storage-key="artifactView.payload.approvedStorageKey ?? null"
     />
 
-    <div v-else class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <div v-else class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-0">
       <div class="min-w-0 self-start lg:sticky lg:top-20">
         <DocgenDraftPreview :payload="draft.payload" />
       </div>
 
-      <div class="min-w-0 space-y-6">
+      <div class="min-w-0 space-y-4 lg:border-s lg:border-default lg:ps-8">
         <DocgenQuestionnaire
           v-if="(payload?.questions?.length ?? 0) > 0"
           v-model="answers"
@@ -203,10 +204,8 @@ const artifactView = computed(() => approved.value ?? draft.value);
           @reject="onReject"
         />
 
-        <StickyActionBar>
-          <template #secondary>
-            <p class="text-sm text-muted">{{ t("docgen.editor.stickyHint") }}</p>
-          </template>
+        <div class="flex flex-wrap items-center justify-between gap-2 border-t border-default pt-4">
+          <p class="text-sm text-muted">{{ t("docgen.editor.stickyHint") }}</p>
           <UButton
             color="neutral"
             variant="soft"
@@ -216,7 +215,7 @@ const artifactView = computed(() => approved.value ?? draft.value);
             :label="t('docgen.editor.save')"
             @click="save"
           />
-        </StickyActionBar>
+        </div>
       </div>
     </div>
   </div>

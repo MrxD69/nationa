@@ -196,39 +196,53 @@ async function submit() {
 
         <form class="grid gap-6" @submit.prevent="submit">
           <div class="space-y-3">
-            <p class="text-base font-medium text-highlighted">
+            <p class="text-sm font-semibold tracking-wide text-highlighted">
               {{ t("auth.signup.roleTitle") }}
             </p>
-            <div class="grid gap-3 sm:grid-cols-3">
+            <div class="grid gap-3">
               <button
                 v-for="role in roles"
                 :key="role.value"
                 type="button"
-                class="flex flex-col items-start gap-3 rounded-lg border p-4 text-start transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                class="group flex w-full items-start gap-4 rounded-xl border p-4 text-start transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-default focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60 sm:p-5"
                 :class="
                   choice === role.value
-                    ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                    : 'border-default bg-default hover:border-accented hover:bg-accented'
+                    ? 'border-primary bg-primary/5 ring-1 ring-primary/40'
+                    : 'border-default bg-default hover:border-accented hover:bg-accented/60'
                 "
                 :aria-pressed="choice === role.value"
                 :disabled="loading"
                 @click="choice = role.value"
               >
                 <span
-                  class="flex size-10 items-center justify-center rounded-md"
+                  class="flex size-11 shrink-0 items-center justify-center rounded-lg transition-colors"
                   :class="
-                    choice === role.value ? 'bg-primary text-inverted' : 'bg-elevated text-toned'
+                    choice === role.value
+                      ? 'bg-primary text-inverted'
+                      : 'bg-elevated text-toned group-hover:text-highlighted'
                   "
                 >
                   <UIcon :name="role.icon" class="size-6" />
                 </span>
-                <span class="space-y-1">
+
+                <span class="min-w-0 flex-1 space-y-1">
                   <span class="block text-base font-semibold text-highlighted">
                     {{ role.title }}
                   </span>
                   <span class="block text-sm leading-relaxed text-muted">
                     {{ role.description }}
                   </span>
+                </span>
+
+                <span
+                  class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border transition-colors"
+                  :class="
+                    choice === role.value
+                      ? 'border-primary bg-primary text-inverted'
+                      : 'border-accented bg-default'
+                  "
+                >
+                  <UIcon v-if="choice === role.value" name="i-tabler-check" class="size-3.5" />
                 </span>
               </button>
             </div>

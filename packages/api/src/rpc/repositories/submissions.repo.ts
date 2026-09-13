@@ -284,6 +284,10 @@ export async function listMyAgencies(db: Db, userId: string) {
     .orderBy(agencies.nameFr);
 }
 
+export async function listAllActiveAgencies(db: Db) {
+  return db.select().from(agencies).where(eq(agencies.active, true)).orderBy(asc(agencies.nameFr));
+}
+
 export async function listOfficerQueue(
   db: Db,
   input: {

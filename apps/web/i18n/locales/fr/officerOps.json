@@ -1,0 +1,162 @@
+{
+  "officerOps": {
+    "common": {
+      "retry": "Réessayer",
+      "loading": "Chargement…",
+      "back": "Retour",
+      "cancel": "Annuler",
+      "close": "Fermer",
+      "optional": "facultatif"
+    },
+    "sla": {
+      "onTime": "Délai respecté",
+      "atRisk": "Échéance proche",
+      "breached": "Hors délai",
+      "unknown": "Échéance inconnue",
+      "days": "{count} j",
+      "dueOn": "Échéance : {date}"
+    },
+    "queue": {
+      "title": "Dossiers à traiter",
+      "subtitle": "Triez, prenez en charge et examinez les dossiers déposés.",
+      "teamAction": "Voir l'équipe",
+      "filters": {
+        "title": "Filtres",
+        "status": "Statut du dossier",
+        "tier": "Qualité",
+        "sla": "Délai",
+        "assignment": "Affectation",
+        "sort": "Trier par"
+      },
+      "allStatuses": "Tous les statuts",
+      "allTiers": "Toutes les qualités",
+      "allSla": "Tous les délais",
+      "allAssignments": "Toutes les affectations",
+      "sortPriority": "Priorité",
+      "sortSubmitted": "Date de dépôt",
+      "sortQuality": "Qualité",
+      "columns": {
+        "company": "Entreprise",
+        "submitted": "Déposé le",
+        "sla": "Délai",
+        "cleanliness": "Qualité",
+        "findings": "Constats",
+        "status": "Statut",
+        "assignment": "Affectation",
+        "actions": "Actions"
+      },
+      "empty": "Aucun dossier trouvé",
+      "emptyDescription": "Aucun dossier ne correspond à ces filtres. Essayez d'élargir la recherche.",
+      "loadMore": "Charger plus",
+      "take": "Prendre ce dossier",
+      "examine": "Examiner",
+      "mine": "Mes dossiers",
+      "unassigned": "Non affecté",
+      "claimSuccess": "Dossier pris en charge.",
+      "claimError": "Impossible de prendre ce dossier.",
+      "noAgencies": "Aucune agence liée",
+      "noAgenciesDescription": "Aucune agence n'est liée à votre compte. Contactez un administrateur pour obtenir un accès.",
+      "agencyError": "Impossible de charger vos agences. Réessayez.",
+      "error": "Impossible de charger les dossiers.",
+      "blockers": "{count} bloquant(s)",
+      "findingsCount": "{count} constat(s)",
+      "ageDays": "{count} j",
+      "mobileList": "Liste des dossiers"
+    },
+    "counters": {
+      "total": "À traiter",
+      "breached": "Hors délai",
+      "atRisk": "Échéance proche",
+      "unassigned": "Non affectés",
+      "mine": "Mes dossiers",
+      "returned": "Renvoyés"
+    },
+    "team": {
+      "title": "Charge de l'équipe",
+      "subtitle": "Répartition des dossiers ouverts et des décisions par agent.",
+      "note": "Cette page est réservée aux responsables d'agence.",
+      "kpi": {
+        "open": "Dossiers ouverts",
+        "unassigned": "Non affectés",
+        "active": "Agents actifs"
+      },
+      "columns": {
+        "member": "Agent",
+        "role": "Rôle",
+        "open": "Dossiers ouverts",
+        "decided": "Décisions",
+        "avg": "Délai moyen",
+        "load": "Charge"
+      },
+      "roles": {
+        "officer": "Agent",
+        "supervisor": "Responsable",
+        "admin": "Administrateur",
+        "owner": "Propriétaire"
+      },
+      "hours": "{value} h",
+      "days": "{value} j",
+      "empty": "Aucun agent actif",
+      "emptyDescription": "Aucun agent n'a de dossier en cours pour le moment.",
+      "forbidden": "Votre profil ne permet pas de consulter la charge de l'équipe.",
+      "error": "Impossible de charger la charge de l'équipe."
+    },
+    "assignment": {
+      "take": "Prendre ce dossier",
+      "release": "Me retirer",
+      "assignTo": "Affecter à…",
+      "current": "Affecté à",
+      "mine": "Moi",
+      "unassigned": "Non affecté",
+      "anotherAgent": "Un autre agent",
+      "chooseAgent": "Choisir un agent",
+      "searchPlaceholder": "Rechercher un agent",
+      "success": "Affectation mise à jour.",
+      "claimed": "Vous avez pris ce dossier.",
+      "released": "Vous ne suivez plus ce dossier.",
+      "assigned": "Dossier affecté.",
+      "error": "Impossible de modifier l'affectation."
+    },
+    "deficiency": {
+      "title": "Demander une correction",
+      "subtitle": "Précisez ce que le déposant doit corriger et le délai accordé.",
+      "entry": "Demander une correction",
+      "entryHint": "Envoyez une demande détaillée avec un délai de réponse.",
+      "templateLabel": "Motif de la demande",
+      "reasonLabel": "Message envoyé au déposant",
+      "reasonPlaceholder": "Décrivez ce qui doit être corrigé…",
+      "checklistLabel": "Points à corriger",
+      "checklistHint": "Décochez les points qui ne s'appliquent pas.",
+      "dueLabel": "Délai de réponse",
+      "dueNone": "Sans échéance",
+      "dueIn": "{count} jours",
+      "notesLabel": "Note interne (non visible par le déposant)",
+      "notesPlaceholder": "Ajouter une note pour l'équipe…",
+      "submit": "Envoyer la demande",
+      "cancel": "Annuler",
+      "back": "Modifier",
+      "confirmTitle": "Confirmer la demande de correction",
+      "confirmBody": "Le déposant recevra ce message et devra répondre avant la date indiquée.",
+      "applicantWillReceive": "Message reçu par le déposant",
+      "deadline": "Réponse attendue avant le {date}",
+      "deadlineNone": "Aucune échéance fixée",
+      "success": "Demande de correction envoyée.",
+      "error": "Impossible d'envoyer la demande.",
+      "noTemplates": "Aucun modèle disponible. Revenez plus tard.",
+      "decision": {
+        "return_for_correction": "Retour pour correction",
+        "reject": "Rejet"
+      },
+      "severity": {
+        "warning": "À surveiller",
+        "error": "Erreur",
+        "blocker": "Bloquant"
+      }
+    },
+    "review": {
+      "slaBanner": "Délai de traitement",
+      "deficiencyBanner": "Correction demandée — réponse attendue avant le {date}",
+      "assignmentLabel": "Affectation"
+    }
+  }
+}

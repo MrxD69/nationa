@@ -27,6 +27,7 @@ import {
 } from "../../domain/action-state";
 import type { ParsedFormSchema } from "../../domain/procedure-forms";
 import { parseFormSchema } from "../../domain/procedure-forms";
+import { stepGuidance } from "../../domain/step-guidance";
 import type { Context } from "../context";
 import * as repo from "../repositories/actions.repo";
 import { listDraftProposalsBySubject } from "../repositories/ai.repo";
@@ -360,6 +361,8 @@ export async function listActionCatalog(
   const items: ActionCatalogItem[] = [];
   for (const template of templates) {
     const templateFacts = factsByTemplate.get(template.id) ?? [];
+    // Templates made only of hidden review steps are not catalog entries.
+    if (templateFacts.length === 0) continue;
     const documentTypeIds = new Set(
       templateFacts
         .map((fact) => fact.requiredDocumentTypeId)
@@ -497,6 +500,7 @@ export async function getActionTracker(
     ranAt: run?.completedAt ?? run?.createdAt ?? null,
   };
 
+  // Review steps are excluded at the repo layer, so displayed positions are renumbered 1..N.
   const steps: ActionStep[] = stepRows.map((row, index) => {
     const { step, documentType } = row;
     const caseStep = caseStepByTemplateId.get(step.id) ?? null;
@@ -535,11 +539,11 @@ export async function getActionTracker(
       id: caseStep?.id ?? step.id,
       caseStepId: caseStep?.id ?? null,
       templateStepId: step.id,
-      position: step.position,
+      position: index + 1,
       code: step.code,
       titleFr: step.titleFr,
       titleAr: step.titleAr,
-      description: step.description,
+      description: stepGuidance(template.code, step.code, step.description),
       stepType: step.stepType,
       isOptional: step.isOptional,
       state: derived.state,

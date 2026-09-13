@@ -169,7 +169,7 @@ function clearFilters(): void {
       :title="t('actions.title')"
       :subtitle="t('actions.subtitle')"
       icon="i-tabler-file-description"
-      max-width="max-w-6xl"
+      max-width="max-w-none"
     />
 
     <ActionSearchIntent v-model="query" />

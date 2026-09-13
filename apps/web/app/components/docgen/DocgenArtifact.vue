@@ -27,7 +27,7 @@ function print(): void {
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="space-y-3">
     <div class="flex flex-wrap items-center justify-between gap-2">
       <div class="flex items-center gap-2">
         <UBadge
@@ -52,7 +52,7 @@ function print(): void {
     </div>
 
     <div
-      class="docgen-artifact rounded-lg border border-default bg-white p-8 text-slate-900"
+      class="docgen-doc border-t border-default pt-4"
       :dir="dir"
       :lang="props.payload.language as DocLang"
     >
@@ -60,15 +60,12 @@ function print(): void {
       <div v-html="props.payload.render.html" />
     </div>
 
-    <details
-      v-if="resolvedDocumentId || resolvedStorageKey"
-      class="rounded-lg border border-default p-4"
-    >
+    <details v-if="resolvedDocumentId || resolvedStorageKey" class="border-t border-default pt-3">
       <summary class="cursor-pointer text-sm font-medium text-toned">
         {{ t("docgen.artifact.technical") }}
       </summary>
       <p class="mt-1 text-sm text-muted">{{ t("docgen.artifact.technicalHint") }}</p>
-      <dl class="mt-3 grid gap-1 text-sm text-muted">
+      <dl class="mt-2 grid gap-1 text-sm text-muted">
         <div v-if="resolvedDocumentId" class="flex flex-wrap gap-2">
           <dt class="font-medium">{{ t("docgen.artifact.documentId") }}</dt>
           <dd class="break-all" dir="ltr">{{ resolvedDocumentId }}</dd>
@@ -81,27 +78,3 @@ function print(): void {
     </details>
   </div>
 </template>
-
-<style scoped>
-.docgen-artifact {
-  font-family:
-    "Inter", "Noto Naskh Arabic", "Noto Sans Arabic", "Segoe UI", Tahoma, system-ui, sans-serif;
-}
-
-.docgen-artifact :deep(.docgen-value[data-source="ai"]) {
-  background-color: color-mix(in srgb, var(--ui-color-secondary-500) 14%, transparent);
-  border-bottom: 1px solid var(--ui-color-secondary-500);
-}
-
-.docgen-artifact :deep(.docgen-blank) {
-  color: #64748b;
-  letter-spacing: 0.08em;
-}
-
-@media print {
-  .docgen-artifact {
-    border: none;
-    padding: 0;
-  }
-}
-</style>

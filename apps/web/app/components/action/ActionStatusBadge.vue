@@ -25,5 +25,11 @@ const text = computed(() => props.label ?? t(`actions.state.${props.state}`, pro
 </script>
 
 <template>
-  <UBadge :color="color" variant="subtle" :size="props.size ?? 'lg'">{{ text }}</UBadge>
+  <UBadge
+    v-if="props.state !== 'not_started'"
+    :color="color"
+    variant="subtle"
+    :size="props.size ?? 'lg'"
+    >{{ text }}</UBadge
+  >
 </template>

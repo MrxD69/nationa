@@ -4,6 +4,7 @@ const apiReference = { path: fileURLToPath(new URL("../../packages/api", import.
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: false,
   typescript: {
     tsConfig: { references: [apiReference] },
     nodeTsConfig: { references: [apiReference] },
@@ -11,9 +12,6 @@ export default defineNuxtConfig({
   },
   compatibilityDate: "latest",
   devtools: { enabled: true },
-  experimental: {
-    payloadExtraction: "client",
-  },
   modules: ["@nuxt/ui", "@nuxtjs/i18n", "@nuxtjs/supabase"],
   css: ["~/assets/css/main.css"],
   // White-mode-first: default to light while keeping the toggle usable.
@@ -47,6 +45,9 @@ export default defineNuxtConfig({
           "fr/checks.json",
           "fr/submissions.json",
           "fr/officer.json",
+          "fr/officerOps.json",
+          "fr/officerMonitoring.json",
+          "fr/officerTrust.json",
           "fr/assistant.json",
           "fr/auth.json",
           "fr/invoices.json",
@@ -73,6 +74,9 @@ export default defineNuxtConfig({
           "ar/checks.json",
           "ar/submissions.json",
           "ar/officer.json",
+          "ar/officerOps.json",
+          "ar/officerMonitoring.json",
+          "ar/officerTrust.json",
           "ar/assistant.json",
           "ar/auth.json",
           "ar/invoices.json",
@@ -98,7 +102,7 @@ export default defineNuxtConfig({
     url: process.env.NUXT_PUBLIC_SUPABASE_URL,
     key: process.env.NUXT_PUBLIC_SUPABASE_KEY,
     types: false, // no generated DB types yet
-    useSsrCookies: true,
+    useSsrCookies: false,
     redirect: false, // don't globally guard routes yet
     redirectOptions: { login: "/login", callback: "/confirm", exclude: [] },
   },

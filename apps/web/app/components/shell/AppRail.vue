@@ -2,22 +2,18 @@
 import type { DropdownMenuItem } from "@nuxt/ui";
 
 import AppRailPinnedActions from "~/components/shell/AppRailPinnedActions.vue";
+import AppSidebarBrand from "~/components/shell/AppSidebarBrand.vue";
 import { dirForLocale } from "~/constants/navigation";
 
 const { t, locale } = useI18n();
-const { user, signOut } = useAuth();
+const { signOut } = useAuth();
+const { displayName, email, roleLabel } = useUserIdentity();
 const route = useRoute();
 const visibleRailItems = useVisibleRailItems();
 
 const side = computed(() => (dirForLocale(locale.value) === "rtl" ? "right" : "left"));
 
-const displayName = computed(
-  () =>
-    (user.value?.user_metadata?.displayName as string | undefined)?.trim() ||
-    user.value?.email ||
-    t("common.user.guest"),
-);
-const email = computed(() => user.value?.email ?? "");
+const railItems = visibleRailItems;
 
 const userMenuItems = computed<DropdownMenuItem[]>(() => [
   {
@@ -36,7 +32,7 @@ function isActive(to: string): boolean {
 }
 
 function startsSection(index: number): boolean {
-  const items = visibleRailItems.value;
+  const items = railItems.value;
   return index === 0 || items[index]?.section !== items[index - 1]?.section;
 }
 </script>
@@ -52,20 +48,11 @@ function startsSection(index: number): boolean {
     :min-size="14"
     :max-size="20"
     :collapsed-size="4"
+    :ui="{ root: 'nationa-sidebar', content: 'nationa-sidebar' }"
   >
     <template #header="{ collapsed }">
       <div class="flex w-full min-w-0 items-center gap-1">
-        <NuxtLink
-          v-if="!collapsed"
-          to="/companies"
-          class="press hover-surface flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-highlighted"
-          :aria-label="t('common.appName')"
-        >
-          <UIcon name="i-tabler-building-bank" class="size-6 shrink-0 text-primary" />
-          <span class="truncate text-base font-semibold">
-            {{ t("common.appName") }}
-          </span>
-        </NuxtLink>
+        <AppSidebarBrand v-if="!collapsed" to="/companies" class="min-w-0 flex-1" />
 
         <div class="hidden shrink-0 lg:flex" :class="collapsed ? 'mx-auto' : ''">
           <UDashboardSidebarCollapse :side="side" />
@@ -75,7 +62,7 @@ function startsSection(index: number): boolean {
 
     <template #default="{ collapsed }">
       <nav class="flex w-full flex-col gap-1.5">
-        <template v-for="(item, index) in visibleRailItems" :key="item.key">
+        <template v-for="(item, index) in railItems" :key="item.key">
           <span
             v-if="!collapsed && startsSection(index)"
             class="px-2 pb-1 text-xs font-medium tracking-wide text-dimmed uppercase"
@@ -99,9 +86,10 @@ function startsSection(index: number): boolean {
             active-variant="soft"
             color="neutral"
             variant="ghost"
+            block
             :square="collapsed"
-            :block="!collapsed"
-            class="relative justify-start transition-colors"
+            class="relative transition-colors"
+            :class="[collapsed ? '' : 'justify-start', { 'is-active': isActive(item.to) }]"
           >
             <template v-if="!collapsed && item.badgeCount" #trailing>
               <UBadge color="primary" variant="solid" size="sm" class="ms-auto tabular-nums">
@@ -129,8 +117,8 @@ function startsSection(index: number): boolean {
         <UButton
           color="neutral"
           variant="ghost"
+          block
           :square="collapsed"
-          :block="!collapsed"
           class="press"
           :class="collapsed ? '' : 'min-w-0 justify-start'"
           :aria-label="t('shell.rail.profile')"
@@ -138,7 +126,10 @@ function startsSection(index: number): boolean {
         >
           <UAvatar :alt="displayName" size="sm" icon="i-tabler-user" />
           <template v-if="!collapsed">
-            <span class="min-w-0 flex-1 truncate">{{ displayName }}</span>
+            <span class="min-w-0 flex-1 text-left">
+              <span class="block truncate text-sm font-medium">{{ displayName }}</span>
+              <span class="block truncate text-xs text-muted">{{ roleLabel }}</span>
+            </span>
             <UIcon name="i-tabler-chevron-down" class="size-4 shrink-0 text-dimmed" />
           </template>
         </UButton>

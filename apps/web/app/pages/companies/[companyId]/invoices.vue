@@ -227,7 +227,7 @@ onMounted(loadList);
 
 <template>
   <div>
-    <div class="-mx-4 w-auto border-b border-default sm:-mx-6">
+    <div class="-mx-4 -mt-4 w-auto border-b border-default sm:-mx-6 sm:-mt-6">
       <div class="grid w-auto items-stretch lg:grid-cols-[minmax(0,20rem)_1px_minmax(0,1fr)]">
         <section class="min-w-0">
           <SectionHeader

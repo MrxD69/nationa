@@ -9,7 +9,6 @@ import CaseStepSubmission from "~/components/case/CaseStepSubmission.vue";
 import CaseStepUpload from "~/components/case/CaseStepUpload.vue";
 import LoadingState from "~/components/ui/LoadingState.vue";
 import PageHeader from "~/components/ui/PageHeader.vue";
-import StickyActionBar from "~/components/ui/StickyActionBar.vue";
 
 type RunnerField = {
   id: string;
@@ -44,6 +43,47 @@ const currentIndex = ref(0);
 const formValues = ref<Record<string, unknown>>({});
 
 const currentStep = computed(() => steps.value[currentIndex.value]);
+
+type RunnerStep = NonNullable<typeof detail.value>["steps"][number];
+type RunnerDocumentType = NonNullable<RunnerStep["requiredDocumentType"]>;
+
+const uploadedDocumentTypeIds = computed(() => {
+  const ids = new Set<string>();
+  for (const document of detail.value?.documents ?? []) {
+    if (document.documentTypeId) {
+      ids.add(document.documentTypeId);
+    }
+  }
+  return ids;
+});
+
+// Every distinct document type required by the procedure.
+const requiredDocumentTypes = computed<RunnerDocumentType[]>(() => {
+  const map = new Map<string, RunnerDocumentType>();
+  for (const step of steps.value) {
+    const type = step.requiredDocumentType;
+    if (type && !map.has(type.id)) {
+      map.set(type.id, type);
+    }
+  }
+  return [...map.values()];
+});
+
+// On the submit step, surface anything still missing so it can be attached right there.
+const missingRequiredDocumentTypes = computed<RunnerDocumentType[]>(() =>
+  requiredDocumentTypes.value.filter(
+    (type) =>
+      !uploadedDocumentTypeIds.value.has(type.id) &&
+      type.id !== currentStep.value?.requiredDocumentType?.id,
+  ),
+);
+
+const showStepUpload = computed(
+  () =>
+    currentStep.value?.template?.stepType !== "upload" &&
+    Boolean(currentStep.value?.requiredDocumentType),
+);
+
 const currentStepFields = computed(() => currentStep.value?.formSchema?.fields ?? []);
 const canSkip = computed(() => Boolean(currentStep.value?.template?.isOptional));
 const infoStep = computed(() =>
@@ -176,17 +216,39 @@ function initializeFormValues(rows: RunnerField[]): void {
   formValues.value = next;
 }
 
+const stepIndexInitialized = ref(false);
+const formKey = ref<string | null>(null);
+
+// Jump to the first actionable step once; later refetches must not move the user.
 watch(
   detail,
   (value) => {
-    if (!value) {
+    if (!value || stepIndexInitialized.value) {
       return;
     }
-    initializeFormValues(value.fields as RunnerField[]);
+    stepIndexInitialized.value = true;
     const index = value.steps.findIndex(
       (step: { status: string }) => step.status !== "completed" && step.status !== "skipped",
     );
     currentIndex.value = index === -1 ? Math.max(0, value.steps.length - 1) : index;
+  },
+  { immediate: true },
+);
+
+// Load form values for the case/step being viewed, without clobbering edits on refetch.
+watch(
+  [detail, currentIndex],
+  () => {
+    const value = detail.value;
+    if (!value) {
+      return;
+    }
+    const key = `${value.case.id}:${currentIndex.value}`;
+    if (formKey.value === key) {
+      return;
+    }
+    formKey.value = key;
+    initializeFormValues(value.fields as RunnerField[]);
   },
   { immediate: true },
 );
@@ -252,7 +314,6 @@ async function continueStep(): Promise<void> {
     if (currentIndex.value < steps.value.length - 1) {
       currentIndex.value += 1;
     }
-    await refetch();
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : String(cause);
   } finally {
@@ -274,7 +335,6 @@ async function skipCurrent(): Promise<void> {
     if (currentIndex.value < steps.value.length - 1) {
       currentIndex.value += 1;
     }
-    await refetch();
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : String(cause);
   } finally {
@@ -293,7 +353,6 @@ async function submit(): Promise<void> {
       });
     }
     await submitCase.mutateAsync({ caseId: props.caseId });
-    await refetch();
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : String(cause);
   } finally {
@@ -307,7 +366,6 @@ async function cancel(): Promise<void> {
   try {
     await cancelCase.mutateAsync({ caseId: props.caseId });
     cancelOpen.value = false;
-    await refetch();
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : String(cause);
   } finally {
@@ -319,7 +377,7 @@ async function cancel(): Promise<void> {
 <template>
   <LoadingState v-if="isLoading" variant="spinner" :label="t('cases.runner.loading')" />
 
-  <div v-else-if="detail" class="grid gap-6">
+  <div v-else-if="detail" class="grid content-start gap-6">
     <PageHeader
       :title="caseTitle"
       :subtitle="runnerSubtitle"
@@ -346,12 +404,12 @@ async function cancel(): Promise<void> {
 
     <UAlert v-if="error" color="error" variant="subtle" :title="error" />
 
-    <div class="grid gap-6 lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)]">
+    <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)]">
       <aside class="lg:border-e lg:border-default lg:pe-6">
         <CaseStepNav v-model="currentIndex" :steps="steps" />
       </aside>
 
-      <section v-if="currentStep" class="grid gap-6">
+      <section v-if="currentStep" class="grid content-start gap-6">
         <div class="space-y-1">
           <h2 class="text-lg font-semibold text-highlighted">
             {{
@@ -449,6 +507,36 @@ async function cancel(): Promise<void> {
           @submit="submit"
         />
 
+        <!-- A step can require a document without being an "upload" step: attach it here. -->
+        <CaseStepUpload
+          v-if="showStepUpload && currentStep"
+          :step="currentStep"
+          :case-id="props.caseId"
+          :company-id="detail.case.companyId ?? undefined"
+          :documents="detail.documents"
+          @refresh="refetch"
+        />
+
+        <div
+          v-if="
+            currentStep.template?.stepType === 'submission' && missingRequiredDocumentTypes.length
+          "
+          class="grid gap-4"
+        >
+          <h3 class="text-base font-medium text-highlighted">
+            {{ t("cases.submission.attachTitle") }}
+          </h3>
+          <CaseStepUpload
+            v-for="type in missingRequiredDocumentTypes"
+            :key="type.id"
+            :step="{ id: `${currentStep.id}:${type.id}`, requiredDocumentType: type }"
+            :case-id="props.caseId"
+            :company-id="detail.case.companyId ?? undefined"
+            :documents="detail.documents"
+            @refresh="refetch"
+          />
+        </div>
+
         <CaseStepDocgenPreview
           v-if="showDocgenPreview"
           :case-id="props.caseId"
@@ -465,39 +553,39 @@ async function cancel(): Promise<void> {
           :title="stepError"
         />
 
-        <StickyActionBar>
-          <template #secondary>
-            <UButton
-              color="neutral"
-              variant="ghost"
-              icon="i-tabler-arrow-left"
-              :ui="{ leadingIcon: 'rtl:rotate-180' }"
-              :disabled="currentIndex === 0"
-              :label="t('common.actions.back')"
-              @click="currentIndex -= 1"
-            />
-          </template>
-
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
           <UButton
-            v-if="canSkip"
             color="neutral"
-            variant="outline"
-            icon="i-tabler-player-skip-forward"
-            :label="t('cases.runner.skip')"
-            :loading="saving"
-            :disabled="saving"
-            @click="skipCurrent"
+            variant="ghost"
+            icon="i-tabler-arrow-left"
+            :ui="{ leadingIcon: 'rtl:rotate-180' }"
+            :disabled="currentIndex === 0"
+            :label="t('common.actions.back')"
+            @click="currentIndex -= 1"
           />
-          <UButton
-            v-if="!isLastStep && currentStep.template?.stepType !== 'submission'"
-            icon="i-tabler-arrow-right"
-            :ui="{ trailingIcon: 'rtl:rotate-180' }"
-            :label="t('cases.runner.continue')"
-            :loading="saving"
-            :disabled="saving"
-            @click="continueStep"
-          />
-        </StickyActionBar>
+
+          <div class="ms-auto flex flex-wrap items-center gap-2">
+            <UButton
+              v-if="canSkip"
+              color="neutral"
+              variant="outline"
+              icon="i-tabler-player-skip-forward"
+              :label="t('cases.runner.skip')"
+              :loading="saving"
+              :disabled="saving"
+              @click="skipCurrent"
+            />
+            <UButton
+              v-if="!isLastStep && currentStep.template?.stepType !== 'submission'"
+              icon="i-tabler-arrow-right"
+              :ui="{ trailingIcon: 'rtl:rotate-180' }"
+              :label="t('cases.runner.continue')"
+              :loading="saving"
+              :disabled="saving"
+              @click="continueStep"
+            />
+          </div>
+        </div>
       </section>
     </div>
   </div>

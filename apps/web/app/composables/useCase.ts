@@ -105,21 +105,34 @@ export function useCase() {
   function saveFieldsMutation(caseId: string) {
     return useMutation({
       ...$orpc.cases.saveFields.mutationOptions(),
-      onSuccess: () => invalidateCase(caseId),
+      onSuccess: () =>
+        queryClient.invalidateQueries({
+          queryKey: $orpc.cases.activity.queryKey({ input: { caseId } }),
+        }),
     });
   }
 
   function completeStepMutation(caseId: string) {
     return useMutation({
       ...$orpc.cases.completeStep.mutationOptions(),
-      onSuccess: () => invalidateCase(caseId),
+      onSuccess: (data) => {
+        queryClient.setQueryData($orpc.cases.get.queryKey({ input: { caseId } }), data);
+        queryClient.invalidateQueries({
+          queryKey: $orpc.cases.activity.queryKey({ input: { caseId } }),
+        });
+      },
     });
   }
 
   function skipStepMutation(caseId: string) {
     return useMutation({
       ...$orpc.cases.skipStep.mutationOptions(),
-      onSuccess: () => invalidateCase(caseId),
+      onSuccess: (data) => {
+        queryClient.setQueryData($orpc.cases.get.queryKey({ input: { caseId } }), data);
+        queryClient.invalidateQueries({
+          queryKey: $orpc.cases.activity.queryKey({ input: { caseId } }),
+        });
+      },
     });
   }
 

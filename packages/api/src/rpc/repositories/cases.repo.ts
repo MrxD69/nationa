@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, isNull, or, sql, type SQL } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, ne, or, sql, type SQL } from "drizzle-orm";
 
 import {
   agencies,
@@ -69,7 +69,7 @@ export async function listTemplateSteps(db: Db, templateId: string): Promise<Pro
   return db
     .select()
     .from(procedureSteps)
-    .where(eq(procedureSteps.templateId, templateId))
+    .where(and(eq(procedureSteps.templateId, templateId), ne(procedureSteps.stepType, "review")))
     .orderBy(procedureSteps.position);
 }
 
@@ -358,7 +358,8 @@ export async function listCaseStepStatuses(
   return db
     .select({ status: caseSteps.status })
     .from(caseSteps)
-    .where(eq(caseSteps.caseId, caseId));
+    .innerJoin(procedureSteps, eq(procedureSteps.id, caseSteps.templateStepId))
+    .where(and(eq(caseSteps.caseId, caseId), ne(procedureSteps.stepType, "review")));
 }
 
 export async function markCaseAwaitingReviewIfOpen(db: Db, caseId: string): Promise<void> {

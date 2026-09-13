@@ -9,7 +9,7 @@ const companyId = computed(() => accessibleCompanyId.value ?? undefined);
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-6xl">
+  <div class="w-full">
     <ActionHub :company-id="companyId" />
   </div>
 </template>

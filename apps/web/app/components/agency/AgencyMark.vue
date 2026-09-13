@@ -15,7 +15,7 @@ const props = withDefaults(
 );
 
 const LOGOS: Record<string, string> = {
-  rne: "/agencies/rne.png",
+  rne: "/agencies/rne.jpg",
   dgi: "/agencies/dgi.jpg",
   apii: "/agencies/apii.png",
 };

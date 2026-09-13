@@ -55,16 +55,16 @@ function isActive(entry: PinnedAction): boolean {
         :title="`${label(entry)} — ${Math.round(entry.progress)}%`"
         :aria-label="`${label(entry)} — ${Math.round(entry.progress)}%`"
         :aria-current="isActive(entry) ? 'page' : undefined"
-        class="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 transition-colors"
+        class="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-md px-3 py-1.5 transition-colors"
         :class="[
           props.collapsed ? 'justify-center' : 'justify-start',
-          isActive(entry) ? 'bg-primary/10 text-primary' : 'text-toned hover:bg-elevated',
+          isActive(entry) ? 'is-active bg-primary/10 text-primary' : 'text-toned hover:bg-elevated',
         ]"
       >
         <ActionProgressRing
           aria-hidden="true"
           :value="entry.progress"
-          :size="props.collapsed ? 30 : 26"
+          :size="props.collapsed ? 24 : 26"
           :show-value="false"
           :label="undefined"
         />

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import SectionHeader from "~/components/ui/SectionHeader.vue";
 import type { DocgenQuestion } from "@nationa/api/rpc/services/docgen.service";
 
 const props = defineProps<{
@@ -25,17 +24,19 @@ function optionsFor(question: DocgenQuestion) {
 </script>
 
 <template>
-  <section class="space-y-4">
-    <SectionHeader
-      :title="t('docgen.questionnaire.title')"
-      :description="t('docgen.questionnaire.subtitle')"
-    />
+  <section class="space-y-3">
+    <div>
+      <h2 class="text-base font-semibold text-highlighted">
+        {{ t("docgen.questionnaire.title") }}
+      </h2>
+      <p class="text-sm text-muted">{{ t("docgen.questionnaire.subtitle") }}</p>
+    </div>
 
     <div v-if="props.questions.length === 0" class="text-base text-muted">
       {{ t("docgen.questionnaire.empty") }}
     </div>
 
-    <div v-else class="grid gap-4 border-t border-default pt-4">
+    <div v-else class="grid gap-3 border-t border-default pt-3">
       <UFormField v-for="question in props.questions" :key="question.id" :label="question.question">
         <USelect
           v-if="optionsFor(question).length > 0"

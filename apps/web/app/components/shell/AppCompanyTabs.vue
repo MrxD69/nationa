@@ -38,7 +38,7 @@ const activeKey = computed(() => {
 </script>
 
 <template>
-  <div class="relative min-w-0">
+  <div class="min-w-0">
     <nav
       class="flex min-w-0 scroll-px-4 items-center gap-2 overflow-x-auto pt-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       :aria-label="t('shell.company.portfolio')"
@@ -59,15 +59,5 @@ const activeKey = computed(() => {
         {{ tab.label }}
       </NuxtLink>
     </nav>
-
-    <!-- Edge fades hint that the tab strip scrolls. Side flips in RTL. -->
-    <div
-      class="pointer-events-none absolute inset-y-0 start-0 w-8 bg-linear-to-r from-[var(--ui-bg)] to-transparent rtl:bg-linear-to-l"
-      aria-hidden="true"
-    />
-    <div
-      class="pointer-events-none absolute inset-y-0 end-0 w-8 bg-linear-to-l from-[var(--ui-bg)] to-transparent rtl:bg-linear-to-r"
-      aria-hidden="true"
-    />
   </div>
 </template>

@@ -311,7 +311,7 @@ const LABEL_CLASS = "text-xs font-semibold tracking-wide text-dimmed uppercase";
         </span>
 
         <span class="flex shrink-0 items-center gap-2">
-          <ActionStatusBadge :state="badgeState" size="sm" />
+          <ActionStatusBadge v-if="badgeState !== 'locked'" :state="badgeState" size="sm" />
           <UIcon
             v-if="hasDetails"
             name="i-tabler-chevron-down"

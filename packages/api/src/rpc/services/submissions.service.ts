@@ -2,7 +2,7 @@ import { ORPCError } from "@orpc/server";
 
 import type { Finding, Submission } from "@nationa/db";
 
-import { requireUser } from "../../auth/access";
+import { isMinistryAgent, requireUser } from "../../auth/access";
 import {
   computeCleanliness,
   type CleanlinessBreakdown,
@@ -517,8 +517,20 @@ export async function presignSubmissionDocument(
 
 export async function listMyAgencies(context: Context) {
   const user = requireUser(context);
-  const rows = await repo.listMyAgencies(context.db, user.id);
 
+  if (await isMinistryAgent(context, user.id)) {
+    const [allAgencies, memberships] = await Promise.all([
+      repo.listAllActiveAgencies(context.db),
+      repo.listMyAgencies(context.db, user.id),
+    ]);
+    const roleByAgency = new Map(memberships.map((row) => [row.agency.id, row.role]));
+    return allAgencies.map((agency) => ({
+      ...agency,
+      role: roleByAgency.get(agency.id) ?? "admin",
+    }));
+  }
+
+  const rows = await repo.listMyAgencies(context.db, user.id);
   return rows.map((row) => ({ ...row.agency, role: row.role }));
 }
 

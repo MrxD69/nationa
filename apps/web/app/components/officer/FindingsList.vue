@@ -44,37 +44,38 @@ function translate(finding: Finding, field: "title" | "message" | "fix"): string
 </script>
 
 <template>
-  <div v-if="ordered.length === 0" class="text-base text-muted">
+  <div v-if="ordered.length === 0" class="text-sm text-muted xl:ps-5">
     {{ t("officer.review.noFindings") }}
   </div>
 
-  <div v-else class="space-y-3">
-    <article
-      v-for="finding in ordered"
-      :key="finding.id"
-      class="rounded-md border border-default p-3"
-    >
+  <ul v-else class="w-full divide-y divide-default">
+    <li v-for="finding in ordered" :key="finding.id" class="py-2 xl:ps-5">
       <div class="flex flex-wrap items-center gap-2">
         <SeverityBadge :severity="finding.severity" />
-        <span class="text-sm text-muted">{{
-          t(`checks.status.${finding.status}`, finding.status)
-        }}</span>
-      </div>
-      <h3 class="mt-2 text-base font-semibold text-highlighted">
-        <NuxtLink
-          v-if="finding.id"
-          :to="`/findings/${finding.id}`"
-          class="rounded-md transition-control hover:underline"
-          :title="t('officer.review.openFinding')"
-        >
+        <UBadge color="neutral" variant="subtle" size="sm">
+          {{ t(`checks.status.${finding.status}`, finding.status) }}
+        </UBadge>
+        <span class="min-w-0 text-sm font-medium text-highlighted">
           {{ translate(finding, "title") }}
-        </NuxtLink>
-        <template v-else>{{ translate(finding, "title") }}</template>
-      </h3>
-      <p class="mt-1 text-base text-toned">{{ translate(finding, "message") }}</p>
-      <p v-if="translate(finding, 'fix')" class="mt-2 text-sm text-muted">
+        </span>
+        <UButton
+          v-if="finding.id"
+          class="ms-auto"
+          size="md"
+          color="neutral"
+          variant="ghost"
+          icon="i-tabler-external-link"
+          :to="`/findings/${finding.id}`"
+          :title="t('officer.review.openFinding')"
+          :label="t('officer.review.openFinding')"
+        />
+      </div>
+      <p class="mt-1 truncate text-sm text-toned" :title="translate(finding, 'message')">
+        {{ translate(finding, "message") }}
+      </p>
+      <p v-if="translate(finding, 'fix')" class="mt-1 text-sm text-muted">
         {{ t("checks.detail.suggestedFix") }} : {{ translate(finding, "fix") }}
       </p>
-    </article>
-  </div>
+    </li>
+  </ul>
 </template>

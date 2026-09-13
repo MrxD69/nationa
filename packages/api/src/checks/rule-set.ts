@@ -1,10 +1,13 @@
 import { beneficialOwnerDeclarationMissing } from "./rules/beneficial-owner";
+import { beneficialOwnerDeclarationOutdated } from "./rules/beneficial-owner-outdated";
 import {
   capitalMismatch,
   companyNameMismatch,
   legalFormMismatch,
 } from "./rules/company-consistency";
+import { companyRegistryStateInvalid } from "./rules/company-registry-state";
 import { documentExpired } from "./rules/document-validity";
+import { financialStatementsOverdue } from "./rules/financial-statements-overdue";
 import { obligationDeadlineNotMet } from "./rules/obligation-deadlines";
 import { personNationalIdMismatch } from "./rules/person-identity";
 import { requiredDocumentMissing } from "./rules/required-documents";
@@ -19,6 +22,9 @@ export const RULES: RuleDefinition[] = [
   personNationalIdMismatch,
   beneficialOwnerDeclarationMissing,
   obligationDeadlineNotMet,
+  companyRegistryStateInvalid,
+  beneficialOwnerDeclarationOutdated,
+  financialStatementsOverdue,
 ];
 
 export function evaluateRules(ctx: RuleContext): FindingDraft[] {
@@ -80,6 +86,24 @@ const FR_FINDING_TEXT: Record<string, FindingText> = {
     message:
       "L'obligation « {obligation} » ({agency}) était due le {dueDate} et aucune déclaration complétée n'a été trouvée.",
     fix: "Préparez et soumettez la déclaration correspondante auprès de {agency}.",
+  },
+  company_registry_state_invalid: {
+    title: "Société non active au registre : {state}",
+    message:
+      "La société est enregistrée dans un état qui ne permet pas de poursuivre la procédure (« {state} »).",
+    fix: "Régularisez la situation de la société auprès du registre avant de continuer.",
+  },
+  beneficial_owner_declaration_outdated: {
+    title: "Déclaration des bénéficiaires effectifs à mettre à jour",
+    message:
+      "La société est active, mais sa dernière déclaration des bénéficiaires effectifs date du {lastDate}. Une mise à jour est requise tous les {months} mois.",
+    fix: "Déposez une déclaration à jour des bénéficiaires effectifs.",
+  },
+  financial_statements_overdue: {
+    title: "États financiers à déposer",
+    message:
+      "La société est active, mais ses derniers états financiers datent du {lastDate}. Le dépôt est requis tous les {months} mois.",
+    fix: "Déposez les états financiers manquants auprès du registre.",
   },
 };
 

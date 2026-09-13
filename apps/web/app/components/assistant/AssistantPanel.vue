@@ -342,7 +342,8 @@ onMounted(() => {
 <template>
   <div class="relative flex h-full min-h-0 flex-1 flex-col">
     <div class="shrink-0 border-b border-default">
-      <div class="flex items-center gap-1.5 px-3 py-2">
+      <!-- py-1.5 (not py-2): row height must match the company tab strip below the navbar so both border-b separators land on the same y. -->
+      <div class="flex items-center gap-1.5 px-3 py-1.5">
         <UPopover :content="{ align: 'start' }">
           <UButton
             color="neutral"

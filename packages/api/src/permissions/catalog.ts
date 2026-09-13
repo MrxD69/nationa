@@ -53,6 +53,28 @@ export const PERMISSIONS = {
   "officer.document.read": { scope: "agency", description: "Read officer documents" },
   "officer.company_patterns.read": { scope: "agency", description: "View company patterns" },
   "officer.analytics.read": { scope: "agency", description: "View officer analytics" },
+  "officer.queue.assign": {
+    scope: "agency",
+    description: "Assign or claim submissions in the queue",
+  },
+  "officer.deficiency.manage": {
+    scope: "agency",
+    description: "Issue deficiency notices requesting corrections",
+  },
+  "officer.conditions.read": {
+    scope: "agency",
+    description: "View obligation and condition deadlines",
+  },
+  "officer.registry.read": {
+    scope: "agency",
+    description: "View registry consistency and duplicates",
+  },
+  "officer.dossier.read": { scope: "agency", description: "View the cross-agency company dossier" },
+  "officer.integrity.read": {
+    scope: "agency",
+    description: "View document integrity and authenticity",
+  },
+  "officer.ai.use": { scope: "agency", description: "Use the officer AI assistant" },
 
   // Platform
   "platform.admin": { scope: "platform", description: "Platform administration" },
@@ -74,8 +96,18 @@ const ROLE_MATRICES: Record<PermissionScope, readonly (readonly Permission[])[]>
   platform: Object.values(PLATFORM_ROLE_PERMISSIONS),
 };
 
+// In every scope the `admin` role is defined as the full permission superset for
+// that scope, so any permission missing from `admin` means the superset array
+// drifted out of sync. Look it up explicitly rather than relying on array order.
+const ADMIN_ROLE_PERMISSIONS: Record<PermissionScope, readonly Permission[]> = {
+  company: COMPANY_ROLE_PERMISSIONS.admin,
+  agency: AGENCY_ROLE_PERMISSIONS.admin,
+  platform: PLATFORM_ROLE_PERMISSIONS.admin,
+};
+
 export function assertPermissionCoverage(): void {
   const missing: Permission[] = [];
+  const missingFromAdmin: Permission[] = [];
 
   for (const permission of Object.keys(PERMISSIONS) as Permission[]) {
     const scope = PERMISSIONS[permission].scope;
@@ -83,11 +115,20 @@ export function assertPermissionCoverage(): void {
     if (!covered) {
       missing.push(permission);
     }
+    if (!ADMIN_ROLE_PERMISSIONS[scope].includes(permission)) {
+      missingFromAdmin.push(permission);
+    }
   }
 
   if (missing.length > 0) {
     throw new Error(
       `Permission coverage check failed; not granted to any role: ${missing.join(", ")}`,
+    );
+  }
+
+  if (missingFromAdmin.length > 0) {
+    throw new Error(
+      `Permission coverage check failed; not granted to the "admin" role of its scope: ${missingFromAdmin.join(", ")}`,
     );
   }
 }

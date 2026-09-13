@@ -8,6 +8,7 @@ type BunServer = { port: number };
 type BunRuntime = {
   serve(options: {
     port: number;
+    hostname?: string;
     fetch: (request: Request) => Response | Promise<Response>;
   }): BunServer;
 };
@@ -32,6 +33,10 @@ let server: BunServer;
 try {
   server = bun.serve({
     port,
+    // Bind the IPv6 wildcard ("::"), which also accepts IPv4-mapped addresses (dual-stack).
+    // Binding IPv4-only left [::1]:PORT free, so a stray dev server could squat it and shadow
+    // the API for browsers that resolve localhost to ::1 (they got HTML, not oRPC JSON).
+    hostname: "::",
     fetch: (request) => app.fetch(request, process.env as unknown as ServerRuntimeEnv),
   });
 } catch (error) {
@@ -39,7 +44,7 @@ try {
     console.error(
       [
         `Port ${port} is already in use. Another dev server is likely running.`,
-        `Stop it with: lsof -ti:${port} | xargs -r kill`,
+        `Stop it with: lsof -tiTCP:${port} -sTCP:LISTEN | xargs -r kill`,
         `To run this server on a different port instead, use: PORT=${port + 1} pnpm dev:server`,
       ].join("\n"),
     );
@@ -48,7 +53,7 @@ try {
   throw error;
 }
 
-console.log(`[server] listening on http://localhost:${server.port}`);
+console.log(`[server] listening on http://localhost:${server.port} (dual-stack)`);
 
 // ponytail: one log line, no deps. Masked host only — never print password.
 const dbUrl = process.env.DATABASE_URL ?? "";

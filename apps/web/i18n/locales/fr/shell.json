@@ -1,5 +1,10 @@
 {
   "shell": {
+    "brand": {
+      "republic": "République Tunisienne",
+      "ministry": "Ministère des Finances",
+      "aria": "République Tunisienne — Ministère des Finances"
+    },
     "rail": {
       "companies": "Entreprises",
       "myCompany": "Mon entreprise",

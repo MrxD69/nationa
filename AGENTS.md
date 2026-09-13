@@ -33,3 +33,7 @@ Specs, delegation prompts, reports explicit + unambiguous: exact file paths, sha
 ## Git guardrails
 
 FORBIDDEN unless user asked in current message: git reset/restore/checkout --/clean -fd/stash/rebase/commit/push/add -A, any full-repo restore. Read-only allowed: git status --short, git diff --stat, git log --oneline -10, git branch --show-current. Touch only files assigned in prompt; never clobber parallel work.
+
+## Plan only when needed
+
+Planner/architect are exception-only. Orchestrator usually partitions work itself and spawns builders directly with the full work package inline in each prompt.

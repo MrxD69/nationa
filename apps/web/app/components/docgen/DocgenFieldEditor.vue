@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import SectionHeader from "~/components/ui/SectionHeader.vue";
 import type { DocgenField } from "@nationa/api/rpc/services/docgen.service";
 
 const props = defineProps<{
@@ -45,10 +44,13 @@ function sourceLabel(kind: string): string {
 </script>
 
 <template>
-  <section class="space-y-4">
-    <SectionHeader :title="t('docgen.editor.title')" :description="t('docgen.editor.subtitle')" />
+  <section class="space-y-3">
+    <div>
+      <h2 class="text-base font-semibold text-highlighted">{{ t("docgen.editor.title") }}</h2>
+      <p class="text-sm text-muted">{{ t("docgen.editor.subtitle") }}</p>
+    </div>
 
-    <div class="grid gap-4 border-t border-default pt-4 sm:grid-cols-2">
+    <div class="grid gap-3 border-t border-default pt-3 sm:grid-cols-2">
       <UFormField v-for="field in props.fields" :key="field.key" :label="label(field)">
         <UTextarea
           v-if="isLong(field)"

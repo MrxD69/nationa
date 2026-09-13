@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import IntegrityPanel from "~/components/officer/trust/IntegrityPanel.vue";
+
 type DocumentVersion = {
   id: string;
   fileName?: string | null;
@@ -14,17 +16,87 @@ type DocumentEntry = {
 
 const props = defineProps<{
   documents: DocumentEntry[];
-  agencyId?: string;
+  agencyId?: string | null;
   companyId?: string;
 }>();
 
 const { t } = useI18n();
+const toast = useToast();
 const api = useApi();
 
 const selectedId = ref<string | null>(null);
 const url = ref<string | null>(null);
 const loading = ref(false);
 const loadError = ref(false);
+
+const integrityOpen = ref(false);
+const integrityLoading = ref(false);
+const integrityError = ref(false);
+const integrityData = ref<any>(null);
+const integrityByVersion = ref<Record<string, { hasHash: boolean }>>({});
+
+function formatBytes(value?: number | null): string {
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
+    return "—";
+  }
+  const units = ["o", "Ko", "Mo", "Go"];
+  let size = value;
+  let unit = 0;
+  while (size >= 1024 && unit < units.length - 1) {
+    size /= 1024;
+    unit += 1;
+  }
+  const rounded = unit === 0 ? String(size) : size.toFixed(size >= 10 ? 0 : 1);
+  return `${rounded} ${units[unit]}`;
+}
+
+function fileTypeLabel(mimeType?: string | null): string {
+  if (!mimeType) {
+    return t("officerTrust.dossier.document.typeOther");
+  }
+  if (mimeType === "application/pdf") {
+    return t("officerTrust.dossier.document.typePdf");
+  }
+  if (mimeType.startsWith("image/")) {
+    return t("officerTrust.dossier.document.typeImage");
+  }
+  return t("officerTrust.dossier.document.typeOther");
+}
+
+function isVerified(entry: DocumentEntry): boolean {
+  const versionId = entry.version?.id;
+  if (!versionId) {
+    return false;
+  }
+  return integrityByVersion.value[versionId]?.hasHash === true;
+}
+
+async function verify(entry: DocumentEntry) {
+  const versionId = entry.version?.id;
+  if (!versionId || !props.agencyId) {
+    return;
+  }
+  integrityOpen.value = true;
+  integrityLoading.value = true;
+  integrityError.value = false;
+  integrityData.value = null;
+  try {
+    const result = await api.officer.documentIntegrity({
+      agencyId: props.agencyId,
+      documentVersionId: versionId,
+    });
+    integrityData.value = result;
+    integrityByVersion.value = {
+      ...integrityByVersion.value,
+      [versionId]: { hasHash: result?.hasHash === true },
+    };
+  } catch {
+    integrityError.value = true;
+    toast.add({ title: t("officerTrust.integrity.error"), color: "error" });
+  } finally {
+    integrityLoading.value = false;
+  }
+}
 
 const selected = computed(() => {
   if (!selectedId.value) {
@@ -74,60 +146,92 @@ watch(
 </script>
 
 <template>
-  <UCard class="flex h-full flex-col" :ui="{ root: 'rounded-lg' }">
-    <template #header>
-      <div class="flex items-center justify-between gap-2">
-        <h2 class="text-base font-semibold text-highlighted">
-          {{ t("officer.review.documents") }}
-        </h2>
-        <UBadge color="neutral" variant="soft" size="lg">{{ documents.length }}</UBadge>
-      </div>
-    </template>
+  <div class="flex h-full min-h-0 flex-col">
+    <div class="flex items-center justify-between gap-2 pb-2">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-muted">
+        {{ t("officer.review.documents") }}
+      </h2>
+      <UBadge color="neutral" variant="soft" size="sm">{{ documents.length }}</UBadge>
+    </div>
 
-    <div v-if="documents.length === 0" class="text-base text-muted">
+    <div v-if="documents.length === 0" class="pt-3 text-sm text-muted">
       {{ t("officer.review.noDocuments") }}
     </div>
 
-    <div v-else class="grid min-h-0 gap-4 lg:grid-cols-[minmax(0,14rem)_minmax(0,1fr)]">
-      <ul class="max-h-80 space-y-1 overflow-y-auto lg:max-h-none">
+    <div v-else class="grid min-h-0 flex-1 gap-4 pt-3 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
+      <ul
+        class="min-h-0 w-full divide-y divide-default overflow-y-auto lg:max-h-none"
+        :aria-label="t('officer.review.documents')"
+      >
         <li v-for="(entry, index) in documents" :key="entry.version?.id ?? index">
           <button
             type="button"
-            class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-start text-base transition-control"
+            class="flex w-full items-start gap-2 px-3 py-2 text-start text-sm transition-control"
             :class="
               entry.version?.id === selectedId
-                ? 'bg-elevated text-highlighted'
+                ? 'bg-accented/40 text-highlighted'
                 : 'text-muted hover-surface'
             "
             @click="select(entry)"
           >
-            <UIcon name="i-tabler-file-text" class="size-4 shrink-0" />
-            <span class="min-w-0 flex-1 truncate">
-              {{ entry.document?.title || entry.version?.fileName || "—" }}
+            <UIcon name="i-tabler-file-text" class="mt-0.5 size-4 shrink-0" />
+            <span class="min-w-0 flex-1">
+              <span class="block min-w-0 truncate">
+                {{ entry.document?.title || entry.version?.fileName || "—" }}
+              </span>
+              <span class="mt-1 flex flex-wrap items-center gap-2">
+                <span class="text-xs text-muted">
+                  {{ fileTypeLabel(entry.version?.mimeType) }} ·
+                  {{ formatBytes(entry.version?.size) }}
+                </span>
+                <UBadge
+                  :color="isVerified(entry) ? 'success' : 'neutral'"
+                  variant="subtle"
+                  size="sm"
+                  :icon="isVerified(entry) ? 'i-tabler-shield-check' : 'i-tabler-shield-question'"
+                  :label="
+                    isVerified(entry)
+                      ? t('officerTrust.integrity.verified')
+                      : t('officerTrust.integrity.notVerified')
+                  "
+                />
+              </span>
             </span>
           </button>
+
+          <div v-if="agencyId" class="px-3 pb-2 ps-9">
+            <UButton
+              size="md"
+              color="neutral"
+              variant="soft"
+              icon="i-tabler-shield-search"
+              :label="t('officerTrust.dossier.document.verify')"
+              @click="verify(entry)"
+            />
+          </div>
         </li>
       </ul>
 
-      <div class="min-h-80 overflow-hidden rounded-md border border-default bg-elevated/40">
-        <div v-if="loading" class="flex h-80 items-center justify-center text-muted">
+      <!-- The preview is a viewer surface: it keeps a single frame border. -->
+      <div class="flex min-h-80 flex-1 flex-col overflow-hidden rounded-md border border-default">
+        <div v-if="loading" class="flex flex-1 items-center justify-center text-muted">
           <UIcon name="i-tabler-loader-2" class="size-5 animate-spin" />
         </div>
 
         <div
           v-else-if="!url"
-          class="flex h-80 flex-col items-center justify-center gap-2 p-4 text-center text-muted"
+          class="flex flex-1 flex-col items-center justify-center gap-2 p-4 text-center text-muted"
         >
           <UIcon name="i-tabler-file-off" class="size-6" />
-          <p class="text-base">{{ t("officer.review.previewUnavailable") }}</p>
+          <p class="text-sm">{{ t("officer.review.previewUnavailable") }}</p>
         </div>
 
-        <img v-else-if="isImage" :src="url" alt="" class="max-h-[32rem] w-full object-contain" />
+        <img v-else-if="isImage" :src="url" alt="" class="min-h-0 flex-1 object-contain" />
 
-        <iframe v-else-if="isPdf" :src="url" class="h-96 w-full lg:h-[32rem]" title="document" />
+        <iframe v-else-if="isPdf" :src="url" class="min-h-0 flex-1" title="document" />
 
-        <div v-else class="flex h-80 flex-col items-center justify-center gap-3 p-4 text-center">
-          <p class="text-base text-muted">{{ t("officer.review.previewUnavailable") }}</p>
+        <div v-else class="flex flex-1 flex-col items-center justify-center gap-3 p-4 text-center">
+          <p class="text-sm text-muted">{{ t("officer.review.previewUnavailable") }}</p>
         </div>
 
         <div v-if="url" class="flex justify-end border-t border-default p-2">
@@ -135,6 +239,7 @@ watch(
             :to="url"
             target="_blank"
             rel="noopener"
+            size="md"
             color="neutral"
             variant="ghost"
             icon="i-tabler-external-link"
@@ -143,5 +248,22 @@ watch(
         </div>
       </div>
     </div>
-  </UCard>
+
+    <USlideover
+      v-model:open="integrityOpen"
+      :title="t('officerTrust.integrity.title')"
+      :description="t('officerTrust.integrity.description')"
+      :ui="{ content: 'sm:max-w-lg' }"
+    >
+      <template #body>
+        <UAlert
+          v-if="integrityError && !integrityLoading"
+          color="error"
+          variant="subtle"
+          :title="t('officerTrust.integrity.error')"
+        />
+        <IntegrityPanel v-else :integrity="integrityData" :loading="integrityLoading" />
+      </template>
+    </USlideover>
+  </div>
 </template>

@@ -20,7 +20,7 @@ function onReject(): void {
 </script>
 
 <template>
-  <div class="space-y-3 border-t border-default pt-4">
+  <div class="space-y-3 border-t border-default pt-3">
     <div>
       <h2 class="text-base font-semibold text-highlighted">{{ t("docgen.approval.title") }}</h2>
       <p class="text-sm text-muted">{{ t("docgen.approval.disclaimer") }}</p>

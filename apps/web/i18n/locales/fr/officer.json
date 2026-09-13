@@ -3,15 +3,52 @@
     "title": "Back-office",
     "subtitle": "Traitement et analyse des soumissions",
     "nav": {
-      "queue": "File de traitement",
+      "groupOperations": "Traitement",
+      "groupMonitoring": "Contrôles",
+      "groupAdmin": "Administration",
+      "queue": "À traiter",
+      "conditions": "Échéances et conditions",
+      "registry": "Anomalies du registre",
+      "companies": "Entreprises",
+      "team": "Charge de l'équipe",
+      "agency": "Mon agence",
       "analytics": "Analytique"
     },
     "common": {
-      "backToWorkspace": "Espace de travail",
       "loading": "Chargement…",
       "retry": "Réessayer",
       "cancel": "Annuler",
-      "back": "Retour"
+      "back": "Retour",
+      "search": "Rechercher",
+      "agency": "Agence",
+      "organization": "Organisation",
+      "ministryScope": "Vue ministérielle — toutes les organisations",
+      "ministryAgent": "Agent ministériel",
+      "menu": "Menu",
+      "close": "Fermer",
+      "refresh": "Actualiser"
+    },
+    "ai": {
+      "title": "Assistant",
+      "subtitle": "Posez vos questions sur les dossiers et le registre.",
+      "open": "Assistant",
+      "readOnly": "L'assistant consulte les données uniquement : il ne modifie jamais un dossier.",
+      "placeholder": "Posez votre question…",
+      "send": "Envoyer",
+      "you": "Vous",
+      "assistant": "Assistant",
+      "streaming": "L'assistant écrit…",
+      "empty": "Posez une question sur les dossiers, les échéances ou les anomalies du registre.",
+      "retry": "Réessayer",
+      "error": "L'assistant n'a pas pu répondre. Réessayez.",
+      "suggestions": {
+        "title": "Questions suggérées",
+        "overdue": "Quels dossiers sont hors délai ?",
+        "deadlines": "Quelles échéances arrivent ce mois-ci ?",
+        "situation": "Quelle est la situation de « {name} » ?",
+        "situationFallback": "Quelle est la situation d'une entreprise ? Précisez son nom.",
+        "registry": "Quelles anomalies au registre ?"
+      }
     },
     "agency": {
       "label": "Organisme",

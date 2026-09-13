@@ -12,6 +12,7 @@ import {
   type CompanyRole,
 } from "../permissions";
 import { findAgencyMembership, findCompanyGrant } from "../rpc/repositories/access.repo";
+import { findProfileByUserId } from "../rpc/repositories/profiles.repo";
 
 export type CompanyAccess = {
   companyId: string;
@@ -31,6 +32,24 @@ export type CompanyPermissionAccess = {
 };
 
 const COMPANY_ADMIN_ROLES = new Set(["admin", "owner"]);
+
+/**
+ * A ministry agent is a platform-level role (`profiles.accountType = "admin"`)
+ * that oversees every organization. It never throws and returns `false` when
+ * the user is missing, has no profile row, or is a normal account.
+ */
+export async function isMinistryAgent(context: Context, userId?: string): Promise<boolean> {
+  const id = userId ?? context.user?.id;
+  if (!id) {
+    return false;
+  }
+  try {
+    const profile = await findProfileByUserId(context.db, id);
+    return profile?.accountType === "admin";
+  } catch {
+    return false;
+  }
+}
 
 export function requireUser(context: Context): AuthUser {
   if (!context.user) {
@@ -171,6 +190,12 @@ export async function assertAgencyPermission(
   const membership = await findAgencyMembership(context.db, agencyId, user.id);
 
   if (!membership || membership.status !== "active") {
+    // Ministry agents oversee every organization: grant full agency permissions.
+    if (await isMinistryAgent(context, user.id)) {
+      assertCan("admin", "agency", permission, null, { agencyId });
+      return { agencyId, role: "admin" };
+    }
+
     throw new ORPCError("FORBIDDEN", {
       message: "No access to this agency",
       data: { agencyId },

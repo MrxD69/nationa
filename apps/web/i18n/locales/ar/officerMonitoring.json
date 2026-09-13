@@ -1,0 +1,183 @@
+{
+  "officerMonitoring": {
+    "title": "المراقبة",
+    "subtitle": "المواعيد واختلالات السجل ومؤشرات المتابعة",
+    "common": {
+      "retry": "إعادة المحاولة",
+      "loading": "جارٍ التحميل…",
+      "back": "رجوع",
+      "all": "الكل",
+      "search": "بحث",
+      "error": "حدث خطأ."
+    },
+    "conditions": {
+      "title": "المواعيد والالتزامات",
+      "subtitle": "الشركات المتأخرة أو المقبلة على أجل قانوني",
+      "errorTitle": "تعذّر تحميل المواعيد",
+      "error": "تحقق من اتصالك ثم أعد المحاولة.",
+      "empty": "لا توجد مواعيد للعرض",
+      "emptyDescription": "لا توجد شركة مطابقة لهذا الفلتر. اختر «الكل» لعرض جميع المواعيد.",
+      "summary": "«متأخر» يعني أن الأجل قد انقضى؛ و«أجل قريب» يعني أنه يحل خلال الثلاثين يومًا المقبلة.",
+      "bucketFilter": "الأجل",
+      "bucketAll": "الكل",
+      "companyFilter": "الشركة",
+      "companyPlaceholder": "كل الشركات",
+      "loadMore": "تحميل المزيد",
+      "truncated": "القائمة محدودة بالنتائج الأولى. دقّق الفلاتر لرؤية المزيد.",
+      "penalty": "الغرامة",
+      "penaltyNone": "لا توجد غرامة مُبلَّغ عنها حاليًا.",
+      "expand": "عرض التفاصيل",
+      "collapse": "إخفاء التفاصيل",
+      "sortByDueDate": "الأجل",
+      "sortAsc": "الأقرب أولًا",
+      "sortDesc": "الأبعد أولًا",
+      "fiscalDefault": "إخلال ضريبي",
+      "kpi": {
+        "overdue": "متأخر",
+        "dueSoon": "أجل قريب",
+        "dueSoonHint": "خلال 30 يومًا",
+        "upcoming": "قادم",
+        "companies": "الشركات المعنية"
+      },
+      "buckets": {
+        "overdue": "متأخر",
+        "due_soon": "أجل قريب",
+        "upcoming": "قادم",
+        "unknown": "بدون أجل"
+      },
+      "periodicityLabels": {
+        "monthly": "شهرية",
+        "quarterly": "ربعية",
+        "semi_annual": "نصف سنوية",
+        "annual": "سنوية",
+        "event_based": "عند كل حدث",
+        "one_off": "لمرة واحدة",
+        "irregular": "غير منتظمة",
+        "unknown": "غير محددة"
+      },
+      "columns": {
+        "company": "الشركة",
+        "obligation": "الالتزام",
+        "periodicity": "الدورية",
+        "dueDate": "الأجل",
+        "remaining": "المتبقي",
+        "regime": "النظام",
+        "details": "التفاصيل"
+      },
+      "fields": {
+        "uniqueIdentifier": "المعرّف الفريد",
+        "legalForm": "الشكل القانوني",
+        "legalBasis": "الأساس القانوني",
+        "obligationCode": "رمز الالتزام",
+        "registryState": "حالة السجل",
+        "lastStatements": "آخر القوائم المالية",
+        "registryType": "نوع السجل"
+      },
+      "fiscalDefault12": "إخلال ضريبي (من 12 إلى 24 شهرًا)",
+      "fiscalDefault24": "إخلال ضريبي (أكثر من 24 شهرًا)",
+      "registryStateValues": {
+        "actif": "نشط",
+        "suspendu": "موقوف",
+        "radie": "مشطوب"
+      },
+      "days": {
+        "remaining": "بعد {count} يوم",
+        "late": "تأخر {count} يوم"
+      }
+    },
+    "registry": {
+      "title": "اختلالات السجل",
+      "subtitle": "تكرارات وتناقضات يجب تصحيحها قبل إصدار شهادة",
+      "errorTitle": "تعذّر تحميل الاختلالات",
+      "error": "تحقق من اتصالك ثم أعد المحاولة.",
+      "empty": "لم يُكتشف أي اختلال",
+      "emptyDescription": "السجل متسق: لا يوجد أي اختلال يستدعي انتباهك حاليًا.",
+      "severityFilter": "الخطورة",
+      "severityAll": "الكل",
+      "kindFilter": "نوع الاختلال",
+      "kindAll": "الكل",
+      "loadMore": "تحميل المزيد",
+      "openCompany": "فتح بطاقة الشركة",
+      "evidence": "العناصر المُثبتة",
+      "company": "الشركة",
+      "kind": "النوع",
+      "kpi": {
+        "errors": "أخطاء",
+        "warnings": "تحذيرات",
+        "infos": "معلومات"
+      },
+      "severities": {
+        "error": "خطأ",
+        "warning": "تحذير",
+        "info": "معلومة"
+      },
+      "kindLabels": {
+        "duplicate_identifier": "معرّف مكرر",
+        "duplicate_name": "اسم مكرر",
+        "capital_mismatch": "رأس مال غير متطابق",
+        "legal_form_mismatch": "شكل قانوني غير متطابق",
+        "stale_active": "كيان نشط بلا نشاط حديث",
+        "fiscal_default": "إخلال ضريبي",
+        "missing_financial_statements": "قوائم مالية مفقودة",
+        "suspended_with_open_submission": "موقوفة مع إيداع جارٍ"
+      }
+    },
+    "analytics": {
+      "title": "التحليلات",
+      "subtitle": "مؤشرات معالجة الهيئة",
+      "range": {
+        "label": "الفترة",
+        "description": "اختر الفترة المُحلَّلة. تملأ الاختصارات التواريخ تلقائيًا.",
+        "from": "من",
+        "to": "إلى",
+        "quick": "اختصارات",
+        "last7": "آخر 7 أيام",
+        "last30": "آخر 30 يومًا",
+        "thisMonth": "هذا الشهر",
+        "all": "كامل السجل"
+      },
+      "sections": {
+        "sla": "الالتزام بالآجال",
+        "decisionTime": "زمن المعالجة",
+        "team": "نشاط الفريق",
+        "deficiency": "طلبات التصحيح"
+      },
+      "sla": {
+        "description": "عدد الملفات المتأخرة أو المقاربة للأجل، ونسبة الملفات المتجاوزة.",
+        "onTime": "داخل الأجل",
+        "breached": "خارج الأجل",
+        "atRisk": "أجل قريب",
+        "breachRate": "نسبة التجاوز"
+      },
+      "decisionTime": {
+        "description": "متوسط الزمن ووسيطه قبل القرار، والتوزيع حسب الفئة.",
+        "avg": "المتوسط",
+        "median": "الوسيط",
+        "buckets": "توزيع الآجال"
+      },
+      "team": {
+        "description": "عبء المعالجة لكل موظف خلال الفترة.",
+        "officer": "الموظف",
+        "decisions": "القرارات",
+        "avgDelay": "متوسط الأجل",
+        "empty": "لا توجد قرارات مسجلة في هذه الفترة.",
+        "relative": "النسبة النسبية"
+      },
+      "deficiency": {
+        "description": "متابعة طلبات التصحيح المرسلة إلى الشركات.",
+        "issued": "الصادرة",
+        "resolved": "المُعالجة",
+        "awaiting": "في الانتظار",
+        "overdue": "متأخرة"
+      },
+      "forbidden": "هذا القسم مخصص للمشرفين والمسؤولين.",
+      "partialError": "تعذّر تحميل بعض البيانات.",
+      "buckets": {
+        "lt24": "أقل من 24 ساعة",
+        "lt72": "من يوم إلى 3 أيام",
+        "lt168": "من 3 إلى 7 أيام",
+        "gt168": "أكثر من 7 أيام"
+      }
+    }
+  }
+}

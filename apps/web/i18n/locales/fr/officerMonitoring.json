@@ -1,0 +1,183 @@
+{
+  "officerMonitoring": {
+    "title": "Contrôles",
+    "subtitle": "Échéances, anomalies du registre et indicateurs de suivi",
+    "common": {
+      "retry": "Réessayer",
+      "loading": "Chargement…",
+      "back": "Retour",
+      "all": "Toutes",
+      "search": "Rechercher",
+      "error": "Une erreur est survenue."
+    },
+    "conditions": {
+      "title": "Échéances et conditions",
+      "subtitle": "Entreprises en retard ou proches d'une échéance légale",
+      "errorTitle": "Impossible de charger les échéances",
+      "error": "Vérifiez votre connexion puis réessayez.",
+      "empty": "Aucune échéance à afficher",
+      "emptyDescription": "Aucune entreprise ne correspond à ce filtre. Choisissez « Toutes » pour voir l'ensemble des échéances.",
+      "summary": "« En retard » signifie que la date limite est dépassée ; « Échéance proche » qu'elle tombe dans les 30 prochains jours.",
+      "bucketFilter": "Échéance",
+      "bucketAll": "Toutes",
+      "companyFilter": "Entreprise",
+      "companyPlaceholder": "Toutes les entreprises",
+      "loadMore": "Charger plus",
+      "truncated": "La liste est limitée aux premiers résultats. Affinez les filtres pour en voir davantage.",
+      "penalty": "Pénalité",
+      "penaltyNone": "Aucune pénalité signalée pour le moment.",
+      "expand": "Voir les détails",
+      "collapse": "Masquer les détails",
+      "sortByDueDate": "Échéance",
+      "sortAsc": "Plus proche d'abord",
+      "sortDesc": "Plus lointaine d'abord",
+      "fiscalDefault": "Défaillance fiscale",
+      "kpi": {
+        "overdue": "En retard",
+        "dueSoon": "Échéance proche",
+        "dueSoonHint": "Sous 30 jours",
+        "upcoming": "À venir",
+        "companies": "Entreprises concernées"
+      },
+      "buckets": {
+        "overdue": "En retard",
+        "due_soon": "Échéance proche",
+        "upcoming": "À venir",
+        "unknown": "Sans échéance"
+      },
+      "periodicityLabels": {
+        "monthly": "Mensuelle",
+        "quarterly": "Trimestrielle",
+        "semi_annual": "Semestrielle",
+        "annual": "Annuelle",
+        "event_based": "À chaque événement",
+        "one_off": "Une seule fois",
+        "irregular": "Irrégulière",
+        "unknown": "Non précisée"
+      },
+      "columns": {
+        "company": "Entreprise",
+        "obligation": "Obligation",
+        "periodicity": "Périodicité",
+        "dueDate": "Échéance",
+        "remaining": "Reste",
+        "regime": "Régime",
+        "details": "Détails"
+      },
+      "fields": {
+        "uniqueIdentifier": "Identifiant unique",
+        "legalForm": "Forme juridique",
+        "legalBasis": "Base légale",
+        "obligationCode": "Code de l'obligation",
+        "registryState": "État du registre",
+        "lastStatements": "Derniers états financiers",
+        "registryType": "Type de registre"
+      },
+      "fiscalDefault12": "Défaillance fiscale (12 à 24 mois)",
+      "fiscalDefault24": "Défaillance fiscale (plus de 24 mois)",
+      "registryStateValues": {
+        "actif": "Actif",
+        "suspendu": "Suspendu",
+        "radie": "Radié"
+      },
+      "days": {
+        "remaining": "dans {count} j",
+        "late": "retard de {count} j"
+      }
+    },
+    "registry": {
+      "title": "Anomalies du registre",
+      "subtitle": "Doublons et incohérences à corriger avant d'émettre un certificat",
+      "errorTitle": "Impossible de charger les anomalies",
+      "error": "Vérifiez votre connexion puis réessayez.",
+      "empty": "Aucune anomalie détectée",
+      "emptyDescription": "Le registre est cohérent : aucune anomalie ne requiert votre attention pour le moment.",
+      "severityFilter": "Gravité",
+      "severityAll": "Toutes",
+      "kindFilter": "Type d'anomalie",
+      "kindAll": "Tous",
+      "loadMore": "Charger plus",
+      "openCompany": "Ouvrir la fiche entreprise",
+      "evidence": "Éléments constatés",
+      "company": "Entreprise",
+      "kind": "Type",
+      "kpi": {
+        "errors": "Erreurs",
+        "warnings": "Avertissements",
+        "infos": "Informations"
+      },
+      "severities": {
+        "error": "Erreur",
+        "warning": "Avertissement",
+        "info": "Information"
+      },
+      "kindLabels": {
+        "duplicate_identifier": "Identifiant en double",
+        "duplicate_name": "Nom en double",
+        "capital_mismatch": "Capital incohérent",
+        "legal_form_mismatch": "Forme juridique incohérente",
+        "stale_active": "Entité active sans activité récente",
+        "fiscal_default": "Défaillance fiscale",
+        "missing_financial_statements": "États financiers manquants",
+        "suspended_with_open_submission": "Suspendue avec dépôt en cours"
+      }
+    },
+    "analytics": {
+      "title": "Analytique",
+      "subtitle": "Indicateurs de traitement de l'organisme",
+      "range": {
+        "label": "Période",
+        "description": "Choisissez la période analysée. Les raccourcis remplissent les dates automatiquement.",
+        "from": "Du",
+        "to": "Au",
+        "quick": "Raccourcis",
+        "last7": "7 derniers jours",
+        "last30": "30 derniers jours",
+        "thisMonth": "Ce mois",
+        "all": "Tout l'historique"
+      },
+      "sections": {
+        "sla": "Respect des délais",
+        "decisionTime": "Délai de traitement",
+        "team": "Activité de l'équipe",
+        "deficiency": "Demandes de correction"
+      },
+      "sla": {
+        "description": "Nombre de dossiers hors délai ou proches de la limite, et part de dossiers en dépassement.",
+        "onTime": "Dans les délais",
+        "breached": "Hors délai",
+        "atRisk": "Échéance proche",
+        "breachRate": "Taux de dépassement"
+      },
+      "decisionTime": {
+        "description": "Temps moyen et médian avant décision, et répartition par tranche.",
+        "avg": "Délai moyen",
+        "median": "Délai médian",
+        "buckets": "Répartition des délais"
+      },
+      "team": {
+        "description": "Charge de traitement par agent sur la période.",
+        "officer": "Agent",
+        "decisions": "Décisions",
+        "avgDelay": "Délai moyen",
+        "empty": "Aucune décision enregistrée sur la période.",
+        "relative": "Part relative"
+      },
+      "deficiency": {
+        "description": "Suivi des demandes de correction envoyées aux entreprises.",
+        "issued": "Émises",
+        "resolved": "Résolues",
+        "awaiting": "En attente",
+        "overdue": "En retard"
+      },
+      "forbidden": "Cette section est réservée aux superviseurs et administrateurs.",
+      "partialError": "Certaines données n'ont pas pu être chargées.",
+      "buckets": {
+        "lt24": "Moins de 24 h",
+        "lt72": "1 à 3 jours",
+        "lt168": "3 à 7 jours",
+        "gt168": "Plus de 7 jours"
+      }
+    }
+  }
+}

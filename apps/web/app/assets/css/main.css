@@ -68,6 +68,7 @@
   --ui-primary: var(--ui-color-primary-600);
 
   /* --- App-level helpers --- */
+  --nationa-sidebar-bg: #16233a;
   --nationa-surface: #ffffff;
   --nationa-surface-subtle: var(--ui-color-neutral-50);
   --nationa-header-bg: rgb(255 255 255 / 0.85);
@@ -116,6 +117,73 @@
   --nationa-shadow-pop: 0 10px 24px -8px rgb(0 0 0 / 0.6), 0 2px 6px -2px rgb(0 0 0 / 0.5);
   --nationa-ring-hairline: 0 0 0 1px rgb(255 255 255 / 0.08);
   --nationa-focus-ring: 0 0 0 3px rgb(107 142 240 / 0.35);
+}
+
+/*
+ * Solid institutional sidebar shared by the front-office rail and the
+ * back-office rail. Always navy — in light AND dark mode — so it reads as
+ * distinct chrome instead of another white surface.
+ *
+ * It re-points Nuxt UI's semantic tokens inside its own subtree, so every
+ * descendant utility that references them (text-muted, text-dimmed, text-toned,
+ * hover:bg-elevated, the .hover-surface helper, borders) adapts automatically.
+ */
+.nationa-sidebar {
+  --ui-bg: var(--nationa-sidebar-bg);
+  --ui-bg-elevated: rgb(255 255 255 / 0.08);
+  --ui-bg-accented: rgb(255 255 255 / 0.14);
+  --ui-text-dimmed: rgb(255 255 255 / 0.55);
+  --ui-text-muted: rgb(255 255 255 / 0.72);
+  --ui-text-toned: rgb(255 255 255 / 0.86);
+  --ui-text: #ffffff;
+  --ui-text-highlighted: #ffffff;
+  --ui-border: rgb(255 255 255 / 0.16);
+  --ui-border-muted: rgb(255 255 255 / 0.1);
+  --ui-border-accented: rgb(255 255 255 / 0.28);
+  --nationa-hover: rgb(255 255 255 / 0.1);
+
+  /*
+   * Tailwind's color utilities (text-default, text-muted, hover:bg-elevated,
+   * border-default, …) consume these derived theme vars, which are declared on
+   * :root and therefore must be re-declared here for the sidebar subtree.
+   */
+  --text-color-dimmed: rgb(255 255 255 / 0.55);
+  --text-color-muted: rgb(255 255 255 / 0.72);
+  --text-color-toned: rgb(255 255 255 / 0.86);
+  --text-color-default: #ffffff;
+  --text-color-highlighted: #ffffff;
+  --text-color-inverted: #ffffff;
+  --background-color-default: var(--nationa-sidebar-bg);
+  --background-color-muted: rgb(255 255 255 / 0.04);
+  --background-color-elevated: rgb(255 255 255 / 0.08);
+  --background-color-accented: rgb(255 255 255 / 0.14);
+  --background-color-inverted: var(--nationa-sidebar-bg);
+  --border-color-default: rgb(255 255 255 / 0.16);
+  --border-color-muted: rgb(255 255 255 / 0.1);
+  --border-color-accented: rgb(255 255 255 / 0.28);
+  --border-color-inverted: #ffffff;
+  --ring-color-default: rgb(255 255 255 / 0.3);
+  --ring-color-muted: rgb(255 255 255 / 0.2);
+  --ring-color-accented: rgb(255 255 255 / 0.35);
+  --divide-color-default: rgb(255 255 255 / 0.16);
+  --divide-color-muted: rgb(255 255 255 / 0.1);
+  --divide-color-accented: rgb(255 255 255 / 0.28);
+
+  background-color: var(--nationa-sidebar-bg) !important;
+  color: #ffffff;
+}
+
+/* Active nav item on navy — overrides Nuxt UI's primary-tinted active style. */
+.nationa-sidebar .is-active {
+  background-color: rgb(255 255 255 / 0.16) !important;
+  color: #ffffff !important;
+}
+
+.nationa-sidebar .sidebar-brand-title {
+  color: #ffffff;
+}
+.nationa-sidebar .sidebar-brand-subtitle {
+  color: rgb(255 255 255 / 0.7);
 }
 
 @layer base {
@@ -286,4 +354,124 @@
   .hover-lift:hover {
     transform: none;
   }
+}
+
+/*
+ * Docgen rendered document — shared by the draft preview and the generated
+ * artifact. Flat "paper" typography separated by rules, no card chrome.
+ */
+.docgen-doc {
+  font-family:
+    "Inter", "Noto Naskh Arabic", "Noto Sans Arabic", "Segoe UI", Tahoma, system-ui, sans-serif;
+  color: var(--ui-text);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+.docgen-doc h1 {
+  margin: 0 0 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ui-text-highlighted);
+  text-align: center;
+}
+
+.docgen-doc h2 {
+  margin: 1.5rem 0 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--ui-border);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ui-text-highlighted);
+}
+
+.docgen-doc h2:first-child {
+  margin-top: 0;
+}
+
+.docgen-doc h3 {
+  margin: 1rem 0 0.35rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ui-text-toned);
+}
+
+.docgen-doc h4 {
+  margin: 0.75rem 0 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ui-text-toned);
+}
+
+.docgen-doc p {
+  margin: 0.35rem 0;
+}
+
+.docgen-doc .docgen-field {
+  margin: 0.3rem 0;
+}
+
+.docgen-doc .docgen-label {
+  font-weight: 600;
+  color: var(--ui-text-highlighted);
+}
+
+.docgen-doc .docgen-blank {
+  color: var(--ui-text-muted);
+  letter-spacing: 0.08em;
+}
+
+.docgen-doc .docgen-value[data-source="ai"] {
+  padding: 0 0.15rem;
+  border-bottom: 1px solid var(--ui-color-secondary-500);
+  border-radius: 2px;
+  background-color: color-mix(in srgb, var(--ui-color-secondary-500) 14%, transparent);
+}
+
+.docgen-doc .docgen-repeat {
+  margin: 0.5rem 0;
+}
+
+.docgen-doc .docgen-repeat-item {
+  margin: 0.5rem 0;
+  padding-inline-start: 0.85rem;
+  border-inline-start: 2px solid var(--ui-border-muted);
+}
+
+.docgen-doc .docgen-clause + .docgen-clause {
+  margin-top: 0.75rem;
+}
+
+.docgen-doc .docgen-signature {
+  margin-top: 2rem;
+}
+
+.docgen-doc .docgen-signature-role {
+  font-size: 0.875rem;
+  color: var(--ui-text-muted);
+}
+
+.docgen-doc .docgen-signature-line {
+  letter-spacing: 0.1em;
+}
+
+.docgen-doc .docgen-citations {
+  margin: 0.15rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.75rem;
+  color: var(--ui-text-muted);
+}
+
+.docgen-doc .docgen-citation {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.docgen-doc .docgen-footer {
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: var(--ui-text-dimmed);
+  text-align: end;
 }

@@ -5,8 +5,9 @@ const props = withDefaults(
     items: Array<{ date: string; value: number }>;
     emptyLabel?: string;
     valueSuffix?: string;
+    description?: string;
   }>(),
-  { emptyLabel: "", valueSuffix: "" },
+  { emptyLabel: "", valueSuffix: "", description: "" },
 );
 
 const max = computed(() => Math.max(...props.items.map((item) => item.value), 1));
@@ -20,23 +21,26 @@ function shortDate(value: string): string {
 </script>
 
 <template>
-  <section class="space-y-3 border-t border-default pt-4">
-    <h2 class="text-sm font-semibold text-highlighted">{{ title }}</h2>
+  <section class="space-y-2 border-t border-default pt-3">
+    <div class="space-y-0.5">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-muted">{{ title }}</h2>
+      <p v-if="description" class="text-sm text-muted">{{ description }}</p>
+    </div>
 
-    <p v-if="items.length === 0" class="text-base text-muted">{{ emptyLabel }}</p>
+    <p v-if="items.length === 0" class="text-sm text-muted">{{ emptyLabel }}</p>
 
-    <div v-else class="flex h-40 items-end gap-2 overflow-x-auto">
+    <div v-else class="flex h-20 items-end gap-1.5 overflow-x-auto">
       <div
         v-for="item in items"
         :key="item.date"
-        class="flex min-w-8 flex-1 flex-col items-center gap-1"
+        class="flex min-w-7 flex-1 flex-col items-center gap-1"
       >
-        <span class="text-[0.625rem] text-muted"> {{ item.value }}{{ valueSuffix }} </span>
+        <span class="text-xs tabular text-muted"> {{ item.value }}{{ valueSuffix }} </span>
         <div
           class="w-full rounded-t bg-inverted"
-          :style="{ height: `${Math.max((item.value / max) * 120, 4)}px` }"
+          :style="{ height: `${Math.max((item.value / max) * 80, 3)}px` }"
         />
-        <span class="text-[0.625rem] text-muted">{{ shortDate(item.date) }}</span>
+        <span class="text-xs text-muted">{{ shortDate(item.date) }}</span>
       </div>
     </div>
   </section>

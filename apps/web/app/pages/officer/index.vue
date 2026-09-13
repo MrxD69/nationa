@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import QueueTable from "~/components/officer/QueueTable.vue";
-import AgencySwitcher from "~/components/officer/AgencySwitcher.vue";
-import PageHeader from "~/components/ui/PageHeader.vue";
+import EmptyState from "~/components/ui/EmptyState.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
 
 definePageMeta({ layout: "officer", middleware: "auth" });
 
-const { t } = useI18n();
-const route = useRoute();
-const api = useApi();
+// Sentinel for the "Toutes" option: Reka UI forbids empty-string item values.
+const ALL = "all";
+const filterValue = (v: string): string | undefined => (v === ALL ? undefined : v);
 
-type Agency = { id: string; nameFr: string; nameAr?: string | null; role?: string };
+const { t } = useI18n();
+const api = useApi();
+const toast = useToast();
+
+const { agencies, agencyId, ready, error: agencyError, ensureLoaded } = useOfficerAgency();
+
 type QueueItem = {
   id: string;
   status: string;
@@ -17,28 +22,37 @@ type QueueItem = {
   cleanlinessScore?: string | number | null;
   submittedAt?: string | Date | null;
   ageDays: number | null;
+  dueAt?: string | Date | null;
+  slaBucket: "on_time" | "at_risk" | "breached" | "unknown";
+  assigneeUserId?: string | null;
+  assigneeName?: string | null;
+  isMine?: boolean;
   findingsCount: number;
   blockers: number;
   company?: {
+    id?: string | null;
     legalName?: string | null;
     legalNameAr?: string | null;
     tradeName?: string | null;
+    uniqueIdentifier?: string | null;
   } | null;
 };
 
-const agencies = ref<Agency[]>([]);
-const agencyId = ref<string | null>(null);
-const status = ref<string>("");
-const tier = ref<string>("");
-const sort = ref<"cleanliness" | "submittedAt">("cleanliness");
+const status = ref(ALL);
+const tier = ref(ALL);
+const slaBucket = ref(ALL);
+const assignment = ref(ALL);
+const sort = ref<"priority" | "submittedAt" | "cleanliness">("priority");
+
 const items = ref<QueueItem[]>([]);
 const nextCursor = ref<string | null>(null);
 const loading = ref(false);
 const error = ref<string | null>(null);
-const agenciesLoaded = ref(false);
+const claimingId = ref<string | null>(null);
+const bootstrapped = ref(false);
 
 const statusItems = computed(() => [
-  { label: t("officer.queue.allStatuses"), value: "" },
+  { label: t("officerOps.queue.allStatuses"), value: ALL },
   { label: t("submissions.status.queued"), value: "queued" },
   { label: t("submissions.status.in_review"), value: "in_review" },
   { label: t("submissions.status.escalated"), value: "escalated" },
@@ -48,45 +62,52 @@ const statusItems = computed(() => [
 ]);
 
 const tierItems = computed(() => [
-  { label: t("officer.queue.allTiers"), value: "" },
+  { label: t("officerOps.queue.allTiers"), value: ALL },
   { label: t("submissions.cleanliness.clean"), value: "clean" },
   { label: t("submissions.cleanliness.minor_concern"), value: "minor_concern" },
   { label: t("submissions.cleanliness.needs_review"), value: "needs_review" },
 ]);
 
+const slaItems = computed(() => [
+  { label: t("officerOps.queue.allSla"), value: ALL },
+  { label: t("officerOps.sla.onTime"), value: "on_time" },
+  { label: t("officerOps.sla.atRisk"), value: "at_risk" },
+  { label: t("officerOps.sla.breached"), value: "breached" },
+]);
+
+const assignmentItems = computed(() => [
+  { label: t("officerOps.queue.allAssignments"), value: ALL },
+  { label: t("officerOps.queue.mine"), value: "mine" },
+  { label: t("officerOps.queue.unassigned"), value: "unassigned" },
+]);
+
+const sortItems = computed(() => [
+  { label: t("officerOps.queue.sortPriority"), value: "priority" },
+  { label: t("officerOps.queue.sortSubmitted"), value: "submittedAt" },
+  { label: t("officerOps.queue.sortQuality"), value: "cleanliness" },
+]);
+
 async function load(append = false) {
   if (!agencyId.value) {
-    /*
-     * Returning silently here is what makes the retry button look broken: the
-     * click fires, nothing loads, and nothing is said. Say it instead.
-     */
-    error.value = agenciesLoaded.value ? t("officer.agency.none") : t("officer.queue.error");
     return;
   }
   loading.value = true;
   error.value = null;
   try {
-    const result = await api.officer.queue({
+    const result = await api.officer.opsQueue({
       agencyId: agencyId.value,
-      status: status.value
-        ? (status.value as
-            | "draft"
-            | "queued"
-            | "in_review"
-            | "approved"
-            | "rejected"
-            | "returned"
-            | "escalated")
-        : undefined,
-      tier: tier.value ? (tier.value as "clean" | "minor_concern" | "needs_review") : undefined,
-      sort: sort.value,
+      status: filterValue(status.value),
+      tier: filterValue(tier.value),
+      slaBucket: filterValue(slaBucket.value),
+      assignment: filterValue(assignment.value),
+      sort: sort.value as never,
       limit: 25,
       cursor: append ? (nextCursor.value ?? undefined) : undefined,
     });
     items.value = append ? [...items.value, ...result.items] : result.items;
-    nextCursor.value = result.nextCursor;
-  } catch (cause) {
-    error.value = cause instanceof Error ? cause.message : String(cause);
+    nextCursor.value = result.nextCursor ?? null;
+  } catch {
+    error.value = t("officerOps.queue.error");
   } finally {
     loading.value = false;
   }
@@ -99,127 +120,168 @@ function open(id: string) {
   });
 }
 
-/**
- * An unhandled rejection here used to abort the rest of the hook, leaving the page
- * with no agency, no data and no error — every control then did nothing when
- * clicked. Surface the failure and let the user retry.
- */
-async function bootstrap() {
-  loading.value = true;
-  error.value = null;
+async function claim(id: string) {
+  if (!agencyId.value || claimingId.value) {
+    return;
+  }
+  claimingId.value = id;
   try {
-    agencies.value = await api.officer.myAgencies();
-    agenciesLoaded.value = true;
-  } catch (cause) {
-    agencies.value = [];
-    error.value = cause instanceof Error ? cause.message : String(cause);
-    loading.value = false;
-    return;
+    await api.officer.claim({ agencyId: agencyId.value, submissionId: id });
+    toast.add({ title: t("officerOps.queue.claimSuccess"), color: "success" });
+    await load();
+  } catch {
+    toast.add({ title: t("officerOps.queue.claimError"), color: "error" });
+  } finally {
+    claimingId.value = null;
   }
-
-  const fromQuery = typeof route.query.agencyId === "string" ? route.query.agencyId : null;
-  agencyId.value =
-    fromQuery && agencies.value.some((agency) => agency.id === fromQuery)
-      ? fromQuery
-      : (agencies.value[0]?.id ?? null);
-
-  loading.value = false;
-  await load();
 }
 
-async function retry() {
-  if (!agenciesLoaded.value || agencies.value.length === 0) {
-    await bootstrap();
-    return;
-  }
-  await load();
+function agencyErrorText(): string {
+  return t("officerOps.queue.agencyError");
 }
 
-onMounted(bootstrap);
+onMounted(async () => {
+  await ensureLoaded();
+  await load();
+  bootstrapped.value = true;
+});
 
-// Only react to changes the user makes; the initial load is bootstrap's job.
-watch([agencyId, status, tier, sort], () => {
-  if (!agenciesLoaded.value) {
-    return;
+watch([agencyId, status, tier, slaBucket, assignment, sort], () => {
+  if (bootstrapped.value && ready.value && agencyId.value) {
+    void load();
   }
-  void load();
 });
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-7xl space-y-6">
-    <PageHeader
-      :title="t('officer.queue.title')"
-      :subtitle="t('officer.queue.subtitle')"
-      icon="i-tabler-inbox"
-      max-width="max-w-7xl"
-    >
-      <template #actions>
-        <AgencySwitcher v-model="agencyId" :agencies="agencies" />
-      </template>
-    </PageHeader>
+  <div class="w-full">
+    <LoadingState
+      v-if="!ready"
+      variant="skeleton-grid"
+      :count="6"
+      :label="t('officerOps.common.loading')"
+    />
 
     <UAlert
-      v-if="agencies.length === 0 && error"
+      v-else-if="agencyError"
       color="error"
       variant="subtle"
-      :title="t('officer.queue.error')"
-      :description="error"
+      icon="i-tabler-alert-triangle"
+      :title="t('officerOps.queue.error')"
+      :description="agencyErrorText()"
     >
       <template #actions>
-        <UButton color="error" variant="soft" :label="t('officer.common.retry')" @click="retry()" />
+        <UButton
+          size="md"
+          color="error"
+          variant="soft"
+          icon="i-tabler-refresh"
+          :label="t('officerOps.common.retry')"
+          @click="ensureLoaded()"
+        />
       </template>
     </UAlert>
 
-    <UAlert
+    <EmptyState
       v-else-if="agencies.length === 0"
-      color="neutral"
-      variant="soft"
-      icon="i-tabler-info-circle"
-      :description="t('officer.agency.none')"
+      icon="i-tabler-building-off"
+      :title="t('officerOps.queue.noAgencies')"
+      :description="t('officerOps.queue.noAgenciesDescription')"
     />
 
     <template v-else>
-      <div class="flex flex-wrap gap-3">
-        <UFormField :label="t('officer.queue.statusFilter')" class="w-full sm:w-56">
-          <USelect v-model="status" :items="statusItems" class="w-full" />
-        </UFormField>
-        <UFormField :label="t('officer.queue.tierFilter')" class="w-full sm:w-56">
-          <USelect v-model="tier" :items="tierItems" class="w-full" />
-        </UFormField>
+      <!-- One compact inline filter row; single hairline below spans the full width. -->
+      <div class="flex flex-wrap items-center gap-2 border-b border-default pb-3">
+        <USelect
+          v-model="status"
+          :items="statusItems"
+          size="md"
+          icon="i-tabler-list-check"
+          :placeholder="t('officerOps.queue.filters.status')"
+          class="w-full sm:w-44"
+        />
+        <USelect
+          v-model="tier"
+          :items="tierItems"
+          size="md"
+          icon="i-tabler-sparkles"
+          :placeholder="t('officerOps.queue.filters.tier')"
+          class="w-full sm:w-44"
+        />
+        <USelect
+          v-model="slaBucket"
+          :items="slaItems"
+          size="md"
+          icon="i-tabler-clock"
+          :placeholder="t('officerOps.queue.filters.sla')"
+          class="w-full sm:w-44"
+        />
+        <USelect
+          v-model="assignment"
+          :items="assignmentItems"
+          size="md"
+          icon="i-tabler-user-check"
+          :placeholder="t('officerOps.queue.filters.assignment')"
+          class="w-full sm:w-44"
+        />
+        <USelect
+          v-model="sort"
+          :items="sortItems"
+          size="md"
+          icon="i-tabler-arrows-sort"
+          :placeholder="t('officerOps.queue.filters.sort')"
+          class="w-full sm:w-40"
+        />
+
+        <UButton
+          to="/officer/team"
+          size="md"
+          color="neutral"
+          variant="soft"
+          icon="i-tabler-users-group"
+          :label="t('officerOps.queue.teamAction')"
+          class="ms-auto"
+        />
       </div>
 
       <UAlert
         v-if="error"
+        class="mt-4"
         color="error"
         variant="subtle"
-        :title="t('officer.queue.error')"
+        icon="i-tabler-alert-triangle"
+        :title="t('officerOps.queue.error')"
         :description="error"
       >
         <template #actions>
           <UButton
+            size="md"
             color="error"
             variant="soft"
-            :label="t('officer.common.retry')"
-            @click="retry()"
+            icon="i-tabler-refresh"
+            :label="t('officerOps.common.retry')"
+            @click="load()"
           />
         </template>
       </UAlert>
 
       <QueueTable
+        class="mt-2"
         :items="items"
         :loading="loading"
-        :sort="sort"
+        :claiming-id="claimingId"
         @open="open"
-        @update:sort="(value) => (sort = value)"
+        @claim="claim"
       />
 
-      <div v-if="nextCursor" class="flex justify-center">
+      <div v-if="nextCursor" class="mt-4 flex justify-center">
         <UButton
+          size="md"
           color="neutral"
           variant="soft"
+          icon="i-tabler-plus"
           :loading="loading"
-          :label="t('officer.queue.loadMore')"
+          :label="t('officerOps.queue.loadMore')"
           @click="load(true)"
         />
       </div>

@@ -9,6 +9,9 @@ import {
   listOfficerQueue,
   presignSubmissionDocument,
 } from "../services/submissions.service";
+import { officerMonitoringRouter } from "./officer-monitoring";
+import { officerOpsRouter } from "./officer-ops";
+import { officerTrustRouter } from "./officer-trust";
 
 const agencyIdSchema = z.string().min(1);
 
@@ -93,4 +96,8 @@ export const officerRouter = {
       }),
     )
     .handler(({ context, input }) => getAgencyAnalytics(context, input)),
+
+  ...officerOpsRouter,
+  ...officerMonitoringRouter,
+  ...officerTrustRouter,
 };

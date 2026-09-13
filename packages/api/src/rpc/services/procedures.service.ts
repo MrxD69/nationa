@@ -5,6 +5,7 @@ import type { RuleCitation } from "@nationa/db";
 import type { Context } from "../context";
 import type { ProcedureListItem, ProcedureStepDetail } from "../../domain/procedures";
 import { parseFormSchema } from "../../domain/procedure-forms";
+import { stepGuidance } from "../../domain/step-guidance";
 import {
   findProcedureTemplate,
   listActiveProcedureTemplates,
@@ -33,10 +34,12 @@ export async function listProcedures(context: Context): Promise<ProcedureListIte
     stepCounts.set(step.templateId, (stepCounts.get(step.templateId) ?? 0) + 1);
   }
 
-  return templates.map((template) => ({
-    ...template,
-    stepCount: stepCounts.get(template.id) ?? 0,
-  }));
+  return templates
+    .map((template) => ({
+      ...template,
+      stepCount: stepCounts.get(template.id) ?? 0,
+    }))
+    .filter((template) => (stepCounts.get(template.id) ?? 0) > 0);
 }
 
 export async function getProcedure(
@@ -78,18 +81,18 @@ export async function getProcedure(
     documentTypesById.set(row.id, row);
   }
 
-  const detailSteps: ProcedureStepDetail[] = steps.map((step) => {
+  const detailSteps: ProcedureStepDetail[] = steps.map((step, index) => {
     const requiredType = step.requiredDocumentTypeId
       ? documentTypesById.get(step.requiredDocumentTypeId)
       : undefined;
     return {
       id: step.id,
       templateId: step.templateId,
-      position: step.position,
+      position: index + 1,
       code: step.code,
       titleFr: step.titleFr,
       titleAr: step.titleAr,
-      description: step.description,
+      description: stepGuidance(template.code, step.code, step.description),
       stepType: step.stepType,
       requiredDocumentTypeId: step.requiredDocumentTypeId,
       isOptional: step.isOptional,

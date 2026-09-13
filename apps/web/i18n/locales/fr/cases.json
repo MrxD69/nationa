@@ -142,7 +142,8 @@
       "submit": "Soumettre le dossier",
       "readinessTitle": "Prêt pour l'envoi ?",
       "readyHint": "Toutes les étapes sont terminées. Vous pouvez soumettre le dossier.",
-      "notReadyHint": "Terminez toutes les étapes ci-dessous pour débloquer l'envoi."
+      "notReadyHint": "Terminez toutes les étapes ci-dessous pour débloquer l'envoi.",
+      "attachTitle": "Documents à joindre"
     },
     "docgen": {
       "previewTitle": "Statuts de la SARL",

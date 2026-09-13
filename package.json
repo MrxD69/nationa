@@ -15,7 +15,7 @@
     "dev:types": "tsc -b packages/api --watch",
     "dev:web": "turbo run dev:bare -F web --",
     "dev:server": "turbo run dev:bare -F server --",
-    "dev:stop": "lsof -ti:3000 -ti:3001 | xargs -r kill",
+    "dev:stop": "lsof -tiTCP:3000 -sTCP:LISTEN | xargs -r kill; lsof -tiTCP:3001 -sTCP:LISTEN | xargs -r kill",
     "db:push": "turbo run db:push -F @nationa/db --",
     "db:seed": "turbo run db:seed -F @nationa/db --",
     "db:seed:demo": "turbo run db:seed:demo -F @nationa/db --",

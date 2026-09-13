@@ -2,7 +2,6 @@
 import AgencyMark from "~/components/agency/AgencyMark.vue";
 import ActionMeta from "~/components/action/ActionMeta.vue";
 import ActionStatusBadge from "~/components/action/ActionStatusBadge.vue";
-import ActionNextCallout from "~/components/action/ActionNextCallout.vue";
 import ActionStepItem from "~/components/action/ActionStepItem.vue";
 import LoadingState from "~/components/ui/LoadingState.vue";
 import PageHeader from "~/components/ui/PageHeader.vue";
@@ -28,11 +27,10 @@ const { data, isLoading, isError, error, refetch } = actions.trackerQuery({
 const { track } = useOpenActions();
 
 const start = actions.startMutation();
-const runChecks = actions.runChecksMutation(props.caseId ?? "");
 
 const tracker = computed(() => data.value ?? null);
-const running = ref(false);
 const actionError = ref<string | null>(null);
+const hasFees = computed(() => Boolean(tracker.value?.feeSummary?.items.length));
 
 const name = computed(() => {
   if (!tracker.value) {
@@ -86,27 +84,6 @@ const stepsDone = computed(() => {
     aggregate.completedSteps,
   );
 });
-
-const nextStep = computed(() => {
-  const current = tracker.value;
-  if (!current || !current.aggregate.nextStepId) {
-    return null;
-  }
-  return current.steps.find((step) => step.id === current.aggregate.nextStepId) ?? null;
-});
-
-const activeCaseId = computed(() => tracker.value?.case?.id ?? props.caseId ?? null);
-
-function formatDateTime(value: string | Date | null | undefined): string {
-  if (!value) {
-    return "";
-  }
-  const date = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return "";
-  }
-  return date.toLocaleString(locale.value, { dateStyle: "medium", timeStyle: "short" });
-}
 
 /** Money is read as a figure, never as a bare number: always with its currency. */
 function formatAmount(amount: number, currency: string): string {
@@ -177,22 +154,6 @@ watch(
   { immediate: true },
 );
 
-async function onRunChecks(): Promise<void> {
-  if (!activeCaseId.value) {
-    return;
-  }
-  running.value = true;
-  actionError.value = null;
-  try {
-    await runChecks.mutateAsync({ caseId: activeCaseId.value });
-    await refetch();
-  } catch (cause) {
-    actionError.value = cause instanceof Error ? cause.message : String(cause);
-  } finally {
-    running.value = false;
-  }
-}
-
 async function onStart(): Promise<void> {
   if (!tracker.value) {
     return;
@@ -232,15 +193,18 @@ async function onStart(): Promise<void> {
     </template>
   </UAlert>
 
-  <div v-else-if="tracker" class="space-y-8">
+  <div v-else-if="tracker" class="space-y-6">
     <PageHeader
       :title="name"
-      :subtitle="purpose"
       back-to="/actions"
       :back-label="t('actions.tracker.back')"
-      max-width="max-w-6xl"
+      max-width="max-w-none"
     >
-      <template #actions>
+      <template #subtitle>
+        <p v-if="purpose" class="text-base leading-7 text-muted">{{ purpose }}</p>
+      </template>
+
+      <template #topActions>
         <UButton
           v-if="tracker.case"
           :to="`/cases/${tracker.case.id}`"
@@ -259,7 +223,7 @@ async function onStart(): Promise<void> {
       </template>
 
       <template #meta>
-        <div class="space-y-4">
+        <div class="space-y-3">
           <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
             <span class="inline-flex items-center gap-2">
               <AgencyMark :agency-id="tracker.action.agencyId" size="xs" alt="" />
@@ -274,7 +238,7 @@ async function onStart(): Promise<void> {
 
           <!-- Progress in words first, as a bar second: "4 of 9" answers the
                question a percentage only gestures at. -->
-          <div class="max-w-md space-y-1.5">
+          <div class="space-y-1.5">
             <div class="flex items-baseline justify-between gap-3">
               <span class="text-sm font-medium text-toned">{{ stepsDone }}</span>
               <span class="tabular text-sm text-muted">{{ progress }}%</span>
@@ -286,7 +250,7 @@ async function onStart(): Promise<void> {
             />
           </div>
 
-          <p v-if="description" class="max-w-prose text-base leading-7 text-muted">
+          <p v-if="description" class="max-w-3xl text-base leading-7 text-muted">
             {{ description }}
           </p>
         </div>
@@ -302,17 +266,7 @@ async function onStart(): Promise<void> {
       :title="actionError"
     />
 
-    <ActionNextCallout
-      :step="nextStep"
-      :total="tracker.aggregate.totalSteps"
-      :case-id="activeCaseId"
-      :running="running"
-      :starting="start.isPending.value"
-      @run-checks="onRunChecks"
-      @start="onStart"
-    />
-
-    <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,19rem)]">
+    <div class="grid gap-8" :class="hasFees ? 'lg:grid-cols-[minmax(0,1fr)_minmax(0,19rem)]' : ''">
       <section class="min-w-0 space-y-4">
         <SectionHeader
           :title="t('actions.tracker.stepsTitle')"
@@ -350,89 +304,35 @@ async function onStart(): Promise<void> {
       </section>
 
       <aside class="space-y-4">
-        <section class="space-y-3 rounded-lg border border-default p-5">
-          <h2 class="text-base font-semibold text-highlighted">
-            {{ t("actions.tracker.verification") }}
-          </h2>
-
-          <p class="text-base leading-7 text-muted">
-            {{
-              tracker.verification.hasRun
-                ? t("actions.tracker.verified")
-                : t("actions.tracker.noRun")
-            }}
-          </p>
-
-          <div
-            v-if="tracker.verification.openErrors || tracker.verification.openBlockers"
-            class="flex flex-wrap gap-2"
-          >
-            <UBadge
-              v-if="tracker.verification.openBlockers"
-              color="error"
-              variant="subtle"
-              size="sm"
-            >
-              {{ t("actions.severity.blocker") }} · {{ tracker.verification.openBlockers }}
-            </UBadge>
-            <UBadge
-              v-if="tracker.verification.openErrors"
-              color="warning"
-              variant="subtle"
-              size="sm"
-            >
-              {{ t("actions.severity.error") }} · {{ tracker.verification.openErrors }}
-            </UBadge>
-          </div>
-
-          <p v-if="tracker.verification.ranAt" class="text-sm text-dimmed">
-            {{ t("actions.tracker.lastRun") }} · {{ formatDateTime(tracker.verification.ranAt) }}
-          </p>
-
-          <UButton
-            v-if="activeCaseId"
-            color="neutral"
-            variant="outline"
-            block
-            icon="i-tabler-shield-check"
-            :loading="running"
-            :disabled="running"
-            :label="running ? t('actions.tracker.running') : t('actions.tracker.runChecks')"
-            @click="onRunChecks"
-          />
-          <p class="text-sm leading-6 text-dimmed">{{ t("actions.tracker.runChecksHint") }}</p>
-        </section>
-
-        <section class="space-y-3 rounded-lg border border-default p-5">
+        <section
+          v-if="tracker.feeSummary && tracker.feeSummary.items.length"
+          class="space-y-3 rounded-lg border border-default p-5"
+        >
           <h2 class="text-base font-semibold text-highlighted">{{ t("actions.tracker.fees") }}</h2>
 
-          <template v-if="tracker.feeSummary && tracker.feeSummary.items.length">
-            <dl class="m-0 divide-y divide-default">
-              <div
-                v-for="item in tracker.feeSummary.items"
-                :key="item.feeId"
-                class="flex items-baseline justify-between gap-3 py-2 first:pt-0"
-              >
-                <dt class="min-w-0 text-base text-muted">{{ item.label }}</dt>
-                <dd class="tabular shrink-0 text-base font-medium text-toned" dir="ltr">
-                  {{ formatAmount(item.amount, item.currency) }}
-                </dd>
-              </div>
-            </dl>
-
+          <dl class="m-0 divide-y divide-default">
             <div
-              class="flex items-baseline justify-between gap-3 border-t border-default pt-3 text-base"
+              v-for="item in tracker.feeSummary.items"
+              :key="item.feeId"
+              class="flex items-baseline justify-between gap-3 py-2 first:pt-0"
             >
-              <span class="font-medium text-highlighted">{{ t("cases.payment.total") }}</span>
-              <span class="tabular font-semibold text-highlighted" dir="ltr">
-                {{ formatAmount(tracker.feeSummary.total, tracker.feeSummary.currency) }}
-              </span>
+              <dt class="min-w-0 text-base text-muted">{{ item.label }}</dt>
+              <dd class="tabular shrink-0 text-base font-medium text-toned" dir="ltr">
+                {{ formatAmount(item.amount, item.currency) }}
+              </dd>
             </div>
+          </dl>
 
-            <p class="text-sm leading-6 text-dimmed">{{ t("actions.tracker.feesHint") }}</p>
-          </template>
+          <div
+            class="flex items-baseline justify-between gap-3 border-t border-default pt-3 text-base"
+          >
+            <span class="font-medium text-highlighted">{{ t("cases.payment.total") }}</span>
+            <span class="tabular font-semibold text-highlighted" dir="ltr">
+              {{ formatAmount(tracker.feeSummary.total, tracker.feeSummary.currency) }}
+            </span>
+          </div>
 
-          <p v-else class="text-base leading-7 text-muted">{{ t("actions.tracker.noFees") }}</p>
+          <p class="text-sm leading-6 text-dimmed">{{ t("actions.tracker.feesHint") }}</p>
         </section>
       </aside>
     </div>

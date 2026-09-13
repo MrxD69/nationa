@@ -1,4 +1,4 @@
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, ne } from "drizzle-orm";
 
 import {
   agencies,
@@ -35,7 +35,9 @@ export async function listProcedureStepsByTemplateIds(db: Db, templateIds: strin
   return db
     .select({ id: procedureSteps.id, templateId: procedureSteps.templateId })
     .from(procedureSteps)
-    .where(inArray(procedureSteps.templateId, templateIds));
+    .where(
+      and(inArray(procedureSteps.templateId, templateIds), ne(procedureSteps.stepType, "review")),
+    );
 }
 
 export async function findProcedureTemplate(db: Db, input: { id?: string; code?: string }) {
@@ -68,7 +70,7 @@ export async function listProcedureStepsByTemplate(db: Db, templateId: string) {
   return db
     .select()
     .from(procedureSteps)
-    .where(eq(procedureSteps.templateId, templateId))
+    .where(and(eq(procedureSteps.templateId, templateId), ne(procedureSteps.stepType, "review")))
     .orderBy(procedureSteps.position);
 }
 

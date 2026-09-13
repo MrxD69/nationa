@@ -7,6 +7,7 @@
     "check-types": "tsc -b ../../packages/api && tsc --noEmit",
     "compile": "bun build --compile --no-compile-autoload-dotenv --minify --sourcemap --bytecode ./src/index.ts --outfile server",
     "dev:bare": "bun --watch src/dev.ts",
+    "start": "bun src/serve.ts",
     "env:generate": "varlock codegen"
   },
   "dependencies": {

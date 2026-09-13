@@ -1,0 +1,44 @@
+# Render Blueprint — Nationa API (Hono on Bun)
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Deploy: Render Dashboard → New → Blueprint → connect this repo.
+# Render reads this file from `main` and provisions the service below.
+# All `sync: false` vars are prompted for once and then stored as service env vars.
+
+services:
+  - type: web
+    name: nationa-api
+    runtime: node
+    plan: free
+    region: frankfurt
+    branch: main
+    autoDeploy: true
+    buildCommand: pnpm install --frozen-lockfile --ignore-scripts
+    startCommand: cd apps/server && bun src/serve.ts
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Set these in the dashboard (sync: false) — values are in apps/server/.env
+      - key: CORS_ORIGIN
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODEL
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_JWKS_URL
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: R2_BUCKET_NAME
+        sync: false
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false

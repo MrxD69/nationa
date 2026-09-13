@@ -59,3 +59,15 @@ coverage
 .cache
 tmp
 temp
+
+# AI harness (never commit)
+.opencode/
+.agents/
+agents/
+.claude/
+.cursor/
+.aider*
+.continue/
+.windsurf/
+.copilot/
+.codex/

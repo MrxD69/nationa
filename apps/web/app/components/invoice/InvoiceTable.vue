@@ -2,7 +2,6 @@
 import type { DropdownMenuItem } from "@nuxt/ui";
 import InvoiceStatusBadge from "~/components/invoice/InvoiceStatusBadge.vue";
 import LoadingState from "~/components/ui/LoadingState.vue";
-import EmptyState from "~/components/ui/EmptyState.vue";
 
 type InvoiceRow = {
   id: string;
@@ -132,24 +131,28 @@ function menuItems(invoice: InvoiceRow): DropdownMenuItem[] {
 </script>
 
 <template>
-  <div>
+  <div class="w-full">
     <LoadingState v-if="loading" variant="skeleton-list" :label="t('invoices.loading')" />
 
-    <EmptyState
+    <div
       v-else-if="items.length === 0"
-      icon="i-tabler-receipt-off"
-      :title="t('invoices.empty')"
-      :description="t('invoices.emptyHint')"
-    />
+      class="flex flex-col items-center justify-center gap-2 px-2 py-12 text-center"
+    >
+      <div class="flex size-12 items-center justify-center rounded-full bg-accented text-muted">
+        <UIcon name="i-tabler-receipt-off" class="size-6" />
+      </div>
+      <p class="text-base font-semibold text-highlighted">{{ t("invoices.empty") }}</p>
+      <p class="text-base text-muted">{{ t("invoices.emptyHint") }}</p>
+    </div>
 
-    <div v-else class="divide-y divide-default overflow-hidden rounded-lg border border-default">
+    <div v-else class="divide-y divide-default">
       <details v-for="group in groups" :key="group.key" open>
         <summary
-          class="flex cursor-pointer list-none items-center gap-2 px-3 py-2 transition-colors hover:bg-accented [&::-webkit-details-marker]:hidden"
+          class="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 py-2 transition-[background-color,color] duration-150 ease-out hover:bg-accented focus-visible:bg-accented focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary [&::-webkit-details-marker]:hidden"
         >
           <UIcon
             name="i-tabler-chevron-down"
-            class="size-4 shrink-0 text-muted transition-transform [[details:not([open])_&]:-rotate-90]"
+            class="size-4 shrink-0 text-muted transition-[transform] duration-200 ease-out [[details:not([open])_&]:-rotate-90]"
           />
           <span class="min-w-0 flex-1 truncate text-sm font-semibold text-toned">
             {{ group.name }}
@@ -160,14 +163,15 @@ function menuItems(invoice: InvoiceRow): DropdownMenuItem[] {
           <div
             v-for="invoice in group.items"
             :key="invoice.id"
-            class="group flex cursor-pointer items-start gap-3 px-3 py-2.5 transition-colors"
+            class="group flex min-h-11 w-full cursor-pointer items-start gap-3 border-s-2 px-3 py-2.5 transition-[background-color,color,border-color] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary"
             :class="
               invoice.id === selectedId
-                ? 'bg-primary/10 text-primary'
-                : 'hover:bg-accented focus-visible:bg-accented'
+                ? 'border-s-primary bg-primary/10 text-primary'
+                : 'border-s-transparent hover:bg-accented focus-visible:bg-accented'
             "
             role="button"
             tabindex="0"
+            :aria-selected="invoice.id === selectedId"
             @click="emit('select', invoice.id)"
             @keydown.enter="emit('select', invoice.id)"
             @keydown.space.prevent="emit('select', invoice.id)"
@@ -198,6 +202,7 @@ function menuItems(invoice: InvoiceRow): DropdownMenuItem[] {
                   icon="i-tabler-dots-vertical"
                   size="sm"
                   square
+                  class="min-h-11 min-w-11"
                   :aria-label="t('invoices.table.actions')"
                   :title="t('invoices.table.actions')"
                   @click.stop

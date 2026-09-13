@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { AssistantProposal } from "~/composables/useAssistant";
+import AssistantMarkdown from "~/components/assistant/AssistantMarkdown.vue";
 import CitationCard from "~/components/assistant/CitationCard.vue";
 import ClarificationCard from "~/components/assistant/ClarificationCard.vue";
 import DelicacyAlert from "~/components/assistant/DelicacyAlert.vue";
 import ProposalCard from "~/components/assistant/ProposalCard.vue";
+import ToolCallCard from "~/components/assistant/ToolCallCard.vue";
 import ToolProgress from "~/components/assistant/ToolProgress.vue";
 
 const props = defineProps<{
@@ -22,7 +24,9 @@ const emit = defineEmits<{
 const parts = computed(() => (props.message.parts ?? []) as any[]);
 const isUser = computed(() => props.message.role === "user");
 const textParts = computed(() => parts.value.filter((part) => part?.type === "text"));
-const cardParts = computed(() => parts.value.filter((part) => part?.type !== "text"));
+const fullText = computed(() =>
+  textParts.value.map((part) => String(part?.text ?? "")).join("\n\n"),
+);
 
 function toolName(part: any): string {
   if (part.type === "dynamic-tool") {
@@ -41,6 +45,30 @@ function isTool(part: any): boolean {
 function toolOutput(part: any): any {
   return part.output ?? part.result ?? null;
 }
+
+function isErrorPart(part: any): boolean {
+  return isTool(part) && part.state === "output-error";
+}
+
+function isPendingPart(part: any): boolean {
+  return isTool(part) && part.state !== "output-available" && part.state !== "output-error";
+}
+
+const pendingTools = computed(() => parts.value.filter((part) => isPendingPart(part)));
+const errorTools = computed(() => parts.value.filter((part) => isErrorPart(part)));
+const firstPending = computed(() => pendingTools.value[0] ?? null);
+
+const visibleCardParts = computed(() =>
+  parts.value.filter((part) => {
+    if (part?.type === "data-citation") {
+      return Boolean(part.data);
+    }
+    if (isTool(part)) {
+      return part.state === "output-available" || Boolean(toolOutput(part));
+    }
+    return false;
+  }),
+);
 
 function proposalFor(part: any) {
   const output = toolOutput(part) ?? {};
@@ -63,32 +91,30 @@ function proposalFor(part: any) {
 
 <template>
   <div class="flex flex-col gap-2" :class="isUser ? 'items-end' : 'items-start'">
-    <div
-      v-if="textParts.length"
-      class="max-w-full space-y-2 rounded-lg px-4 py-3"
-      :class="
-        isUser ? 'bg-primary text-inverted' : 'border border-default bg-elevated text-highlighted'
-      "
-    >
-      <p
-        v-for="(part, index) in textParts"
-        :key="`text-${index}`"
-        class="whitespace-pre-wrap text-base leading-6"
-        dir="auto"
-      >
-        {{ part.text }}
+    <div v-if="isUser && fullText" class="max-w-full rounded-lg bg-primary px-4 py-3 text-inverted">
+      <p class="whitespace-pre-wrap text-base leading-6" dir="auto">
+        {{ fullText }}
       </p>
     </div>
 
-    <div v-if="!isUser && cardParts.length" class="w-full space-y-2">
-      <template v-for="(part, index) in cardParts" :key="`card-${index}`">
-        <template v-if="isTool(part)">
+    <div v-else-if="!isUser" class="w-full max-w-full">
+      <AssistantMarkdown v-if="fullText" :text="fullText" />
+
+      <div v-if="visibleCardParts.length" class="mt-2 space-y-2">
+        <template v-for="(part, index) in visibleCardParts" :key="`card-${index}`">
           <CitationCard
-            v-if="toolName(part) === 'citeRule' && toolOutput(part) && !toolOutput(part).error"
+            v-if="
+              isTool(part) &&
+              toolName(part) === 'citeRule' &&
+              toolOutput(part) &&
+              !toolOutput(part).error
+            "
             :rule="toolOutput(part)"
           />
           <ProposalCard
-            v-else-if="toolName(part) === 'proposeCaseFieldFills' && toolOutput(part)"
+            v-else-if="
+              isTool(part) && toolName(part) === 'proposeCaseFieldFills' && toolOutput(part)
+            "
             :proposal-id="proposalFor(part).id ?? ''"
             :status="proposalFor(part).status"
             :fields="proposalFor(part).fields"
@@ -99,31 +125,49 @@ function proposalFor(part: any) {
             @reject="emit('reject', $event)"
           />
           <ClarificationCard
-            v-else-if="toolName(part) === 'requestClarification' && toolOutput(part)?.questions"
+            v-else-if="
+              isTool(part) &&
+              toolName(part) === 'requestClarification' &&
+              toolOutput(part)?.questions
+            "
             :questions="toolOutput(part).questions"
             @submit="emit('clarification', $event)"
           />
           <DelicacyAlert
-            v-else-if="toolName(part) === 'flagDelicateMatter' && toolOutput(part)?.summary"
+            v-else-if="
+              isTool(part) && toolName(part) === 'flagDelicateMatter' && toolOutput(part)?.summary
+            "
             :summary="toolOutput(part).summary"
             :severity="toolOutput(part).severity"
             :reasons="toolOutput(part).reasons"
           />
-          <ToolProgress
-            v-else-if="toolName(part) === 'writeDocgenFields'"
-            :name="toolName(part)"
-            :state="part.state"
-            :input="part.input"
+          <CitationCard
+            v-else-if="part.type === 'data-citation' && part.data"
+            :rule="part.data"
+            :snippet="part.data.snippet"
           />
-          <ToolProgress v-else :name="toolName(part)" :state="part.state" :input="part.input" />
         </template>
+      </div>
 
-        <CitationCard
-          v-else-if="part.type === 'data-citation' && part.data"
-          :rule="part.data"
-          :snippet="part.data.snippet"
+      <ToolProgress
+        v-if="firstPending"
+        class="mt-2"
+        :name="toolName(firstPending)"
+        :state="firstPending.state"
+        :input="firstPending.input"
+      />
+
+      <div v-if="errorTools.length" class="mt-2 space-y-2">
+        <ToolCallCard
+          v-for="(part, index) in errorTools"
+          :key="`tool-error-${index}`"
+          :name="toolName(part)"
+          :state="part.state"
+          :input="part.input"
+          :output="toolOutput(part)"
+          :error-text="part.errorText ?? null"
         />
-      </template>
+      </div>
     </div>
   </div>
 </template>

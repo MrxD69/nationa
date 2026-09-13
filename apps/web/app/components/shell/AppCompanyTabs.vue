@@ -40,7 +40,7 @@ const activeKey = computed(() => {
 <template>
   <div class="relative min-w-0">
     <nav
-      class="flex min-w-0 scroll-px-4 items-center gap-2 overflow-x-auto py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      class="flex min-w-0 scroll-px-4 items-center gap-2 overflow-x-auto pt-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       :aria-label="t('shell.company.portfolio')"
     >
       <NuxtLink
@@ -48,14 +48,14 @@ const activeKey = computed(() => {
         :key="tab.key"
         :to="tab.to"
         :aria-current="tab.key === activeKey ? 'page' : undefined"
-        class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-md border px-4 py-2.5 text-base font-medium whitespace-nowrap transition-control"
+        class="inline-flex min-h-11 shrink-0 items-center gap-2 border-b-2 border-transparent px-4 pt-2.5 pb-3 text-base font-medium whitespace-nowrap transition-[color,border-color] duration-150 ease-out"
         :class="
           tab.key === activeKey
-            ? 'border-primary bg-primary/10 text-primary'
-            : 'border-transparent text-toned hover-surface hover:text-highlighted'
+            ? 'border-b-primary text-primary'
+            : 'border-b-transparent text-toned hover:text-highlighted'
         "
       >
-        <UIcon :name="tab.icon" class="size-6 shrink-0" />
+        <UIcon v-if="tab.key === activeKey" :name="tab.icon" class="size-6 shrink-0" />
         {{ tab.label }}
       </NuxtLink>
     </nav>

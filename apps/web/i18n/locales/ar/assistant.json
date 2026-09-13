@@ -16,6 +16,10 @@
     "stop": "إيقاف",
     "regenerate": "إعادة التوليد",
     "thinking": "جارٍ التفكير…",
+    "streaming": {
+      "interrupted": "توقّف الرد",
+      "stopped": "متوقف"
+    },
     "messages": "{count} رسالة",
     "suggestions": {
       "title": "اقتراحات",
@@ -40,7 +44,8 @@
       "done": "اكتمل",
       "error": "فشل",
       "showDetails": "عرض التفاصيل",
-      "hideDetails": "إخفاء التفاصيل"
+      "hideDetails": "إخفاء التفاصيل",
+      "errorDetails": "تفاصيل الخطأ"
     },
     "progress": {
       "searchRules": "البحث في القواعد{query}…",

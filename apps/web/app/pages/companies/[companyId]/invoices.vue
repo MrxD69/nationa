@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { FIELD_LABELS, type CanonicalFieldKey } from "@nationa/api/domain/fields";
-import PageHeader from "~/components/ui/PageHeader.vue";
 import SectionHeader from "~/components/ui/SectionHeader.vue";
-import EmptyState from "~/components/ui/EmptyState.vue";
 import LoadingState from "~/components/ui/LoadingState.vue";
 import InvoiceForm from "~/components/invoice/InvoiceForm.vue";
 import InvoiceStatusBadge from "~/components/invoice/InvoiceStatusBadge.vue";
@@ -136,12 +134,6 @@ async function onExtracted(id: string) {
   await selectInvoice(id);
 }
 
-function startNew() {
-  selectedId.value = null;
-  detail.value = null;
-  showForm.value = true;
-}
-
 function startEdit() {
   if (!detail.value) {
     return;
@@ -234,212 +226,202 @@ onMounted(loadList);
 </script>
 
 <template>
-  <div class="space-y-6">
-    <PageHeader
-      :title="t('invoices.title')"
-      :subtitle="t('invoices.subtitle')"
-      icon="i-tabler-receipt"
-      max-width="max-w-6xl"
-    >
-      <template #actions>
-        <UBadge
-          color="neutral"
-          variant="subtle"
-          :label="t('invoices.count', { count: items.length })"
-        />
-        <UButton
-          color="neutral"
-          variant="ghost"
-          icon="i-tabler-reload"
-          :label="t('invoices.actions.refresh')"
-          @click="loadList"
-        />
-        <UButton
-          color="primary"
-          variant="soft"
-          icon="i-tabler-cloud-upload"
-          :label="t('invoices.upload.title')"
-          @click="uploaderOpen = true"
-        />
-        <UButton
-          color="primary"
-          icon="i-tabler-plus"
-          :label="t('invoices.actions.new')"
-          @click="startNew"
-        />
-      </template>
-    </PageHeader>
-
-    <div class="mx-auto grid w-full max-w-6xl gap-6 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
-      <section class="min-w-0 space-y-3">
-        <SectionHeader :title="t('invoices.list.title')" :count="items.length" level="2" />
-        <InvoiceTable
-          :items="items"
-          :loading="loading"
-          :selected-id="selectedId"
-          @select="selectInvoice"
-          @remove="removeInvoiceRow"
-        />
-      </section>
-
-      <aside class="hidden min-w-0 lg:block">
-        <div class="lg:sticky lg:top-20 space-y-4">
-          <EmptyState
-            v-if="!selectedId"
-            size="sm"
-            icon="i-tabler-receipt"
-            :title="t('invoices.detail.select')"
-            :description="t('invoices.detail.selectHint')"
+  <div>
+    <div class="-mx-4 w-auto border-b border-default sm:-mx-6">
+      <div class="grid w-auto items-stretch lg:grid-cols-[minmax(0,20rem)_1px_minmax(0,1fr)]">
+        <section class="min-w-0">
+          <SectionHeader
+            :title="t('invoices.list.title')"
+            :level="2"
+            class="border-b border-default px-4 py-3 [&_h2]:min-w-0 [&_h2]:truncate [&_h2]:text-base"
+          >
+            <template #actions>
+              <UButton
+                color="primary"
+                variant="ghost"
+                icon="i-tabler-cloud-upload"
+                square
+                class="min-h-11 min-w-11 shrink-0 rounded-full transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
+                :aria-label="t('invoices.upload.title')"
+                :title="t('invoices.upload.title')"
+                @click="uploaderOpen = true"
+              />
+            </template>
+          </SectionHeader>
+          <InvoiceTable
+            :items="items"
+            :loading="loading"
+            :selected-id="selectedId"
+            @select="selectInvoice"
+            @remove="removeInvoiceRow"
           />
+        </section>
 
-          <LoadingState v-else-if="detailLoading" :label="t('invoices.loading')" />
+        <div aria-hidden="true" class="hidden w-px self-stretch bg-[var(--ui-border)] lg:block" />
 
-          <div v-else-if="detail" class="space-y-4">
-            <div class="space-y-2">
-              <h2 class="truncate text-base font-semibold text-highlighted">
-                {{ detail.invoice.invoiceNumber || t("invoices.detail.title") }}
-              </h2>
-              <div class="flex flex-wrap items-center gap-2">
-                <InvoiceStatusBadge :status="detail.invoice.status" />
-                <span class="min-w-0 flex-1 truncate text-sm text-muted">
-                  {{ detail.invoice.supplierName || "—" }}
-                </span>
-                <div class="ms-auto flex shrink-0 items-center gap-1">
-                  <UButton
-                    v-if="detail.invoice.status !== 'verified'"
-                    color="primary"
-                    variant="ghost"
-                    icon="i-tabler-check"
-                    size="sm"
-                    square
-                    class="min-h-11 min-w-11"
-                    :aria-label="t('invoices.actions.verify')"
-                    :title="t('invoices.actions.verify')"
-                    @click="verifyInvoice"
-                  />
-                  <UButton
-                    color="neutral"
-                    variant="ghost"
-                    icon="i-tabler-pencil"
-                    size="sm"
-                    square
-                    class="min-h-11 min-w-11"
-                    :aria-label="t('invoices.actions.edit')"
-                    :title="t('invoices.actions.edit')"
-                    @click="startEdit"
-                  />
-                  <UButton
-                    color="error"
-                    variant="ghost"
-                    icon="i-tabler-trash"
-                    size="sm"
-                    square
-                    class="min-h-11 min-w-11"
-                    :aria-label="t('invoices.actions.remove')"
-                    :title="t('invoices.actions.remove')"
-                    @click="confirmDeleteOpen = true"
-                  />
-                </div>
+        <aside class="hidden min-w-0 lg:block">
+          <div class="space-y-4 px-4 py-3 lg:sticky lg:top-20">
+            <div
+              v-if="!selectedId"
+              class="flex flex-col items-center justify-center gap-2 px-2 py-12 text-center"
+            >
+              <div
+                class="flex size-12 items-center justify-center rounded-full bg-accented text-muted"
+              >
+                <UIcon name="i-tabler-receipt" class="size-6" />
               </div>
+              <p class="text-base font-semibold text-highlighted">
+                {{ t("invoices.detail.select") }}
+              </p>
+              <p class="text-base text-muted">{{ t("invoices.detail.selectHint") }}</p>
             </div>
 
-            <dl class="grid gap-3 sm:grid-cols-3">
-              <div>
-                <dt class="text-sm text-muted">{{ t("invoices.form.issueDate") }}</dt>
-                <dd class="text-base text-toned">
-                  <span dir="ltr">{{ detail.invoice.issueDate || "—" }}</span>
-                </dd>
-              </div>
-              <div>
-                <dt class="text-sm text-muted">{{ t("invoices.form.subtotal") }}</dt>
-                <dd class="text-base text-toned tabular-nums" dir="ltr">
-                  {{ formatCurrency(detail.invoice.subtotal, detail.invoice.currency) }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-sm text-muted">{{ t("invoices.form.total") }}</dt>
-                <dd class="text-base font-medium text-highlighted tabular-nums" dir="ltr">
-                  {{ formatCurrency(detail.invoice.total, detail.invoice.currency) }}
-                </dd>
-              </div>
-            </dl>
+            <LoadingState v-else-if="detailLoading" :label="t('invoices.loading')" />
 
-            <div class="divide-y divide-default border-y border-default">
-              <div class="space-y-2 py-3">
-                <h3 class="text-base font-medium text-highlighted">
-                  {{ t("invoices.detail.lines") }}
-                </h3>
-                <div
-                  v-if="detail.lines.length === 0"
-                  class="rounded-md border border-dashed border-default py-4 text-center text-sm text-muted"
-                >
-                  {{ t("invoices.detail.noLines") }}
-                </div>
-                <div v-else class="overflow-x-auto rounded-md border border-default">
-                  <table class="w-full text-base tabular-nums">
-                    <thead class="bg-accented text-sm text-muted">
-                      <tr>
-                        <th class="px-3 py-2 text-start font-medium">
-                          {{ t("invoices.form.description") }}
-                        </th>
-                        <th class="px-3 py-2 text-end font-medium">
-                          {{ t("invoices.form.quantity") }}
-                        </th>
-                        <th class="px-3 py-2 text-end font-medium">
-                          {{ t("invoices.form.unitPrice") }}
-                        </th>
-                        <th class="px-3 py-2 text-end font-medium">
-                          {{ t("invoices.form.taxRate") }}
-                        </th>
-                        <th class="px-3 py-2 text-end font-medium">
-                          {{ t("invoices.form.lineTotal") }}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="line in detail.lines"
-                        :key="line.id"
-                        class="border-t border-default"
-                      >
-                        <td class="px-3 py-2 text-toned">{{ line.description || "—" }}</td>
-                        <td class="px-3 py-2 text-end text-muted" dir="ltr">
-                          {{ line.quantity ?? "—" }}
-                        </td>
-                        <td class="px-3 py-2 text-end text-muted" dir="ltr">
-                          {{ line.unitPrice ?? "—" }}
-                        </td>
-                        <td class="px-3 py-2 text-end text-muted" dir="ltr">
-                          {{ line.taxRate ?? "—" }}
-                        </td>
-                        <td class="px-3 py-2 text-end text-toned" dir="ltr">
-                          {{ line.lineTotal ?? "—" }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <details v-if="provenanceRows.length" class="py-3">
-                <summary class="cursor-pointer text-base font-medium text-toned">
-                  {{ t("invoices.detail.provenance") }}
-                </summary>
-                <dl class="mt-2 space-y-1 text-sm">
-                  <div
-                    v-for="row in provenanceRows"
-                    :key="row.id"
-                    class="flex items-center justify-between gap-2"
-                  >
-                    <dt class="min-w-0 truncate text-muted">{{ row.field }}</dt>
-                    <dd class="shrink-0 text-toned">{{ row.source }}</dd>
+            <div v-else-if="detail" class="space-y-4">
+              <div class="space-y-2">
+                <h2 class="truncate text-base font-semibold text-highlighted">
+                  {{ detail.invoice.invoiceNumber || t("invoices.detail.title") }}
+                </h2>
+                <div class="flex flex-wrap items-center gap-2">
+                  <InvoiceStatusBadge :status="detail.invoice.status" />
+                  <span class="min-w-0 flex-1 truncate text-sm text-muted">
+                    {{ detail.invoice.supplierName || "—" }}
+                  </span>
+                  <div class="ms-auto flex shrink-0 items-center gap-1">
+                    <UButton
+                      v-if="detail.invoice.status !== 'verified'"
+                      color="primary"
+                      variant="ghost"
+                      icon="i-tabler-check"
+                      size="sm"
+                      square
+                      class="min-h-11 min-w-11"
+                      :aria-label="t('invoices.actions.verify')"
+                      :title="t('invoices.actions.verify')"
+                      @click="verifyInvoice"
+                    />
+                    <UButton
+                      color="neutral"
+                      variant="ghost"
+                      icon="i-tabler-pencil"
+                      size="sm"
+                      square
+                      class="min-h-11 min-w-11"
+                      :aria-label="t('invoices.actions.edit')"
+                      :title="t('invoices.actions.edit')"
+                      @click="startEdit"
+                    />
+                    <UButton
+                      color="error"
+                      variant="ghost"
+                      icon="i-tabler-trash"
+                      size="sm"
+                      square
+                      class="min-h-11 min-w-11"
+                      :aria-label="t('invoices.actions.remove')"
+                      :title="t('invoices.actions.remove')"
+                      @click="confirmDeleteOpen = true"
+                    />
                   </div>
-                </dl>
-              </details>
+                </div>
+              </div>
+
+              <dl class="grid gap-3 sm:grid-cols-3">
+                <div>
+                  <dt class="text-sm text-muted">{{ t("invoices.form.issueDate") }}</dt>
+                  <dd class="text-base text-toned">
+                    <span dir="ltr">{{ detail.invoice.issueDate || "—" }}</span>
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-sm text-muted">{{ t("invoices.form.subtotal") }}</dt>
+                  <dd class="text-base text-toned tabular-nums" dir="ltr">
+                    {{ formatCurrency(detail.invoice.subtotal, detail.invoice.currency) }}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-sm text-muted">{{ t("invoices.form.total") }}</dt>
+                  <dd class="text-base font-medium text-highlighted tabular-nums" dir="ltr">
+                    {{ formatCurrency(detail.invoice.total, detail.invoice.currency) }}
+                  </dd>
+                </div>
+              </dl>
+
+              <div class="-mx-4 divide-y divide-default border-y border-default px-4">
+                <div class="space-y-2 py-3">
+                  <h3 class="text-base font-medium text-highlighted">
+                    {{ t("invoices.detail.lines") }}
+                  </h3>
+                  <div v-if="detail.lines.length === 0" class="py-4 text-center text-sm text-muted">
+                    {{ t("invoices.detail.noLines") }}
+                  </div>
+                  <div v-else class="overflow-x-auto">
+                    <table class="w-full text-base tabular-nums">
+                      <thead class="text-sm text-muted">
+                        <tr class="border-b border-default">
+                          <th class="px-3 py-2 text-start font-medium">
+                            {{ t("invoices.form.description") }}
+                          </th>
+                          <th class="px-3 py-2 text-end font-medium">
+                            {{ t("invoices.form.quantity") }}
+                          </th>
+                          <th class="px-3 py-2 text-end font-medium">
+                            {{ t("invoices.form.unitPrice") }}
+                          </th>
+                          <th class="px-3 py-2 text-end font-medium">
+                            {{ t("invoices.form.taxRate") }}
+                          </th>
+                          <th class="px-3 py-2 text-end font-medium">
+                            {{ t("invoices.form.lineTotal") }}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="line in detail.lines"
+                          :key="line.id"
+                          class="border-t border-default"
+                        >
+                          <td class="px-3 py-2 text-toned">{{ line.description || "—" }}</td>
+                          <td class="px-3 py-2 text-end text-muted" dir="ltr">
+                            {{ line.quantity ?? "—" }}
+                          </td>
+                          <td class="px-3 py-2 text-end text-muted" dir="ltr">
+                            {{ line.unitPrice ?? "—" }}
+                          </td>
+                          <td class="px-3 py-2 text-end text-muted" dir="ltr">
+                            {{ line.taxRate ?? "—" }}
+                          </td>
+                          <td class="px-3 py-2 text-end text-toned" dir="ltr">
+                            {{ line.lineTotal ?? "—" }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <details v-if="provenanceRows.length" class="py-3">
+                  <summary class="cursor-pointer text-base font-medium text-toned">
+                    {{ t("invoices.detail.provenance") }}
+                  </summary>
+                  <dl class="mt-2 space-y-1 text-sm">
+                    <div
+                      v-for="row in provenanceRows"
+                      :key="row.id"
+                      class="flex items-center justify-between gap-2"
+                    >
+                      <dt class="min-w-0 truncate text-muted">{{ row.field }}</dt>
+                      <dd class="shrink-0 text-toned">{{ row.source }}</dd>
+                    </div>
+                  </dl>
+                </details>
+              </div>
             </div>
           </div>
-        </div>
-      </aside>
+        </aside>
+      </div>
     </div>
 
     <USlideover
@@ -547,16 +529,13 @@ onMounted(loadList);
                 <h3 class="text-base font-medium text-highlighted">
                   {{ t("invoices.detail.lines") }}
                 </h3>
-                <div
-                  v-if="detail.lines.length === 0"
-                  class="rounded-md border border-dashed border-default py-4 text-center text-sm text-muted"
-                >
+                <div v-if="detail.lines.length === 0" class="py-4 text-center text-sm text-muted">
                   {{ t("invoices.detail.noLines") }}
                 </div>
-                <div v-else class="overflow-x-auto rounded-md border border-default">
+                <div v-else class="overflow-x-auto">
                   <table class="w-full text-base tabular-nums">
-                    <thead class="bg-accented text-sm text-muted">
-                      <tr>
+                    <thead class="text-sm text-muted">
+                      <tr class="border-b border-default">
                         <th class="px-3 py-2 text-start font-medium">
                           {{ t("invoices.form.description") }}
                         </th>

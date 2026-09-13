@@ -5,9 +5,7 @@ import type {
   ExtractedFieldItem,
   UploadResult,
 } from "~/composables/useUpload";
-import PageHeader from "~/components/ui/PageHeader.vue";
 import SectionHeader from "~/components/ui/SectionHeader.vue";
-import EmptyState from "~/components/ui/EmptyState.vue";
 import LoadingState from "~/components/ui/LoadingState.vue";
 import DocumentUploader from "~/components/document/DocumentUploader.vue";
 import DocumentList from "~/components/document/DocumentList.vue";
@@ -120,126 +118,126 @@ watch(companyId, () => {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <PageHeader
-      :title="t('documents.title')"
-      :subtitle="t('documents.subtitle')"
-      icon="i-tabler-files"
-      max-width="max-w-6xl"
-    >
-      <template #actions>
-        <UBadge
-          color="neutral"
-          variant="subtle"
-          :label="t('documents.list.count', { count: items.length })"
-        />
-        <UButton
-          color="neutral"
-          variant="ghost"
-          icon="i-tabler-reload"
-          :label="t('documents.list.refresh')"
-          @click="refresh()"
-        />
-        <UButton
-          color="primary"
-          icon="i-tabler-plus"
-          :label="t('documents.upload.open')"
-          @click="uploaderOpen = true"
-        />
-      </template>
-    </PageHeader>
-
-    <div class="mx-auto grid w-full max-w-6xl gap-6 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
-      <section class="min-w-0 space-y-3">
-        <SectionHeader :title="t('documents.list.title')" :count="items.length" level="2" />
-        <DocumentList
-          :items="items"
-          :types="types"
-          :selected-id="selectedId"
-          :reprocessing-id="reprocessingId"
-          :loading="pending"
-          @select="selectDocument"
-          @reprocess="reprocess"
-          @upload="uploaderOpen = true"
-        />
-      </section>
-
-      <aside class="hidden min-w-0 lg:block">
-        <div class="lg:sticky lg:top-20 space-y-4">
-          <EmptyState
-            v-if="!selectedId"
-            size="sm"
-            icon="i-tabler-file-search"
-            :title="t('documents.detail.select')"
-            :description="t('documents.detail.selectHint')"
+  <div>
+    <div class="-mx-4 w-auto border-b border-default sm:-mx-6">
+      <div class="grid w-auto items-stretch lg:grid-cols-[minmax(0,20rem)_1px_minmax(0,1fr)]">
+        <section class="min-w-0">
+          <SectionHeader
+            :title="t('documents.list.title')"
+            :level="2"
+            class="border-b border-default px-4 py-3 [&_h2]:min-w-0 [&_h2]:truncate [&_h2]:text-base"
+          >
+            <template #actions>
+              <UButton
+                color="primary"
+                variant="ghost"
+                icon="i-tabler-plus"
+                square
+                class="min-h-11 min-w-11 shrink-0 rounded-full transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]"
+                :aria-label="t('documents.upload.open')"
+                :title="t('documents.upload.open')"
+                @click="uploaderOpen = true"
+              />
+            </template>
+          </SectionHeader>
+          <DocumentList
+            :items="items"
+            :types="types"
+            :selected-id="selectedId"
+            :reprocessing-id="reprocessingId"
+            :loading="pending"
+            @select="selectDocument"
+            @reprocess="reprocess"
+            @upload="uploaderOpen = true"
           />
+        </section>
 
-          <LoadingState v-else-if="detailLoading" :label="t('documents.detail.loading')" />
+        <div aria-hidden="true" class="hidden w-px self-stretch bg-[var(--ui-border)] lg:block" />
 
-          <div v-else class="space-y-4">
-            <div class="space-y-2">
-              <h2 class="truncate text-base font-semibold text-highlighted">
-                {{ selectedBundle?.document.title || t("documents.detail.title") }}
-              </h2>
-              <div class="flex flex-wrap items-center gap-2">
-                <ExtractionStatus :status="selectedBundle?.document.status" />
-                <UBadge
-                  v-if="overallConfidence"
-                  color="neutral"
-                  variant="subtle"
-                  :label="t('documents.extraction.overallConfidence') + ': ' + overallConfidence"
-                />
-                <UButton
-                  class="ms-auto min-h-11"
-                  color="neutral"
-                  variant="soft"
-                  icon="i-tabler-reload"
-                  size="sm"
-                  :loading="reprocessingId === selectedId"
-                  :label="t('documents.extraction.reprocess')"
-                  @click="selectedId && reprocess(selectedId)"
-                />
+        <aside class="hidden min-w-0 lg:block">
+          <div class="space-y-4 px-4 py-3 lg:sticky lg:top-20">
+            <div
+              v-if="!selectedId"
+              class="flex flex-col items-center justify-center gap-2 px-2 py-12 text-center"
+            >
+              <div
+                class="flex size-12 items-center justify-center rounded-full bg-accented text-muted"
+              >
+                <UIcon name="i-tabler-file-search" class="size-6" />
               </div>
+              <p class="text-base font-semibold text-highlighted">
+                {{ t("documents.detail.select") }}
+              </p>
+              <p class="text-base text-muted">{{ t("documents.detail.selectHint") }}</p>
             </div>
 
-            <UAlert
-              v-if="detail?.extraction?.status === 'failed'"
-              color="error"
-              variant="soft"
-              icon="i-tabler-alert-triangle"
-              :title="t('documents.extraction.error')"
-              :description="detail?.extraction?.error ?? undefined"
-            />
+            <LoadingState v-else-if="detailLoading" :label="t('documents.detail.loading')" />
 
-            <div class="divide-y divide-default border-y border-default">
-              <div class="py-3">
-                <ExtractedFieldsTable :fields="detail?.fields ?? []" />
+            <div v-else class="space-y-4">
+              <div class="space-y-2">
+                <h2 class="truncate text-base font-semibold text-highlighted">
+                  {{ selectedBundle?.document.title || t("documents.detail.title") }}
+                </h2>
+                <div class="flex flex-wrap items-center gap-2">
+                  <ExtractionStatus :status="selectedBundle?.document.status" />
+                  <UBadge
+                    v-if="overallConfidence"
+                    color="neutral"
+                    variant="subtle"
+                    :label="t('documents.extraction.overallConfidence') + ': ' + overallConfidence"
+                  />
+                  <UButton
+                    class="ms-auto min-h-11"
+                    color="neutral"
+                    variant="soft"
+                    icon="i-tabler-reload"
+                    size="sm"
+                    :loading="reprocessingId === selectedId"
+                    :label="t('documents.extraction.reprocess')"
+                    @click="selectedId && reprocess(selectedId)"
+                  />
+                </div>
               </div>
 
-              <details class="py-3">
-                <summary class="cursor-pointer text-sm font-medium text-toned">
-                  {{ t("documents.detail.technical") }}
-                </summary>
-                <p class="mt-2 text-sm text-muted">{{ t("documents.detail.technicalHint") }}</p>
-                <dl class="mt-2 space-y-1 text-sm">
-                  <div class="flex items-center justify-between gap-2">
-                    <dt class="text-muted">{{ t("documents.detail.documentId") }}</dt>
-                    <dd class="min-w-0 truncate text-toned" dir="ltr">
-                      {{ selectedBundle?.document.id }}
-                    </dd>
-                  </div>
-                  <div class="flex items-center justify-between gap-2">
-                    <dt class="text-muted">{{ t("documents.detail.versionId") }}</dt>
-                    <dd class="min-w-0 truncate text-toned" dir="ltr">
-                      {{ selectedBundle?.version?.id ?? "—" }}
-                    </dd>
-                  </div>
-                </dl>
-              </details>
+              <UAlert
+                v-if="detail?.extraction?.status === 'failed'"
+                color="error"
+                variant="soft"
+                icon="i-tabler-alert-triangle"
+                :title="t('documents.extraction.error')"
+                :description="detail?.extraction?.error ?? undefined"
+              />
+
+              <div class="-mx-4 divide-y divide-default border-y border-default px-4">
+                <div class="py-3">
+                  <ExtractedFieldsTable :fields="detail?.fields ?? []" />
+                </div>
+
+                <details class="py-3">
+                  <summary class="cursor-pointer text-sm font-medium text-toned">
+                    {{ t("documents.detail.technical") }}
+                  </summary>
+                  <p class="mt-2 text-sm text-muted">{{ t("documents.detail.technicalHint") }}</p>
+                  <dl class="mt-2 space-y-1 text-sm">
+                    <div class="flex items-center justify-between gap-2">
+                      <dt class="text-muted">{{ t("documents.detail.documentId") }}</dt>
+                      <dd class="min-w-0 truncate text-toned" dir="ltr">
+                        {{ selectedBundle?.document.id }}
+                      </dd>
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                      <dt class="text-muted">{{ t("documents.detail.versionId") }}</dt>
+                      <dd class="min-w-0 truncate text-toned" dir="ltr">
+                        {{ selectedBundle?.version?.id ?? "—" }}
+                      </dd>
+                    </div>
+                  </dl>
+                </details>
+              </div>
             </div>
           </div>
-        </div>
-      </aside>
+        </aside>
+      </div>
     </div>
 
     <USlideover

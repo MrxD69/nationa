@@ -2,7 +2,6 @@
 import type { DropdownMenuItem } from "@nuxt/ui";
 import FilingStatusBadge from "~/components/filing/FilingStatusBadge.vue";
 import LoadingState from "~/components/ui/LoadingState.vue";
-import EmptyState from "~/components/ui/EmptyState.vue";
 
 type FilingRow = {
   id: string;
@@ -125,24 +124,30 @@ function menuItems(filing: FilingRow): DropdownMenuItem[] {
 </script>
 
 <template>
-  <div>
+  <div class="w-full">
     <LoadingState v-if="loading" variant="skeleton-list" :label="t('filings.loading')" />
 
-    <EmptyState
+    <div
       v-else-if="items.length === 0"
-      icon="i-tabler-file-off"
-      :title="filtered ? t('filings.list.emptyFiltered') : t('filings.empty')"
-      :description="filtered ? undefined : t('filings.emptyHint')"
-    />
+      class="flex flex-col items-center justify-center gap-2 px-2 py-12 text-center"
+    >
+      <div class="flex size-12 items-center justify-center rounded-full bg-accented text-muted">
+        <UIcon name="i-tabler-file-off" class="size-6" />
+      </div>
+      <p class="text-base font-semibold text-highlighted">
+        {{ filtered ? t("filings.list.emptyFiltered") : t("filings.empty") }}
+      </p>
+      <p v-if="!filtered" class="text-base text-muted">{{ t("filings.emptyHint") }}</p>
+    </div>
 
-    <div v-else class="divide-y divide-default overflow-hidden rounded-lg border border-default">
+    <div v-else class="divide-y divide-default">
       <details v-for="group in groups" :key="group.key" open>
         <summary
-          class="flex cursor-pointer list-none items-center gap-2 px-3 py-2 transition-colors hover:bg-accented [&::-webkit-details-marker]:hidden"
+          class="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 py-2 transition-[background-color,color] duration-150 ease-out hover:bg-accented focus-visible:bg-accented focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary [&::-webkit-details-marker]:hidden"
         >
           <UIcon
             name="i-tabler-chevron-down"
-            class="size-4 shrink-0 text-muted transition-transform [[details:not([open])_&]:-rotate-90]"
+            class="size-4 shrink-0 text-muted transition-[transform] duration-200 ease-out [[details:not([open])_&]:-rotate-90]"
           />
           <span class="min-w-0 flex-1 truncate text-sm font-semibold text-toned">
             {{ group.name }}
@@ -153,14 +158,15 @@ function menuItems(filing: FilingRow): DropdownMenuItem[] {
           <div
             v-for="filing in group.items"
             :key="filing.id"
-            class="group flex cursor-pointer items-start gap-3 px-3 py-2.5 transition-colors"
+            class="group flex min-h-11 w-full cursor-pointer items-start gap-3 border-s-2 px-3 py-2.5 transition-[background-color,color,border-color] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary"
             :class="
               filing.id === selectedId
-                ? 'bg-primary/10 text-primary'
-                : 'hover:bg-accented focus-visible:bg-accented'
+                ? 'border-s-primary bg-primary/10 text-primary'
+                : 'border-s-transparent hover:bg-accented focus-visible:bg-accented'
             "
             role="button"
             tabindex="0"
+            :aria-selected="filing.id === selectedId"
             @click="emit('select', filing.id)"
             @keydown.enter="emit('select', filing.id)"
             @keydown.space.prevent="emit('select', filing.id)"
@@ -191,6 +197,7 @@ function menuItems(filing: FilingRow): DropdownMenuItem[] {
                   icon="i-tabler-dots-vertical"
                   size="sm"
                   square
+                  class="min-h-11 min-w-11"
                   :aria-label="t('filings.list.actions')"
                   :title="t('filings.list.actions')"
                   @click.stop

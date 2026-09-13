@@ -9,23 +9,12 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
-const open = ref(false);
 const detailsOpen = ref(false);
 
 const label = computed(() => {
   const key = `assistant.tools.${props.name}`;
   const translated = t(key);
   return translated === key ? props.name : translated;
-});
-
-const status = computed(() => {
-  if (props.state === "output-error") {
-    return { label: t("assistant.tools.error"), color: "error" as const };
-  }
-  if (props.state === "output-available") {
-    return { label: t("assistant.tools.done"), color: "success" as const };
-  }
-  return { label: t("assistant.tools.running"), color: "neutral" as const };
 });
 
 function pretty(value: unknown): string {
@@ -47,51 +36,27 @@ function onDetailsToggle(event: Event) {
 </script>
 
 <template>
-  <div class="rounded-lg border border-default">
-    <button
-      type="button"
-      class="flex w-full items-center gap-2 px-3 py-2 text-start"
-      @click="open = !open"
-    >
-      <UIcon name="i-tabler-tool" class="size-4 shrink-0 text-muted" />
-      <span class="flex-1 truncate text-sm font-medium text-toned">{{ label }}</span>
-      <UBadge :color="status.color" variant="subtle" size="lg" :label="status.label" />
-      <UIcon
-        name="i-tabler-chevron-down"
-        class="size-4 text-muted transition-transform"
-        :class="open ? 'rotate-180' : ''"
-      />
-    </button>
-    <div v-if="open" class="space-y-2 border-t border-default p-3">
-      <p v-if="input" class="text-sm font-medium text-muted">{{ t("assistant.tools.title") }}</p>
-
-      <details class="rounded-md" :open="detailsOpen" @toggle="onDetailsToggle">
-        <summary
-          class="flex cursor-pointer list-none items-center gap-1.5 text-sm font-medium text-muted"
-        >
-          <UIcon
-            name="i-tabler-chevron-right"
-            class="size-4 shrink-0 transition-transform"
-            :class="detailsOpen ? 'rotate-90' : ''"
-          />
-          {{ detailsOpen ? t("assistant.tools.hideDetails") : t("assistant.tools.showDetails") }}
-        </summary>
-
-        <div class="mt-2 space-y-2">
-          <pre
-            v-if="input"
-            class="max-h-48 overflow-auto rounded-md bg-elevated p-2 text-sm leading-5 text-muted"
-            dir="ltr"
-            >{{ pretty(input) }}</pre>
-          <pre
-            v-if="output !== undefined"
-            class="max-h-64 overflow-auto rounded-md bg-elevated p-2 text-sm leading-5 text-muted"
-            dir="ltr"
-            >{{ pretty(output) }}</pre>
-        </div>
-      </details>
-
-      <p v-if="errorText" class="text-sm text-error">{{ errorText }}</p>
+  <div v-if="props.state === 'output-error'" class="space-y-1">
+    <div class="flex items-center gap-2 text-sm text-error">
+      <UIcon name="i-tabler-alert-triangle" class="size-4 shrink-0" />
+      <span class="min-w-0 truncate">{{ label }}</span>
     </div>
+    <details @toggle="onDetailsToggle">
+      <summary class="flex cursor-pointer list-none items-center gap-1.5 text-sm text-muted">
+        <UIcon
+          name="i-tabler-chevron-right"
+          class="size-4 shrink-0 transition-[transform]"
+          :class="detailsOpen ? 'rotate-90' : ''"
+        />
+        {{ t("assistant.tools.errorDetails") }}
+      </summary>
+      <div class="mt-2 space-y-2">
+        <p v-if="props.errorText" class="text-sm text-error">{{ props.errorText }}</p>
+        <pre
+          class="max-h-48 overflow-auto rounded-md bg-elevated p-2 text-sm leading-5 text-muted"
+          dir="ltr"
+          >{{ pretty(props.output ?? props.input) }}</pre>
+      </div>
+    </details>
   </div>
 </template>

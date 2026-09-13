@@ -386,6 +386,7 @@ onMounted(() => {
           variant="soft"
           square
           icon="i-tabler-plus"
+          class="press transition-control"
           :aria-label="t('assistant.newConversation')"
           @click="onNewConversation"
         />
@@ -395,6 +396,7 @@ onMounted(() => {
           variant="ghost"
           square
           icon="i-tabler-x"
+          class="transition-control"
           :aria-label="t('shell.ai.close')"
           @click="emit('close')"
         />
@@ -487,7 +489,7 @@ onMounted(() => {
       </div>
 
       <form
-        class="flex items-end gap-2 border-0 bg-transparent px-3 pe-3 ps-4 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))]"
+        class="flex items-end gap-2 border-0 bg-transparent px-3 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))]"
         @submit.prevent="handleSubmit"
       >
         <UTextarea

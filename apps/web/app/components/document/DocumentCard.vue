@@ -66,10 +66,15 @@ const menuItems = computed<DropdownMenuItem[]>(() => [
 
 <template>
   <div
-    class="group flex cursor-pointer items-start gap-3 px-3 py-2.5 transition-colors"
-    :class="selected ? 'bg-primary/10 text-primary' : 'hover-surface focus-visible:bg-accented'"
+    class="group flex min-h-11 w-full cursor-pointer items-start gap-3 border-s-2 px-3 py-2.5 transition-[background-color,color,border-color] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary"
+    :class="
+      selected
+        ? 'border-s-primary bg-primary/10 text-primary'
+        : 'border-s-transparent hover:bg-accented focus-visible:bg-accented'
+    "
     role="button"
     tabindex="0"
+    :aria-selected="selected"
     @click="emit('select', document.id)"
     @keydown.enter="emit('select', document.id)"
     @keydown.space.prevent="emit('select', document.id)"
@@ -98,6 +103,7 @@ const menuItems = computed<DropdownMenuItem[]>(() => [
           icon="i-tabler-dots-vertical"
           size="sm"
           square
+          class="min-h-11 min-w-11"
           :loading="reprocessing"
           :aria-label="t('documents.list.rowMenu')"
           :title="t('documents.list.rowMenu')"

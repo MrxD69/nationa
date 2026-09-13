@@ -106,6 +106,64 @@ export function useAssistant(
   const error = chat.error;
   const isStreaming = computed(() => status.value === "submitted" || status.value === "streaming");
 
+  function toolStateOf(part: unknown): string | null {
+    if (typeof part !== "object" || part === null || !("type" in part)) {
+      return null;
+    }
+    const type = part.type;
+    if (typeof type !== "string") {
+      return null;
+    }
+    if (!type.startsWith("tool-") && type !== "dynamic-tool") {
+      return null;
+    }
+    if (!("state" in part)) {
+      return "input-available";
+    }
+    return typeof part.state === "string" ? part.state : "input-available";
+  }
+
+  const lastAssistantMessage = computed(() => {
+    const all = messages.value;
+    for (let index = all.length - 1; index >= 0; index--) {
+      const message = all[index];
+      if (message?.role === "assistant") {
+        return message;
+      }
+    }
+    return null;
+  });
+
+  const activeToolCount = computed(() => {
+    const message = lastAssistantMessage.value;
+    if (!message || !Array.isArray(message.parts)) {
+      return 0;
+    }
+    let count = 0;
+    for (const part of message.parts) {
+      const state = toolStateOf(part);
+      if (state !== null && state !== "output-available" && state !== "output-error") {
+        count += 1;
+      }
+    }
+    return count;
+  });
+
+  const hasStreamError = computed(() => {
+    if (error.value != null) {
+      return true;
+    }
+    const message = lastAssistantMessage.value;
+    if (!message || !Array.isArray(message.parts)) {
+      return false;
+    }
+    return message.parts.some((part) => toolStateOf(part) === "output-error");
+  });
+
+  function clearError() {
+    chat.clearError();
+  }
+
   async function ensureConversation(): Promise<string> {
     if (conversationId.value) {
       return conversationId.value;
@@ -168,9 +226,12 @@ export function useAssistant(
     status,
     error,
     isStreaming,
+    activeToolCount,
+    hasStreamError,
     send,
     stop: chat.stop,
     regenerate: chat.regenerate,
+    clearError,
     newConversation,
     loadConversation,
     acceptProposal,

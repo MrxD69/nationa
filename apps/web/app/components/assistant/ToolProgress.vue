@@ -55,7 +55,7 @@ const indicator = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-center gap-2 text-sm text-muted">
+  <div v-if="props.state !== 'output-available'" class="flex items-center gap-2 text-sm text-muted">
     <UIcon :name="indicator.icon" class="size-4 shrink-0" :class="indicator.class" />
     <span class="min-w-0 truncate">{{ label }}</span>
   </div>

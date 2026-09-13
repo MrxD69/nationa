@@ -16,6 +16,10 @@
     "stop": "Arrêter",
     "regenerate": "Régénérer",
     "thinking": "Réflexion…",
+    "streaming": {
+      "interrupted": "Réponse interrompue",
+      "stopped": "Arrêté"
+    },
     "messages": "{count} message(s)",
     "suggestions": {
       "title": "Suggestions",
@@ -40,7 +44,8 @@
       "done": "Terminé",
       "error": "Échec",
       "showDetails": "Afficher les détails",
-      "hideDetails": "Masquer les détails"
+      "hideDetails": "Masquer les détails",
+      "errorDetails": "Détails de l'erreur"
     },
     "progress": {
       "searchRules": "Recherche de règles{query}…",

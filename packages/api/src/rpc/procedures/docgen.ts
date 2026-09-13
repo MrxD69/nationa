@@ -2,9 +2,11 @@ import { z } from "zod";
 
 import { userProcedure } from "../builders";
 import {
+  applyAiDraftFields,
   approveDraft,
   generateDraft,
   getDocumentContext,
+  getDraft,
   getTemplate,
   listDrafts,
   listTemplates,
@@ -25,6 +27,16 @@ const answerSchema = z.object({
   valueText: z.string().nullish(),
 });
 
+const aiFieldWriteSchema = z.object({
+  key: z.string().min(1),
+  valueText: z.string().nullish(),
+  valueJsonb: z.unknown().optional(),
+  confidence: z.number().min(0).max(1).nullish(),
+  citingKeys: z.array(z.string()).optional(),
+  repeatKey: z.string().min(1).optional(),
+  itemIndex: z.number().int().min(0).optional(),
+});
+
 export const docgenRouter = {
   listTemplates: userProcedure.handler(({ context }) => listTemplates(context)),
 
@@ -40,6 +52,10 @@ export const docgenRouter = {
       }),
     )
     .handler(({ context, input }) => getDocumentContext(context, input)),
+
+  getDraft: userProcedure
+    .input(z.object({ proposalId: z.guid() }))
+    .handler(({ context, input }) => getDraft(context, input)),
 
   generateDraft: userProcedure
     .input(
@@ -71,6 +87,16 @@ export const docgenRouter = {
       }),
     )
     .handler(({ context, input }) => updateDraft(context, input)),
+
+  applyAiFields: userProcedure
+    .input(
+      z.object({
+        proposalId: z.guid(),
+        rationale: z.string().max(2000).optional(),
+        fields: z.array(aiFieldWriteSchema).min(1),
+      }),
+    )
+    .handler(({ context, input }) => applyAiDraftFields(context, input)),
 
   approveDraft: userProcedure
     .input(z.object({ proposalId: z.guid() }))

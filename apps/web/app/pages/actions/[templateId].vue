@@ -4,11 +4,11 @@ import ActionStepTracker from "~/components/action/ActionStepTracker.vue";
 definePageMeta({ layout: "app", middleware: "auth" });
 
 const route = useRoute();
-const { selectedCompanyId } = useSelectedCompany();
+const { accessibleCompanyId } = useSelectedCompany();
 
 const templateId = computed(() => String(route.params.templateId ?? ""));
 
-const companyId = computed(() => selectedCompanyId.value ?? undefined);
+const companyId = computed(() => accessibleCompanyId.value ?? undefined);
 
 const caseId = computed(() => {
   const value = route.query.caseId;

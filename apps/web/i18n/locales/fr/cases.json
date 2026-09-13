@@ -97,6 +97,16 @@
     "submission": {
       "checklist": "Liste de préparation",
       "submit": "Soumettre le dossier"
+    },
+    "docgen": {
+      "previewTitle": "Statuts de la SARL",
+      "previewSubtitle": "Vérifiez les informations du projet de statuts. Les champs complétés sont surlignés en vert.",
+      "handoff": "Passer à l'IA",
+      "handoffPrompt": "Examine le projet de statuts de cette étape, complète les champs manquants à partir des informations du dossier, et pose-moi des questions si une information essentielle manque.",
+      "empty": "Aucun projet de statuts pour le moment.",
+      "filledLegend": "Complété",
+      "blankLegend": "À compléter",
+      "error": "Impossible de préparer les statuts"
     }
   }
 }

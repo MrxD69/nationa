@@ -4,7 +4,7 @@ import CitationCard from "~/components/assistant/CitationCard.vue";
 import ClarificationCard from "~/components/assistant/ClarificationCard.vue";
 import DelicacyAlert from "~/components/assistant/DelicacyAlert.vue";
 import ProposalCard from "~/components/assistant/ProposalCard.vue";
-import ToolCallCard from "~/components/assistant/ToolCallCard.vue";
+import ToolProgress from "~/components/assistant/ToolProgress.vue";
 
 const props = defineProps<{
   message: { id: string; role: string; parts: unknown[] };
@@ -13,7 +13,11 @@ const props = defineProps<{
   pendingProposalId?: string | null;
 }>();
 
-const emit = defineEmits<{ accept: [id: string]; reject: [id: string] }>();
+const emit = defineEmits<{
+  accept: [id: string];
+  reject: [id: string];
+  clarification: [answers: Array<{ questionId: string; question: string; value: string }>];
+}>();
 
 const parts = computed(() => (props.message.parts ?? []) as any[]);
 const isUser = computed(() => props.message.role === "user");
@@ -85,6 +89,7 @@ function proposalFor(part: any) {
           <ClarificationCard
             v-else-if="toolName(part) === 'requestClarification' && toolOutput(part)?.questions"
             :questions="toolOutput(part).questions"
+            @submit="emit('clarification', $event)"
           />
           <DelicacyAlert
             v-else-if="toolName(part) === 'flagDelicateMatter' && toolOutput(part)?.summary"
@@ -92,14 +97,13 @@ function proposalFor(part: any) {
             :severity="toolOutput(part).severity"
             :reasons="toolOutput(part).reasons"
           />
-          <ToolCallCard
-            v-else
+          <ToolProgress
+            v-else-if="toolName(part) === 'writeDocgenFields'"
             :name="toolName(part)"
             :state="part.state"
             :input="part.input"
-            :output="toolOutput(part)"
-            :error-text="part.errorText"
           />
+          <ToolProgress v-else :name="toolName(part)" :state="part.state" :input="part.input" />
         </template>
 
         <CitationCard

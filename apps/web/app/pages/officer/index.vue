@@ -34,6 +34,7 @@ const items = ref<QueueItem[]>([]);
 const nextCursor = ref<string | null>(null);
 const loading = ref(false);
 const error = ref<string | null>(null);
+const agenciesLoaded = ref(false);
 
 const statusItems = computed(() => [
   { label: t("officer.queue.allStatuses"), value: "" },
@@ -54,6 +55,11 @@ const tierItems = computed(() => [
 
 async function load(append = false) {
   if (!agencyId.value) {
+    /*
+     * Returning silently here is what makes the retry button look broken: the
+     * click fires, nothing loads, and nothing is said. Say it instead.
+     */
+    error.value = agenciesLoaded.value ? t("officer.agency.none") : t("officer.queue.error");
     return;
   }
   loading.value = true;
@@ -92,17 +98,49 @@ function open(id: string) {
   });
 }
 
-onMounted(async () => {
-  agencies.value = await api.officer.myAgencies();
+/**
+ * An unhandled rejection here used to abort the rest of the hook, leaving the page
+ * with no agency, no data and no error — every control then did nothing when
+ * clicked. Surface the failure and let the user retry.
+ */
+async function bootstrap() {
+  loading.value = true;
+  error.value = null;
+  try {
+    agencies.value = await api.officer.myAgencies();
+    agenciesLoaded.value = true;
+  } catch (cause) {
+    agencies.value = [];
+    error.value = cause instanceof Error ? cause.message : String(cause);
+    loading.value = false;
+    return;
+  }
+
   const fromQuery = typeof route.query.agencyId === "string" ? route.query.agencyId : null;
   agencyId.value =
     fromQuery && agencies.value.some((agency) => agency.id === fromQuery)
       ? fromQuery
       : (agencies.value[0]?.id ?? null);
-  await load();
-});
 
+  loading.value = false;
+  await load();
+}
+
+async function retry() {
+  if (!agenciesLoaded.value || agencies.value.length === 0) {
+    await bootstrap();
+    return;
+  }
+  await load();
+}
+
+onMounted(bootstrap);
+
+// Only react to changes the user makes; the initial load is bootstrap's job.
 watch([agencyId, status, tier, sort], () => {
+  if (!agenciesLoaded.value) {
+    return;
+  }
   void load();
 });
 </script>
@@ -120,7 +158,25 @@ watch([agencyId, status, tier, sort], () => {
     </div>
 
     <UAlert
-      v-if="agencies.length === 0"
+      v-if="error && agencies.length === 0"
+      color="error"
+      variant="subtle"
+      :title="t('officer.queue.error')"
+      :description="error"
+    >
+      <template #actions>
+        <UButton
+          color="error"
+          variant="soft"
+          size="lg"
+          :label="t('officer.common.retry')"
+          @click="retry()"
+        />
+      </template>
+    </UAlert>
+
+    <UAlert
+      v-else-if="agencies.length === 0"
       color="neutral"
       variant="soft"
       icon="i-tabler-info-circle"
@@ -146,7 +202,7 @@ watch([agencyId, status, tier, sort], () => {
             variant="soft"
             size="lg"
             :label="t('officer.common.retry')"
-            @click="load()"
+            @click="retry()"
           />
         </template>
       </UAlert>

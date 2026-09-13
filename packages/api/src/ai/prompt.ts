@@ -1,3 +1,4 @@
+import type { DocgenPromptContext } from "../rpc/services/docgen.service";
 import type { AssistantLocale, AssistantToolDeps } from "./types";
 
 const LOCALE_LABELS: Record<AssistantLocale, string> = {
@@ -18,6 +19,7 @@ export function buildSystemPrompt(deps: {
   companyId: string | null;
   caseId: string | null;
   accessibleCompanyIds: string[];
+  docgen?: DocgenPromptContext | null;
 }): string {
   const language = LOCALE_LABELS[deps.locale];
   const scope: string[] = [];
@@ -35,7 +37,7 @@ export function buildSystemPrompt(deps: {
     scope.push("The user has no company access grants; do not retrieve company data.");
   }
 
-  return [
+  const lines = [
     "You are Nationa's compliance and tax assistant for Tunisian businesses (RNE, DGI, CNSS).",
     `Always answer in ${language}, matching the user's language.`,
     "You explain obligations, procedures, deadlines and fiscal concepts for Tunisia.",
@@ -60,12 +62,34 @@ export function buildSystemPrompt(deps: {
     "- `getUpcomingDeadlines`: list upcoming obligations for a company.",
     "- `citeRule`: attach an official source to your answer (only writer of citations).",
     "- `proposeCaseFieldFills`: propose field values for a case for the user to accept (draft only).",
+    "- `writeDocgenFields`: write filled values directly into the active document draft.",
     "- `requestClarification`: ask structured clarifying questions.",
     "- `flagDelicateMatter`: raise a visible warning about a delicate matter.",
     "",
     "Context:",
     ...scope,
-  ].join("\n");
+  ];
+
+  if (deps.docgen) {
+    lines.push(
+      "",
+      "Document drafting:",
+      "- A document draft is active. Fill its fields by calling `writeDocgenFields`; never answer only in prose when a document is being prepared.",
+      "- Fill ONLY empty or blank fields unless the user explicitly asks to overwrite an existing value.",
+      "- Cite only the citation ids provided below (use the logical alias where one exists).",
+      "- For missing required keys, call `requestClarification` instead of inventing values.",
+      "",
+      "Document draft context:",
+      JSON.stringify({
+        fields: deps.docgen.fields,
+        repeats: deps.docgen.repeats,
+        missingKeys: deps.docgen.missingKeys,
+        citations: deps.docgen.citations,
+      }),
+    );
+  }
+
+  return lines.join("\n");
 }
 
 export function buildToolDepsPrompt(_deps: AssistantToolDeps): string {

@@ -10,12 +10,12 @@ const router = useRouter();
 const { t } = useI18n();
 const toast = useToast();
 const { templatesQuery, generateMutation, defaultLanguage } = useDocgen();
-const { selectedCompanyId } = useSelectedCompany();
+const { accessibleCompanyId } = useSelectedCompany();
 
 const caseId = computed(() =>
   typeof route.query.caseId === "string" ? route.query.caseId : undefined,
 );
-const companyId = computed(() => selectedCompanyId.value ?? undefined);
+const companyId = computed(() => accessibleCompanyId.value ?? undefined);
 const stepId = computed(() =>
   typeof route.query.stepId === "string" ? route.query.stepId : undefined,
 );

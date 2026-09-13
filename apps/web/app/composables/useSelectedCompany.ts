@@ -43,8 +43,16 @@ function readId(value: unknown): string | null {
 export function useSelectedCompany(): {
   selectedCompanyId: Ref<string | null>;
   selectedCompany: ComputedRef<CompanySummary | null>;
+  /**
+   * The selected company id only once it has been confirmed to be one the signed-in
+   * user actually holds a grant for. Anything sent to the API should use this, never
+   * `selectedCompanyId`, which may still hold a value seeded from the URL or from a
+   * cookie left behind by a previous session on this browser.
+   */
+  accessibleCompanyId: ComputedRef<string | null>;
   companies: ComputedRef<CompanySummary[]>;
   loading: Ref<boolean>;
+  loaded: Ref<boolean>;
   hasCompany: ComputedRef<boolean>;
   selectCompany: (id: string | null) => void;
   clearCompany: () => void;
@@ -63,12 +71,16 @@ export function useSelectedCompany(): {
   const companyList = useState<CompanySummary[]>("selected-company-list", () => []);
   const loading = useState<boolean>("selected-company-loading", () => false);
   const initialized = useState<boolean>("selected-company-initialized", () => false);
+  const loaded = useState<boolean>("selected-company-loaded", () => false);
 
   const companies = computed<CompanySummary[]>(() => companyList.value);
   const selectedCompany = computed<CompanySummary | null>(
     () => companyList.value.find((company) => company.id === selectedCompanyId.value) ?? null,
   );
   const hasCompany = computed(() => selectedCompanyId.value !== null);
+  const accessibleCompanyId = computed<string | null>(() =>
+    loaded.value && selectedCompany.value ? selectedCompany.value.id : null,
+  );
 
   function syncQuery(id: string | null) {
     if (!import.meta.client || !isCompanyAwarePath(route.path)) {
@@ -124,12 +136,30 @@ export function useSelectedCompany(): {
     }
   }
 
+  /**
+   * Drop a selection the signed-in user has no grant for.
+   *
+   * The selection is seeded from the URL and from a long-lived cookie, neither of
+   * which is tied to a user. On a shared browser that means one account can inherit
+   * the previous account's company id, and every company-scoped request then fails
+   * with "No access to this company". The server is right to refuse; the client is
+   * what has to stop asking.
+   */
+  function reconcileSelection() {
+    const current = selectedCompanyId.value;
+    if (current && !companyList.value.some((company) => company.id === current)) {
+      applySelection(null, { syncUrl: true });
+    }
+    ensureSelected();
+  }
+
   async function reload(): Promise<void> {
     loading.value = true;
     try {
       const rows = (await client.companies.list({ view: "all" })) as unknown as CompanyListRow[];
       companyList.value = rows.map(toSummary);
-      ensureSelected();
+      loaded.value = true;
+      reconcileSelection();
     } catch {
       companyList.value = [];
     } finally {
@@ -157,8 +187,10 @@ export function useSelectedCompany(): {
   return {
     selectedCompanyId,
     selectedCompany,
+    accessibleCompanyId,
     companies,
     loading,
+    loaded,
     hasCompany,
     selectCompany,
     clearCompany,

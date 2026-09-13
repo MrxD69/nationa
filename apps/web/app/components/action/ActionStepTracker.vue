@@ -16,9 +16,9 @@ const { locale, t } = useI18n();
 const actions = useActions();
 
 const { data, isLoading, isError, error, refetch } = actions.trackerQuery({
-  templateId: props.templateId,
-  caseId: props.caseId,
-  companyId: props.companyId,
+  templateId: () => props.templateId,
+  caseId: () => props.caseId,
+  companyId: () => props.companyId,
 });
 
 const { track } = useOpenActions();

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
-import { computed } from "vue";
+import { computed, toValue } from "vue";
+import type { MaybeRefOrGetter } from "vue";
 
 import type {
   DocgenDraftPayload,
@@ -27,8 +28,13 @@ export type DocgenScopeInput = {
   companyId?: string;
 };
 
+export type DocgenDraftListInput = DocgenScopeInput & {
+  proposalId?: string;
+  status?: "draft" | "accepted" | "rejected" | "superseded";
+};
+
 export function useDocgen() {
-  const { $orpc } = useNuxtApp();
+  const { $orpc, $orpcClient } = useNuxtApp();
   const queryClient = useQueryClient();
   const { locale } = useI18n();
 
@@ -55,7 +61,22 @@ export function useDocgen() {
     return useQuery($orpc.docgen.listDrafts.queryOptions({ input }));
   }
 
+  async function listDrafts(input: DocgenDraftListInput): Promise<DocgenDraftView[]> {
+    return $orpcClient.docgen.listDrafts(input);
+  }
+
+  function draftQuery(proposalId: MaybeRefOrGetter<string | null>) {
+    return useQuery(() => {
+      const id = toValue(proposalId);
+      return {
+        ...$orpc.docgen.getDraft.queryOptions({ input: { proposalId: id ?? "" } }),
+        enabled: Boolean(id),
+      };
+    });
+  }
+
   function invalidateDrafts(input: DocgenScopeInput) {
+    const getDraftPrefix = [$orpc.docgen.getDraft.queryKey({ input: { proposalId: "" } })[0]];
     return Promise.all([
       queryClient.invalidateQueries({
         queryKey: $orpc.docgen.listDrafts.queryKey({ input }),
@@ -66,6 +87,7 @@ export function useDocgen() {
       queryClient.invalidateQueries({
         queryKey: $orpc.docgen.listDrafts.queryKey({ input: { companyId: input.companyId } }),
       }),
+      queryClient.invalidateQueries({ queryKey: getDraftPrefix }),
     ]);
   }
 
@@ -99,6 +121,8 @@ export function useDocgen() {
     templateQuery,
     contextQuery,
     draftsQuery,
+    listDrafts,
+    draftQuery,
     invalidateDrafts,
     generateMutation,
     updateMutation,

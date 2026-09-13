@@ -3,9 +3,9 @@ import ActionHub from "~/components/action/ActionHub.vue";
 
 definePageMeta({ layout: "app", middleware: "auth" });
 
-const { selectedCompanyId } = useSelectedCompany();
+const { accessibleCompanyId } = useSelectedCompany();
 
-const companyId = computed(() => selectedCompanyId.value ?? undefined);
+const companyId = computed(() => accessibleCompanyId.value ?? undefined);
 </script>
 
 <template>

@@ -12,6 +12,7 @@ import {
   searchRuleCitations,
   toCompanyProfile,
 } from "../repositories/knowledge.repo";
+import { applyAiDraftFields } from "./docgen.service";
 
 const ruleIdSchema = z.guid();
 const companyIdSchema = z.string().min(1);
@@ -27,6 +28,7 @@ export type AssistantToolName =
   | "getUpcomingDeadlines"
   | "citeRule"
   | "proposeCaseFieldFills"
+  | "writeDocgenFields"
   | "requestClarification"
   | "flagDelicateMatter";
 
@@ -197,6 +199,44 @@ export function createAssistantTools(deps: AssistantToolDeps): ToolSet {
           fieldCount: fields.length,
           fields: fields.map((field) => field.fieldKey),
           note: "Draft proposal created. The user must accept it before any field is applied.",
+        };
+      },
+    }),
+
+    writeDocgenFields: tool({
+      description:
+        "Write filled values directly into the active document draft (statuts). Never answer only in prose when a document is being prepared.",
+      inputSchema: z.object({
+        proposalId: z.guid().optional(),
+        rationale: z.string().max(2000).optional(),
+        fields: z
+          .array(
+            z.object({
+              key: z.string().min(1),
+              valueText: z.string().nullish(),
+              valueJsonb: z.unknown().optional(),
+              confidence: z.number().min(0).max(1).nullish(),
+              citingKeys: z.array(z.string()).optional(),
+              repeatKey: z.string().min(1).optional(),
+              itemIndex: z.number().int().min(0).optional(),
+            }),
+          )
+          .min(1),
+      }),
+      execute: async ({ proposalId, rationale, fields }) => {
+        const target = proposalId ?? deps.docgenProposalId;
+        if (!target) {
+          return { error: "NO_DOCGEN_CONTEXT" };
+        }
+        const view = await applyAiDraftFields(deps.ctx, {
+          proposalId: target,
+          fields,
+          rationale,
+        });
+        return {
+          ok: true,
+          updatedKeys: fields.map((field) => field.key),
+          missingKeys: view.payload.missingKeys,
         };
       },
     }),

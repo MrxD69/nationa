@@ -49,6 +49,8 @@ export function useAssistant(
   options: {
     companyId?: MaybeRefOrGetter<string | null | undefined>;
     caseId?: MaybeRefOrGetter<string | null | undefined>;
+    stepId?: MaybeRefOrGetter<string | null | undefined>;
+    docgenProposalId?: MaybeRefOrGetter<string | null | undefined>;
     initialConversationId?: string | null;
   } = {},
 ) {
@@ -61,6 +63,8 @@ export function useAssistant(
   const conversationId = ref<string | null>(options.initialConversationId ?? null);
   const companyId = computed(() => toValue(options.companyId) ?? null);
   const caseId = computed(() => toValue(options.caseId) ?? null);
+  const stepId = computed(() => toValue(options.stepId) ?? null);
+  const docgenProposalId = computed(() => toValue(options.docgenProposalId) ?? null);
 
   async function resolveAccessToken(): Promise<string | null> {
     if (session.value?.access_token) {
@@ -84,6 +88,8 @@ export function useAssistant(
       conversationId: conversationId.value,
       companyId: companyId.value,
       caseId: caseId.value,
+      stepId: stepId.value,
+      docgenProposalId: docgenProposalId.value,
       locale: locale.value,
     }),
   });

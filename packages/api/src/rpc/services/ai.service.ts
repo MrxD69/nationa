@@ -41,6 +41,7 @@ import {
 } from "../repositories/knowledge.repo";
 import { recordActivity } from "./activity.service";
 import { createAssistantTools } from "./assistant-tools.service";
+import { getDocgenPromptContext } from "./docgen.service";
 
 const TITLE_MAX = 80;
 
@@ -235,6 +236,9 @@ export async function streamAssistantResponse(ctx: Context, rawBody: unknown): P
   const accessibleCompanyIds = await getAccessibleCompanyIds(ctx.db, user.id);
   const companyId = body.companyId ?? conversation.companyId ?? null;
   const caseId = body.caseId ?? conversation.caseId ?? null;
+  const stepId = typeof body.stepId === "string" ? body.stepId : null;
+  const docgenProposalId = typeof body.docgenProposalId === "string" ? body.docgenProposalId : null;
+  const docgen = docgenProposalId ? await getDocgenPromptContext(ctx, docgenProposalId) : null;
   const assistantMessageId = generateId();
 
   await insertMessageIfAbsent(ctx.db, {
@@ -252,11 +256,19 @@ export async function streamAssistantResponse(ctx: Context, rawBody: unknown): P
     messageId: assistantMessageId,
     companyId,
     caseId,
+    stepId,
+    docgenProposalId,
     accessibleCompanyIds,
     locale,
   });
 
-  const system = buildSystemPrompt({ locale, companyId, caseId, accessibleCompanyIds });
+  const system = buildSystemPrompt({
+    locale,
+    companyId,
+    caseId,
+    accessibleCompanyIds,
+    docgen,
+  });
   const modelMessages = await convertToModelMessages(uiMessages);
 
   const result = streamText({

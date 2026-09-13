@@ -3,7 +3,7 @@ import { ORPCError } from "@orpc/server";
 import type { AiProposal, Company, JsonObject, NewFieldProvenance, Person } from "@nationa/db";
 
 import { generateDocDraft, type DocgenAiOutput } from "../../ai/docgen";
-import type { CitationPayload } from "../../ai/types";
+import type { AiFieldWrite, CitationPayload } from "../../ai/types";
 import { assertCompanyPermission, requireUser } from "../../auth/access";
 import {
   FIELD_LABELS,
@@ -127,6 +127,25 @@ export type DocumentContextView = {
   fields: DocgenField[];
   repeats: DocgenRepeat[];
   missingKeys: string[];
+};
+
+export type DocgenPromptContext = {
+  proposalId: string;
+  templateCode: string;
+  documentTypeCode: string;
+  language: DocLang;
+  fields: Array<{
+    key: string;
+    labelFr: string | null;
+    valueText: string | null;
+    sourceKind: string;
+  }>;
+  repeats: Array<{
+    key: string;
+    items: Array<Record<string, { key: string; valueText: string | null; sourceKind: string }>>;
+  }>;
+  missingKeys: string[];
+  citations: Array<{ id: string; source: string; article: string | null; titleFr: string | null }>;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -492,32 +511,68 @@ export async function resolveDocumentContext(
     if (!repeatBlock || repeatBlock.type !== "repeat") {
       continue;
     }
-    const items = repeatKey === "managers" ? people : person ? [person] : [];
-    repeats.push({
-      key: repeatKey,
-      items: items.map((item) => {
-        const record: Record<string, DocgenField> = {};
-        for (const field of repeatBlock.fields) {
-          const labels = fieldLabels(field.key);
-          const resolved = PERSON_FIELD_KEY_SET.has(field.key)
-            ? readPersonField(item, field.key)
-            : null;
-          record[field.key] = {
-            key: field.key,
-            ...labels,
-            valueText: resolved?.valueText ?? null,
-            valueJsonb: resolved?.valueJsonb ?? null,
-            sourceKind:
-              resolved && (resolved.valueText || resolved.valueJsonb !== null) ? "system" : "blank",
-            confidence: null,
-            citingKeys: [],
-            questionId: null,
-            format: field.format ?? "text",
-          };
-        }
-        return record;
-      }),
-    });
+
+    const buildItemFromPerson = (item: Person): Record<string, DocgenField> => {
+      const record: Record<string, DocgenField> = {};
+      for (const field of repeatBlock.fields) {
+        const labels = fieldLabels(field.key);
+        const resolved = PERSON_FIELD_KEY_SET.has(field.key)
+          ? readPersonField(item, field.key)
+          : null;
+        record[field.key] = {
+          key: field.key,
+          ...labels,
+          valueText: resolved?.valueText ?? null,
+          valueJsonb: resolved?.valueJsonb ?? null,
+          sourceKind:
+            resolved && (resolved.valueText || resolved.valueJsonb !== null) ? "system" : "blank",
+          confidence: null,
+          citingKeys: [],
+          questionId: null,
+          format: field.format ?? "text",
+        };
+      }
+      return record;
+    };
+
+    const buildItemFromDocumentRows = (): Record<string, DocgenField> => {
+      const record: Record<string, DocgenField> = {};
+      for (const field of repeatBlock.fields) {
+        const labels = fieldLabels(field.key);
+        const row = PERSON_FIELD_KEY_SET.has(field.key)
+          ? caseFieldsByKey.get(field.key)
+          : undefined;
+        const sourced = row && row.sourceKind === "document" ? row : null;
+        record[field.key] = {
+          key: field.key,
+          ...labels,
+          valueText: sourced?.valueText ?? null,
+          valueJsonb: sourced?.valueJsonb ?? null,
+          sourceKind: sourced ? "document" : "blank",
+          confidence: toConfidence(sourced?.confidence),
+          citingKeys: [],
+          questionId: null,
+          format: field.format ?? "text",
+        };
+      }
+      return record;
+    };
+
+    let items: Array<Record<string, DocgenField>>;
+    if (repeatKey === "managers") {
+      if (people.length > 0) {
+        items = people.map(buildItemFromPerson);
+      } else {
+        const hasDocumentPerson = caseFieldRows.some(
+          (row) => row.sourceKind === "document" && PERSON_FIELD_KEY_SET.has(row.fieldKey),
+        );
+        items = hasDocumentPerson ? [buildItemFromDocumentRows()] : [];
+      }
+    } else {
+      items = (person ? [person] : []).map(buildItemFromPerson);
+    }
+
+    repeats.push({ key: repeatKey, items });
   }
 
   const missingKeys = fields.filter((field) => !hasFieldValue(field)).map((field) => field.key);
@@ -931,6 +986,112 @@ export async function updateDraft(
   return toDraftView(updated ?? proposal);
 }
 
+export async function getDraft(
+  ctx: Context,
+  input: { proposalId: string },
+): Promise<DocgenDraftView> {
+  const proposal = await loadDraftOrThrow(ctx, input.proposalId);
+  await authorizeProposalRead(ctx, proposal);
+  return toDraftView(proposal);
+}
+
+export async function applyAiDraftFields(
+  ctx: Context,
+  input: { proposalId: string; fields: AiFieldWrite[]; rationale?: string },
+): Promise<DocgenDraftView> {
+  const user = requireUser(ctx);
+  const proposal = await loadDraftOrThrow(ctx, input.proposalId);
+  await authorizeProposalWrite(ctx, proposal);
+
+  const payload = asPayload(proposal.payload);
+  const template = await loadTemplateOrThrow(payload.templateCode);
+
+  const aliases = payload.citationAliases ?? {};
+  const allowedCitationIds = new Set<string>([
+    ...payload.citations.map((citation) => citation.id),
+    ...Object.values(aliases),
+  ]);
+  const resolveCitationKeys = (citingKeys: string[] | undefined): string[] => {
+    if (!citingKeys || citingKeys.length === 0) {
+      return [];
+    }
+    const resolved = new Set<string>();
+    for (const key of citingKeys) {
+      const concrete = aliases[key] ?? key;
+      if (allowedCitationIds.has(concrete)) {
+        resolved.add(concrete);
+      }
+    }
+    return [...resolved];
+  };
+
+  const newlyCitedIds = new Set<string>();
+
+  for (const write of input.fields) {
+    let field: DocgenField | undefined;
+    if (write.repeatKey) {
+      const repeat = payload.repeats.find((entry) => entry.key === write.repeatKey);
+      const item = repeat?.items[write.itemIndex ?? 0];
+      field = item?.[write.key];
+    } else {
+      field = payload.fields.find((entry) => entry.key === write.key);
+    }
+    if (!field) {
+      continue;
+    }
+
+    const citingKeys = resolveCitationKeys(write.citingKeys);
+    field.valueText = write.valueText ?? null;
+    field.valueJsonb = write.valueJsonb ?? null;
+    field.sourceKind = "ai";
+    field.confidence = toConfidence(write.confidence);
+    field.citingKeys = citingKeys;
+    field.questionId = null;
+    payload.questions = payload.questions.filter((question) => question.key !== write.key);
+    for (const id of citingKeys) {
+      newlyCitedIds.add(id);
+    }
+  }
+
+  payload.missingKeys = payload.fields
+    .filter((field) => !hasFieldValue(field))
+    .map((field) => field.key);
+  if (input.rationale) {
+    payload.rationale = input.rationale;
+  }
+  payload.render = buildRender(template, payload);
+
+  const updated = await repo.updateDocgenProposal(ctx.db, proposal.id, {
+    payload: payload as unknown as JsonObject,
+    rationale: payload.rationale,
+  });
+
+  for (const id of newlyCitedIds) {
+    await repo.insertGeneratedAiCitation(ctx.db, {
+      proposalId: proposal.id,
+      ruleCitationId: id,
+      snippet: null,
+    });
+  }
+
+  await recordActivity(ctx, {
+    companyId: payload.companyId,
+    actorUserId: user.id,
+    actorType: "ai",
+    entityType: "ai_proposal",
+    entityId: proposal.id,
+    action: "docgen.draft_ai_filled",
+    summary: `AI filled ${input.fields.length} draft field(s) (${payload.templateCode})`,
+    data: {
+      templateCode: payload.templateCode,
+      keys: input.fields.map((field) => field.key),
+      citationCount: newlyCitedIds.size,
+    },
+  });
+
+  return toDraftView(updated ?? proposal);
+}
+
 export async function approveDraft(
   ctx: Context,
   input: { proposalId: string },
@@ -1195,6 +1356,55 @@ export async function getDocumentContext(
 ): Promise<DocumentContextView> {
   await authorizeScopeRead(ctx, input);
   return resolveDocumentContext(ctx, input);
+}
+
+export async function getDocgenPromptContext(
+  ctx: Context,
+  proposalId: string,
+): Promise<DocgenPromptContext | null> {
+  const proposal = await repo.findDocgenProposal(ctx.db, proposalId);
+  if (!proposal || proposal.kind !== DOCGEN_PROPOSAL_KIND) {
+    return null;
+  }
+  await authorizeProposalRead(ctx, proposal);
+
+  const payload = asPayload(proposal.payload);
+  return {
+    proposalId: proposal.id,
+    templateCode: payload.templateCode,
+    documentTypeCode: payload.documentTypeCode,
+    language: payload.language,
+    fields: payload.fields.map((field) => ({
+      key: field.key,
+      labelFr: field.labelFr ?? null,
+      valueText: field.valueText ?? null,
+      sourceKind: field.sourceKind,
+    })),
+    repeats: payload.repeats.map((repeat) => ({
+      key: repeat.key,
+      items: repeat.items.map((item) => {
+        const record: Record<
+          string,
+          { key: string; valueText: string | null; sourceKind: string }
+        > = {};
+        for (const [key, field] of Object.entries(item)) {
+          record[key] = {
+            key: field.key,
+            valueText: field.valueText ?? null,
+            sourceKind: field.sourceKind,
+          };
+        }
+        return record;
+      }),
+    })),
+    missingKeys: payload.missingKeys ?? [],
+    citations: (payload.citations ?? []).map((citation) => ({
+      id: citation.id,
+      source: citation.source,
+      article: citation.article,
+      titleFr: citation.titleFr,
+    })),
+  };
 }
 
 async function loadDraftOrThrow(ctx: Context, proposalId: string): Promise<AiProposal> {

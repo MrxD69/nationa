@@ -6,18 +6,68 @@ import AppCompanyEmpty from "~/components/shell/AppCompanyEmpty.vue";
 definePageMeta({ layout: "app", middleware: "auth" });
 
 const orpc = useApiUtils();
-const route = useRoute();
 const { t } = useI18n();
 
-const view = computed<"all" | "accounting">(() =>
-  route.query.view === "accounting" ? "accounting" : "all",
-);
-
+/*
+ * One list, always. The old "Portefeuille comptable" toggle filtered this same list
+ * down to accounting grants, which is a strict subset of what is already shown — and
+ * an identical list for anyone whose grants are all accounting grants. It also
+ * rendered for every user, so an owner with no accounting grants could switch to it
+ * and find nothing. Role is a property of each row here, not a separate space.
+ */
 const {
   data: companies,
   isPending: loading,
   isError,
-} = useQuery(computed(() => orpc.companies.list.queryOptions({ input: { view: view.value } })));
+} = useQuery(orpc.companies.list.queryOptions({ input: { view: "all" } }));
+
+const search = ref("");
+const roleFilter = ref<string | null>(null);
+
+const allCompanies = computed(() => companies.value ?? []);
+
+/** Only worth offering when the user actually holds more than one kind of role. */
+const availableRoles = computed(() => {
+  const roles = new Set<string>();
+  for (const company of allCompanies.value) {
+    if (company.role) {
+      roles.add(company.role);
+    }
+  }
+  return [...roles].sort();
+});
+
+const showRoleFilter = computed(() => availableRoles.value.length > 1);
+const showSearch = computed(() => allCompanies.value.length > 6);
+
+function normalize(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+const visibleCompanies = computed(() => {
+  const term = normalize(search.value.trim());
+  const role = showRoleFilter.value ? roleFilter.value : null;
+
+  return allCompanies.value.filter((company) => {
+    if (role && company.role !== role) {
+      return false;
+    }
+    if (!term) {
+      return true;
+    }
+    const haystack = normalize(
+      [company.legalName, company.legalNameAr, company.tradeName, company.uniqueIdentifier]
+        .filter(Boolean)
+        .join(" "),
+    );
+    return haystack.includes(term);
+  });
+});
+
+const filtered = computed(() => visibleCompanies.value.length !== allCompanies.value.length);
 
 const { mutateAsync: connectCompany, isPending: connecting } = useMutation(
   orpc.companies.connect.mutationOptions(),
@@ -26,13 +76,6 @@ const { mutateAsync: connectCompany, isPending: connecting } = useMutation(
 const connectOpen = ref(false);
 const identifier = ref("");
 const connectError = ref<string | null>(null);
-
-function setView(next: "all" | "accounting") {
-  return navigateTo({
-    path: "/companies",
-    query: next === "accounting" ? { view: "accounting" } : {},
-  });
-}
 
 async function submitConnect() {
   connectError.value = null;
@@ -70,24 +113,35 @@ async function submitConnect() {
         </div>
       </div>
 
-      <div class="flex items-center gap-1 rounded-lg border border-default p-1">
-        <UButton
-          size="lg"
-          :color="view === 'all' ? 'primary' : 'neutral'"
-          :variant="view === 'all' ? 'solid' : 'ghost'"
-          class="flex-1 sm:flex-none"
-          :label="t('companies.viewAll')"
-          @click="setView('all')"
+      <div v-if="showSearch || showRoleFilter" class="flex flex-col gap-3">
+        <UInput
+          v-if="showSearch"
+          v-model="search"
+          icon="i-tabler-search"
+          class="w-full sm:max-w-md"
+          :placeholder="t('companies.search')"
         />
-        <UButton
-          size="lg"
-          :color="view === 'accounting' ? 'primary' : 'neutral'"
-          :variant="view === 'accounting' ? 'solid' : 'ghost'"
-          class="flex-1 sm:flex-none"
-          icon="i-tabler-briefcase"
-          :label="t('companies.accountantView')"
-          @click="setView('accounting')"
-        />
+
+        <div v-if="showRoleFilter" class="flex flex-wrap items-center gap-2">
+          <UButton
+            :color="roleFilter === null ? 'primary' : 'neutral'"
+            :variant="roleFilter === null ? 'soft' : 'ghost'"
+            :label="t('companies.allRoles')"
+            @click="roleFilter = null"
+          />
+          <UButton
+            v-for="role in availableRoles"
+            :key="role"
+            :color="roleFilter === role ? 'primary' : 'neutral'"
+            :variant="roleFilter === role ? 'soft' : 'ghost'"
+            :label="t(`companies.roles.${role}`)"
+            @click="roleFilter = role"
+          />
+        </div>
+
+        <p class="text-base text-muted">
+          {{ t("companies.countAll", visibleCompanies.length) }}
+        </p>
       </div>
 
       <UAlert
@@ -98,9 +152,17 @@ async function submitConnect() {
         :description="t('companies.error.description')"
       />
 
-      <AppCompanyEmpty v-else-if="!loading && (companies?.length ?? 0) === 0" />
+      <AppCompanyEmpty v-else-if="!loading && allCompanies.length === 0" />
 
-      <CompanyList v-else :companies="companies ?? []" :loading="loading" />
+      <UAlert
+        v-else-if="!loading && visibleCompanies.length === 0 && filtered"
+        color="neutral"
+        variant="soft"
+        icon="i-tabler-search-off"
+        :description="t('companies.noMatch')"
+      />
+
+      <CompanyList v-else :companies="visibleCompanies" :loading="loading" />
     </div>
 
     <UModal v-model:open="connectOpen">

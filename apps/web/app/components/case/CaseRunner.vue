@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CaseStepDocgenPreview from "~/components/case/CaseStepDocgenPreview.vue";
 import CaseStepForm from "~/components/case/CaseStepForm.vue";
 import CaseStepInfo from "~/components/case/CaseStepInfo.vue";
 import CaseStepNav from "~/components/case/CaseStepNav.vue";
@@ -20,6 +21,9 @@ const props = defineProps<{ caseId: string }>();
 
 const { t } = useI18n();
 const api = useCase();
+const { templatesQuery, defaultLanguage } = useDocgen();
+
+const { data: docgenTemplates } = templatesQuery();
 
 const { data, isLoading, refetch } = api.caseQuery(props.caseId);
 const payment = api.paymentQuery(props.caseId);
@@ -44,6 +48,24 @@ const infoStep = computed(() =>
     ? { ...currentStep.value.template, citations: currentStep.value.citations }
     : null,
 );
+
+const docgenTemplateCode = computed(() => {
+  const documentTypeCode = currentStep.value?.requiredDocumentType?.code;
+  if (!documentTypeCode) {
+    return null;
+  }
+  return (
+    (docgenTemplates.value ?? []).find((template) => template.documentTypeCode === documentTypeCode)
+      ?.code ?? null
+  );
+});
+
+const showDocgenPreview = computed(() => {
+  const stepType = currentStep.value?.template?.stepType;
+  return (
+    (stepType === "upload" || stepType === "form") && docgenTemplateCode.value === "statuts_sarl"
+  );
+});
 
 const provenanceByKey = computed(() => {
   const map: Record<string, Array<Record<string, unknown>>> = {};
@@ -298,6 +320,14 @@ async function cancel(): Promise<void> {
           :submitting="saving"
           :ready="submissionReady"
           @submit="submit"
+        />
+
+        <CaseStepDocgenPreview
+          v-if="showDocgenPreview"
+          :case-id="props.caseId"
+          :step-id="currentStep.id"
+          :template-code="docgenTemplateCode ?? ''"
+          :language="defaultLanguage"
         />
 
         <div class="flex flex-wrap items-center justify-between gap-2 border-t border-default pt-4">

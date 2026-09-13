@@ -67,7 +67,13 @@ function readDemoRole(): DemoRole {
 
 const role = readDemoRole();
 const isSelfServe = role === "owner" || role === "accountant";
-const agencyMembershipRole = role === "admin" ? "admin" : "officer";
+/*
+ * The demo back-office persona is seeded as a supervisor, not a plain officer.
+ * `officer.analytics.read` is granted to supervisor and admin only, so an
+ * officer-role demo user sees a FORBIDDEN error on the analytics page even
+ * though the analytics data is seeded and present.
+ */
+const agencyMembershipRole = role === "admin" ? "admin" : "supervisor";
 
 const id = (key: string) => seedId(`demo:${key}`);
 const at = (iso: string) => new Date(iso);
@@ -1499,7 +1505,7 @@ async function seedDemo(): Promise<void> {
     });
 
   // agency_memberships --------------------------------------------------------
-  const desiredMembership: { agencyId: string; role: "officer" | "admin" } | null =
+  const desiredMembership: { agencyId: string; role: "supervisor" | "admin" } | null =
     role === "officer" || role === "admin"
       ? { agencyId: catalog.rneAgencyId, role: agencyMembershipRole }
       : null;

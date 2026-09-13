@@ -16,8 +16,8 @@ const queryRef = computed(() => query.value);
 const companyRef = computed(() => props.companyId);
 const searchEnabled = computed(() => query.value.trim().length > 0);
 
-const catalog = actions.catalogQuery({ companyId: props.companyId });
-const outstanding = actions.outstandingQuery({ companyId: props.companyId, limit: 5 });
+const catalog = actions.catalogQuery({ companyId: companyRef });
+const outstanding = actions.outstandingQuery({ companyId: companyRef, limit: 5 });
 const search = actions.searchQuery({
   query: queryRef,
   companyId: companyRef,

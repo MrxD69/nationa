@@ -110,7 +110,7 @@ const columns = computed<TableColumn<QueueItem>[]>(() => [
       h(
         UButton,
         {
-          size: "xs",
+          size: "lg",
           variant: "soft",
           color: "neutral",
           label: t("officer.queue.open"),
@@ -125,7 +125,7 @@ const columns = computed<TableColumn<QueueItem>[]>(() => [
 <template>
   <div class="space-y-4">
     <div class="flex items-center gap-2">
-      <span class="text-sm font-medium text-muted">{{ t("officer.queue.sort") }}</span>
+      <span class="text-base font-medium text-muted">{{ t("officer.queue.sort") }}</span>
       <UButton
         size="lg"
         :color="sort === 'cleanliness' ? 'primary' : 'neutral'"

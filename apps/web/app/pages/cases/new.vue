@@ -5,10 +5,10 @@ import type { ProcedureListItem } from "@nationa/api/services/procedures";
 definePageMeta({ layout: "app", middleware: "auth" });
 
 const { locale, t } = useI18n();
-const { selectedCompanyId } = useSelectedCompany();
+const { accessibleCompanyId } = useSelectedCompany();
 const api = useCase();
 
-const companyId = computed(() => selectedCompanyId.value ?? undefined);
+const companyId = computed(() => accessibleCompanyId.value ?? undefined);
 
 const { data, isLoading } = api.proceduresQuery();
 const start = api.startMutation();

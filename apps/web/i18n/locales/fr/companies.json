@@ -4,8 +4,10 @@
     "subtitle": "Gérez vos sociétés et leurs données légales.",
     "new": "Nouvelle entreprise",
     "connect": "Connecter une entreprise existante",
-    "viewAll": "Toutes",
-    "accountantView": "Portefeuille comptable",
+    "search": "Rechercher une entreprise",
+    "allRoles": "Tous les rôles",
+    "countAll": "{count} entreprise | {count} entreprises",
+    "noMatch": "Aucune entreprise ne correspond à votre recherche.",
     "loading": "Chargement des entreprises…",
     "empty": {
       "title": "Aucune entreprise pour le moment",

@@ -7,10 +7,11 @@ import type { CompanySummary } from "~/composables/useSelectedCompany";
 
 const { t, locale } = useI18n();
 const { open, setOpen } = useCommandPalette();
-const { companies, selectedCompanyId, selectCompany, hasCompany } = useSelectedCompany();
+const { companies, selectedCompanyId, accessibleCompanyId, selectCompany, hasCompany } =
+  useSelectedCompany();
 const { catalogQuery } = useActions();
 
-const catalog = catalogQuery({ companyId: selectedCompanyId.value ?? undefined });
+const catalog = catalogQuery({ companyId: accessibleCompanyId.value ?? undefined });
 
 function close() {
   setOpen(false);
@@ -84,8 +85,8 @@ const actionItems = computed<CommandPaletteItem[]>(() =>
     icon: "i-tabler-list-check",
     onSelect: () => {
       const query: Record<string, string> = {};
-      if (selectedCompanyId.value) {
-        query.companyId = selectedCompanyId.value;
+      if (accessibleCompanyId.value) {
+        query.companyId = accessibleCompanyId.value;
       }
       navigate({ path: `/actions/${action.id}`, query });
     },

@@ -37,10 +37,10 @@ definePageMeta({ layout: "app", middleware: "auth" });
 const route = useRoute();
 const api = useApi();
 const { t } = useI18n();
-const { selectedCompanyId } = useSelectedCompany();
+const { accessibleCompanyId } = useSelectedCompany();
 
 const findingId = computed(() => String(route.params.findingId ?? ""));
-const companyId = computed(() => selectedCompanyId.value ?? "");
+const companyId = computed(() => accessibleCompanyId.value ?? "");
 const valid = computed(() => Boolean(companyId.value && findingId.value));
 
 const { data, pending, error, refresh } = await useAsyncData(

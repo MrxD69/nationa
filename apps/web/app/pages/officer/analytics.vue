@@ -32,6 +32,7 @@ const agencyId = ref<string | null>(null);
 const analytics = ref<Analytics | null>(null);
 const loading = ref(false);
 const error = ref<string | null>(null);
+const agenciesLoaded = ref(false);
 
 function findingLabel(code: string): string {
   const key = `checks.findings.${code}.title`;
@@ -74,6 +75,7 @@ const qualityItems = computed(() =>
 
 async function load() {
   if (!agencyId.value) {
+    error.value = t("officer.agency.none");
     return;
   }
   loading.value = true;
@@ -88,17 +90,49 @@ async function load() {
   }
 }
 
-onMounted(async () => {
-  agencies.value = await api.officer.myAgencies();
+/**
+ * As on the queue page, an unhandled rejection here left the page inert with no
+ * explanation. Analytics additionally requires `officer.analytics.read`, which is
+ * granted to the supervisor and admin agency roles but not to a plain officer, so
+ * a legitimate FORBIDDEN must be shown rather than swallowed.
+ */
+async function bootstrap() {
+  loading.value = true;
+  error.value = null;
+  try {
+    agencies.value = await api.officer.myAgencies();
+    agenciesLoaded.value = true;
+  } catch (cause) {
+    agencies.value = [];
+    error.value = cause instanceof Error ? cause.message : String(cause);
+    loading.value = false;
+    return;
+  }
+
   const fromQuery = typeof route.query.agencyId === "string" ? route.query.agencyId : null;
   agencyId.value =
     fromQuery && agencies.value.some((agency) => agency.id === fromQuery)
       ? fromQuery
       : (agencies.value[0]?.id ?? null);
+
+  loading.value = false;
   await load();
-});
+}
+
+async function retry() {
+  if (!agenciesLoaded.value || agencies.value.length === 0) {
+    await bootstrap();
+    return;
+  }
+  await load();
+}
+
+onMounted(bootstrap);
 
 watch(agencyId, () => {
+  if (!agenciesLoaded.value) {
+    return;
+  }
   void load();
 });
 </script>
@@ -133,7 +167,7 @@ watch(agencyId, () => {
           variant="soft"
           size="lg"
           :label="t('officer.common.retry')"
-          @click="load()"
+          @click="retry()"
         />
       </template>
     </UAlert>

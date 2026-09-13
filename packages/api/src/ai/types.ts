@@ -7,6 +7,8 @@ export type AssistantRequestBody = {
   conversationId?: string;
   companyId?: string;
   caseId?: string;
+  stepId?: string;
+  docgenProposalId?: string;
   locale?: string;
 };
 
@@ -17,8 +19,20 @@ export type AssistantToolDeps = {
   messageId: string;
   companyId: string | null;
   caseId: string | null;
+  stepId: string | null;
+  docgenProposalId: string | null;
   accessibleCompanyIds: string[];
   locale: AssistantLocale;
+};
+
+export type AiFieldWrite = {
+  key: string;
+  valueText?: string | null;
+  valueJsonb?: unknown;
+  confidence?: number | null;
+  citingKeys?: string[];
+  repeatKey?: string;
+  itemIndex?: number;
 };
 
 export type CaseFieldFill = {

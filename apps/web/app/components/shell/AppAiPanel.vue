@@ -4,7 +4,8 @@ import AssistantPanel from "~/components/assistant/AssistantPanel.vue";
 const route = useRoute();
 const { t } = useI18n();
 const { open, setOpen } = useAssistantPanel();
-const { selectedCompanyId } = useSelectedCompany();
+const { accessibleCompanyId } = useSelectedCompany();
+const { stepId, docgenProposalId } = useAssistantContext();
 
 const caseId = computed(() => {
   const value = route.params.caseId;
@@ -58,7 +59,13 @@ const caseId = computed(() => {
       </template>
 
       <template #body>
-        <AssistantPanel :company-id="selectedCompanyId" :case-id="caseId" @close="setOpen(false)" />
+        <AssistantPanel
+          :company-id="accessibleCompanyId"
+          :case-id="caseId"
+          :step-id="stepId"
+          :docgen-proposal-id="docgenProposalId"
+          @close="setOpen(false)"
+        />
       </template>
     </UDashboardPanel>
   </div>

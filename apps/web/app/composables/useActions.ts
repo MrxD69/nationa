@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
-import type { Ref } from "vue";
+import { toValue } from "vue";
+import type { MaybeRefOrGetter, Ref } from "vue";
 
 export type ActionStepState =
   | "not_started"
@@ -156,18 +157,31 @@ export function useActions() {
   const { $orpc } = useNuxtApp();
   const queryClient = useQueryClient();
 
-  function catalogQuery(options: { companyId?: string; agencyId?: string } = {}) {
-    return useQuery(
+  /*
+   * These inputs are reactive on purpose. The selected company is only known to be
+   * accessible after the company list resolves, so it arrives as null and becomes a
+   * value a moment later. A query that snapshotted its input at setup would either
+   * stay company-less forever or — worse — keep sending an id from before the check.
+   */
+  function catalogQuery(
+    options: {
+      companyId?: MaybeRefOrGetter<string | undefined>;
+      agencyId?: MaybeRefOrGetter<string | undefined>;
+    } = {},
+  ) {
+    return useQuery(() =>
       $orpc.actions.list.queryOptions({
-        input: { companyId: options.companyId, agencyId: options.agencyId },
+        input: { companyId: toValue(options.companyId), agencyId: toValue(options.agencyId) },
       }),
     );
   }
 
-  function outstandingQuery(options: { companyId?: string; limit?: number } = {}) {
-    return useQuery(
+  function outstandingQuery(
+    options: { companyId?: MaybeRefOrGetter<string | undefined>; limit?: number } = {},
+  ) {
+    return useQuery(() =>
       $orpc.actions.outstanding.queryOptions({
-        input: { companyId: options.companyId, limit: options.limit },
+        input: { companyId: toValue(options.companyId), limit: options.limit },
       }),
     );
   }
@@ -194,12 +208,21 @@ export function useActions() {
   }
 
   function trackerQuery(input: {
-    templateId?: string;
-    code?: string;
-    caseId?: string;
-    companyId?: string;
+    templateId?: MaybeRefOrGetter<string | undefined>;
+    code?: MaybeRefOrGetter<string | undefined>;
+    caseId?: MaybeRefOrGetter<string | undefined>;
+    companyId?: MaybeRefOrGetter<string | undefined>;
   }) {
-    return useQuery($orpc.actions.get.queryOptions({ input }));
+    return useQuery(() =>
+      $orpc.actions.get.queryOptions({
+        input: {
+          templateId: toValue(input.templateId),
+          code: toValue(input.code),
+          caseId: toValue(input.caseId),
+          companyId: toValue(input.companyId),
+        },
+      }),
+    );
   }
 
   function startMutation() {

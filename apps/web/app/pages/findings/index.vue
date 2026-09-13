@@ -26,16 +26,16 @@ definePageMeta({ layout: "app", middleware: "auth" });
 const route = useRoute();
 const api = useApi();
 const { t } = useI18n();
-const { selectedCompanyId } = useSelectedCompany();
+const { accessibleCompanyId } = useSelectedCompany();
 
-const companyId = computed(() => selectedCompanyId.value ?? "");
+const companyId = computed(() => accessibleCompanyId.value ?? "");
 
 const subjectType = computed<FindingSubjectType | null>(() => {
   const value = route.query.subjectType;
   if (value === "case" || value === "submission" || value === "company" || value === "document") {
     return value;
   }
-  return selectedCompanyId.value ? "company" : null;
+  return accessibleCompanyId.value ? "company" : null;
 });
 
 const subjectId = computed(() => {
@@ -43,7 +43,7 @@ const subjectId = computed(() => {
   if (typeof value === "string" && value.length > 0) {
     return value;
   }
-  return selectedCompanyId.value ?? "";
+  return accessibleCompanyId.value ?? "";
 });
 
 const valid = computed(() => Boolean(companyId.value && subjectType.value && subjectId.value));

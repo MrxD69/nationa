@@ -3,16 +3,16 @@ import AgencyMark from "~/components/agency/AgencyMark.vue";
 definePageMeta({ layout: "app", middleware: "auth" });
 
 const { locale, t } = useI18n();
-const { selectedCompanyId } = useSelectedCompany();
+const { accessibleCompanyId } = useSelectedCompany();
 const api = useCase();
 
-const companyId = computed(() => selectedCompanyId.value ?? undefined);
+const companyId = computed(() => accessibleCompanyId.value ?? undefined);
 
 const { data, isLoading, isError, error, refetch } = api.casesQuery({
   companyId: companyId.value,
 });
 
-watch(selectedCompanyId, () => {
+watch(accessibleCompanyId, () => {
   void refetch();
 });
 

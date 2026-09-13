@@ -11,12 +11,12 @@ definePageMeta({ layout: "app", middleware: "auth" });
 const { t, locale } = useI18n();
 const route = useRoute();
 const api = useApi();
-const { selectedCompanyId } = useSelectedCompany();
+const { accessibleCompanyId } = useSelectedCompany();
 
 const submissionId = computed(() => String(route.params.submissionId ?? ""));
 const companyId = computed(() => {
-  if (selectedCompanyId.value) {
-    return selectedCompanyId.value;
+  if (accessibleCompanyId.value) {
+    return accessibleCompanyId.value;
   }
   const value = route.query.companyId;
   return typeof value === "string" ? value : "";

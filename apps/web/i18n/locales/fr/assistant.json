@@ -30,6 +30,18 @@
       "done": "Terminé",
       "error": "Échec"
     },
+    "progress": {
+      "searchRules": "Recherche de règles{query}…",
+      "lookupObligations": "Recherche des obligations{query}…",
+      "getCompanyProfile": "Obtention d'informations sur l'entreprise{company}…",
+      "getUpcomingDeadlines": "Consultation des échéances à venir…",
+      "citeRule": "Ajout d'une source officielle…",
+      "proposeCaseFieldFills": "Préparation d'une proposition de modification…",
+      "writeDocgenFields": "Mise à jour du brouillon du document{key}…",
+      "requestClarification": "Préparation de questions de clarification…",
+      "flagDelicateMatter": "Analyse d'un point délicat…",
+      "generic": "Traitement en cours…"
+    },
     "citation": {
       "title": "Sources",
       "open": "Ouvrir la source",
@@ -49,7 +61,12 @@
     },
     "clarification": {
       "title": "Précisions nécessaires",
-      "hint": "Répondez à ces questions pour continuer."
+      "hint": "Répondez à ces questions pour continuer.",
+      "choose": "Choisissez une option",
+      "custom": "Autre réponse",
+      "customPlaceholder": "Saisissez votre réponse…",
+      "submit": "Envoyer mes réponses",
+      "submitted": "Réponses envoyées"
     },
     "delicate": {
       "title": "Point d'attention"

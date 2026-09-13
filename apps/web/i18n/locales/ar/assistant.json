@@ -30,6 +30,18 @@
       "done": "اكتمل",
       "error": "فشل"
     },
+    "progress": {
+      "searchRules": "البحث في القواعد{query}…",
+      "lookupObligations": "البحث في الالتزامات{query}…",
+      "getCompanyProfile": "جلب معلومات الشركة{company}…",
+      "getUpcomingDeadlines": "الاطلاع على المواعيد القادمة…",
+      "citeRule": "إضافة مصدر رسمي…",
+      "proposeCaseFieldFills": "إعداد اقتراح تعديل…",
+      "writeDocgenFields": "تحديث مسودة الوثيقة{key}…",
+      "requestClarification": "إعداد أسئلة توضيحية…",
+      "flagDelicateMatter": "تحليل مسألة حساسة…",
+      "generic": "جارٍ المعالجة…"
+    },
     "citation": {
       "title": "المصادر",
       "open": "فتح المصدر",
@@ -49,7 +61,12 @@
     },
     "clarification": {
       "title": "توضيحات مطلوبة",
-      "hint": "أجب عن هذه الأسئلة للمتابعة."
+      "hint": "أجب عن هذه الأسئلة للمتابعة.",
+      "choose": "اختر أحد الخيارات",
+      "custom": "إجابة أخرى",
+      "customPlaceholder": "اكتب إجابتك…",
+      "submit": "إرسال إجاباتي",
+      "submitted": "تم إرسال الإجابات"
     },
     "delicate": {
       "title": "نقطة انتباه"

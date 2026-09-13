@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useQueryClient } from "@tanstack/vue-query";
+
 import type { AssistantConversation, AssistantProposal } from "~/composables/useAssistant";
 import AssistantMessage from "~/components/assistant/AssistantMessage.vue";
 import ConversationList from "~/components/assistant/ConversationList.vue";
@@ -6,12 +8,17 @@ import ConversationList from "~/components/assistant/ConversationList.vue";
 const props = defineProps<{
   companyId?: string | null;
   caseId?: string | null;
+  stepId?: string | null;
+  docgenProposalId?: string | null;
 }>();
 
 const emit = defineEmits<{ close: [] }>();
 
 const client = useApi();
 const { t } = useI18n();
+const { $orpc } = useNuxtApp();
+const queryClient = useQueryClient();
+const { pendingTurn, consumePendingTurn } = useAssistantContext();
 
 const {
   conversationId,
@@ -29,6 +36,8 @@ const {
 } = useAssistant({
   companyId: () => props.companyId ?? null,
   caseId: () => props.caseId ?? null,
+  stepId: () => props.stepId ?? null,
+  docgenProposalId: () => props.docgenProposalId ?? null,
 });
 
 const input = ref("");
@@ -83,9 +92,36 @@ watch(status, async (value) => {
   if (wasStreaming && !streaming && value === "ready") {
     await refreshMeta();
     await loadConversations();
+    if (props.docgenProposalId) {
+      await queryClient.invalidateQueries({
+        queryKey: $orpc.docgen.getDraft.queryKey({
+          input: { proposalId: props.docgenProposalId },
+        }),
+      });
+    }
   }
   wasStreaming = streaming;
 });
+
+let handlingHandoff = false;
+watch(
+  pendingTurn,
+  async (value) => {
+    if (!value || handlingHandoff) {
+      return;
+    }
+    handlingHandoff = true;
+    try {
+      const text = consumePendingTurn();
+      if (text) {
+        await send(text);
+      }
+    } finally {
+      handlingHandoff = false;
+    }
+  },
+  { immediate: true },
+);
 
 watch([() => props.companyId, () => props.caseId], async () => {
   newConversation();
@@ -99,6 +135,26 @@ async function handleSubmit() {
   if (!text.trim()) {
     return;
   }
+  try {
+    await send(text);
+  } catch (caught) {
+    toast.add({
+      title: t("assistant.errors.sendFailed"),
+      description: caught instanceof Error ? caught.message : undefined,
+      color: "error",
+    });
+  }
+}
+
+async function onClarification(
+  answers: Array<{ questionId: string; question: string; value: string }>,
+) {
+  if (answers.length === 0) {
+    return;
+  }
+  const text = answers
+    .map((answer) => `Question: ${answer.question}\nAnswer: ${answer.value}`)
+    .join("\n\n");
   try {
     await send(text);
   } catch (caught) {
@@ -293,6 +349,7 @@ onMounted(() => {
         :pending-proposal-id="pendingProposalId"
         @accept="onAcceptProposal"
         @reject="onRejectProposal"
+        @clarification="onClarification"
       />
 
       <div v-if="status === 'submitted'" class="flex items-center gap-2 text-sm text-muted">

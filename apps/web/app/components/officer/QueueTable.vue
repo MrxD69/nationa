@@ -58,13 +58,13 @@ const columns = computed<TableColumn<QueueItem>[]>(() => [
     accessorKey: "company",
     header: t("officer.queue.company"),
     cell: ({ row }) =>
-      h("span", { class: "text-sm font-medium text-highlighted" }, companyName(row.original)),
+      h("span", { class: "text-base font-medium text-highlighted" }, companyName(row.original)),
   },
   {
     accessorKey: "submittedAt",
     header: t("officer.queue.submitted"),
     cell: ({ row }) =>
-      h("span", { class: "text-sm text-muted" }, formatDate(row.original.submittedAt)),
+      h("span", { class: "text-base text-muted" }, formatDate(row.original.submittedAt)),
   },
   {
     accessorKey: "cleanlinessTier",
@@ -80,9 +80,9 @@ const columns = computed<TableColumn<QueueItem>[]>(() => [
     header: t("officer.queue.findings"),
     cell: ({ row }) =>
       h("div", { class: "flex items-center gap-1.5" }, [
-        h("span", { class: "text-sm font-medium" }, String(row.original.findingsCount)),
+        h("span", { class: "text-base font-medium" }, String(row.original.findingsCount)),
         row.original.blockers > 0
-          ? h("span", { class: "text-xs text-error" }, `(${row.original.blockers})`)
+          ? h("span", { class: "text-sm text-error" }, `(${row.original.blockers})`)
           : null,
       ]),
   },
@@ -97,7 +97,7 @@ const columns = computed<TableColumn<QueueItem>[]>(() => [
     cell: ({ row }) =>
       h(
         "span",
-        { class: "text-sm text-muted" },
+        { class: "text-base text-muted" },
         row.original.ageDays === null
           ? "—"
           : t("officer.queue.ageDays", { count: row.original.ageDays }),
@@ -125,9 +125,9 @@ const columns = computed<TableColumn<QueueItem>[]>(() => [
 <template>
   <div class="space-y-4">
     <div class="flex items-center gap-2">
-      <span class="text-xs font-medium text-muted">{{ t("officer.queue.sort") }}</span>
+      <span class="text-sm font-medium text-muted">{{ t("officer.queue.sort") }}</span>
       <UButton
-        size="xs"
+        size="lg"
         :color="sort === 'cleanliness' ? 'primary' : 'neutral'"
         :variant="sort === 'cleanliness' ? 'solid' : 'ghost'"
         icon="i-tabler-shield-check"
@@ -135,7 +135,7 @@ const columns = computed<TableColumn<QueueItem>[]>(() => [
         @click="emit('update:sort', 'cleanliness')"
       />
       <UButton
-        size="xs"
+        size="lg"
         :color="sort === 'submittedAt' ? 'primary' : 'neutral'"
         :variant="sort === 'submittedAt' ? 'solid' : 'ghost'"
         icon="i-tabler-calendar"

@@ -23,14 +23,14 @@ function onReject(): void {
   <UCard>
     <div class="space-y-3">
       <div>
-        <h2 class="text-sm font-semibold text-highlighted">{{ t("docgen.approval.title") }}</h2>
-        <p class="text-xs text-muted">{{ t("docgen.approval.disclaimer") }}</p>
+        <h2 class="text-base font-semibold text-highlighted">{{ t("docgen.approval.title") }}</h2>
+        <p class="text-sm text-muted">{{ t("docgen.approval.disclaimer") }}</p>
       </div>
 
       <UInput
         v-model="reason"
         class="w-full"
-        size="sm"
+        size="lg"
         :placeholder="t('docgen.approval.reasonPlaceholder')"
       />
 

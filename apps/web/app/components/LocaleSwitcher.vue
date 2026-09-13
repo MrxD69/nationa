@@ -24,7 +24,7 @@ const currentLocale = computed({
     :items="items"
     icon="i-tabler-language"
     :aria-label="t('common.language.label')"
-    size="sm"
+    size="lg"
     class="w-28 sm:w-36"
   />
 </template>

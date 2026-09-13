@@ -222,7 +222,7 @@ onMounted(async () => {
         <h1 class="text-xl font-semibold tracking-tight text-highlighted">
           {{ t("filings.title") }}
         </h1>
-        <p class="text-sm text-muted">{{ t("filings.subtitle") }}</p>
+        <p class="text-base text-muted">{{ t("filings.subtitle") }}</p>
       </div>
       <UBadge
         color="neutral"
@@ -231,10 +231,8 @@ onMounted(async () => {
       />
     </div>
 
-    <UCard class="print:hidden">
-      <template #header>
-        <h2 class="text-sm font-semibold text-highlighted">{{ t("filings.preview.title") }}</h2>
-      </template>
+    <section class="space-y-5 rounded-lg border border-default p-5 print:hidden">
+      <h2 class="text-lg font-semibold text-highlighted">{{ t("filings.preview.title") }}</h2>
 
       <div class="space-y-5">
         <FilingPeriodPicker
@@ -259,16 +257,16 @@ onMounted(async () => {
           />
         </div>
       </div>
-    </UCard>
+    </section>
 
     <div class="grid gap-6 xl:grid-cols-2">
       <section class="space-y-3 print:hidden">
         <div class="flex items-center justify-between gap-2">
-          <h2 class="text-sm font-semibold text-highlighted">{{ t("filings.title") }}</h2>
+          <h2 class="text-base font-semibold text-highlighted">{{ t("filings.title") }}</h2>
           <UButton
             color="neutral"
             variant="ghost"
-            size="xs"
+            size="lg"
             icon="i-tabler-reload"
             :label="t('filings.actions.refresh')"
             @click="loadList"
@@ -284,13 +282,13 @@ onMounted(async () => {
 
       <section v-if="selectedId" class="space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2 print:hidden">
-          <h2 class="text-sm font-semibold text-highlighted">{{ t("filings.detail.title") }}</h2>
+          <h2 class="text-base font-semibold text-highlighted">{{ t("filings.detail.title") }}</h2>
           <div class="flex flex-wrap items-center gap-2">
             <FilingStatusBadge :status="detail?.filing?.status" />
             <UButton
               color="neutral"
               variant="soft"
-              size="xs"
+              size="lg"
               icon="i-tabler-reload"
               :label="t('filings.actions.recompute')"
               @click="recompute"
@@ -298,7 +296,7 @@ onMounted(async () => {
             <UButton
               color="neutral"
               variant="soft"
-              size="xs"
+              size="lg"
               icon="i-tabler-check"
               :label="t('filings.actions.markReady')"
               @click="setStatus('ready')"
@@ -306,7 +304,7 @@ onMounted(async () => {
             <UButton
               color="neutral"
               variant="soft"
-              size="xs"
+              size="lg"
               icon="i-tabler-eye"
               :label="t('filings.actions.markUnderReview')"
               @click="setStatus('under_review')"
@@ -314,7 +312,7 @@ onMounted(async () => {
             <UButton
               color="neutral"
               variant="soft"
-              size="xs"
+              size="lg"
               icon="i-tabler-users"
               :label="t('filings.actions.inviteAccountant')"
               @click="inviteOpen = !inviteOpen"
@@ -322,7 +320,7 @@ onMounted(async () => {
             <UButton
               color="neutral"
               variant="soft"
-              size="xs"
+              size="lg"
               icon="i-tabler-printer"
               :label="t('filings.actions.print')"
               @click="printFiling"
@@ -330,7 +328,7 @@ onMounted(async () => {
             <UButton
               color="error"
               variant="soft"
-              size="xs"
+              size="lg"
               icon="i-tabler-trash"
               :label="t('filings.actions.remove')"
               @click="removeFiling"
@@ -347,50 +345,51 @@ onMounted(async () => {
           </UFormField>
           <UButton
             color="primary"
-            size="sm"
+            size="lg"
             :loading="inviting"
             :label="t('filings.invite.send')"
             @click="inviteAccountant"
           />
         </div>
 
-        <div v-if="detailLoading" class="flex items-center gap-2 py-8 text-sm text-muted">
+        <div v-if="detailLoading" class="flex items-center gap-2 py-8 text-base text-muted">
           <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
           {{ t("filings.loading") }}
         </div>
 
-        <div v-else-if="detail" class="filing-print space-y-4">
-          <UCard>
-            <dl class="grid gap-3 sm:grid-cols-2">
-              <div>
-                <dt class="text-xs text-muted">{{ t("filings.list.period") }}</dt>
-                <dd class="text-sm text-toned" dir="ltr">
-                  {{ detail.filing.periodStart }} → {{ detail.filing.periodEnd }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-xs text-muted">{{ t("filings.list.taxType") }}</dt>
-                <dd class="text-sm text-toned">{{ detail.filing.taxType }}</dd>
-              </div>
-            </dl>
-          </UCard>
+        <div
+          v-else-if="detail"
+          class="filing-print divide-y divide-default overflow-hidden rounded-lg border border-default"
+        >
+          <dl class="grid gap-4 p-5 sm:grid-cols-2">
+            <div>
+              <dt class="text-base text-muted">{{ t("filings.list.period") }}</dt>
+              <dd class="text-base text-toned" dir="ltr">
+                {{ detail.filing.periodStart }} → {{ detail.filing.periodEnd }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-base text-muted">{{ t("filings.list.taxType") }}</dt>
+              <dd class="text-base text-toned">{{ detail.filing.taxType }}</dd>
+            </div>
+          </dl>
 
-          <FilingPreview :totals="detailTotals" />
+          <div class="p-5">
+            <FilingPreview :totals="detailTotals" />
+          </div>
 
-          <UCard>
-            <template #header>
-              <h3 class="text-sm font-medium text-highlighted">
-                {{ t("filings.detail.invoices") }}
-              </h3>
-            </template>
-            <div v-if="detail.invoices.length === 0" class="py-4 text-center text-xs text-muted">
+          <section class="space-y-3 p-5">
+            <h3 class="text-lg font-medium text-highlighted">
+              {{ t("filings.detail.invoices") }}
+            </h3>
+            <div v-if="detail.invoices.length === 0" class="py-4 text-center text-base text-muted">
               {{ t("filings.detail.noInvoices") }}
             </div>
-            <ul v-else class="divide-y divide-default text-sm">
+            <ul v-else class="divide-y divide-default text-base">
               <li
                 v-for="invoice in detail.invoices"
                 :key="invoice.id"
-                class="flex items-center justify-between gap-2 py-2"
+                class="flex items-center justify-between gap-2 py-3"
               >
                 <span class="text-toned">{{
                   invoice.invoiceNumber || invoice.supplierName || "—"
@@ -400,7 +399,7 @@ onMounted(async () => {
                 </span>
               </li>
             </ul>
-          </UCard>
+          </section>
         </div>
       </section>
     </div>

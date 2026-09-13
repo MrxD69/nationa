@@ -54,7 +54,7 @@ const currentName = computed(() =>
         v-if="selectedCompany?.role"
         color="neutral"
         variant="subtle"
-        size="sm"
+        size="lg"
         class="ms-2 shrink-0"
         :label="t(`companies.roles.${selectedCompany.role}`)"
       />
@@ -65,7 +65,7 @@ const currentName = computed(() =>
         v-if="item.role"
         color="neutral"
         variant="outline"
-        size="sm"
+        size="lg"
         :label="t(`companies.roles.${item.role}`)"
       />
     </template>

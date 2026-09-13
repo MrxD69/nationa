@@ -62,7 +62,7 @@ const cards = computed(() => [
           <UIcon :name="card.icon" class="size-5" />
         </span>
         <div class="min-w-0">
-          <p class="text-xs text-muted">{{ card.label }}</p>
+          <p class="text-sm text-muted">{{ card.label }}</p>
           <p class="mt-0.5 truncate text-lg font-semibold text-highlighted">{{ card.value }}</p>
         </div>
       </div>

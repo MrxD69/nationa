@@ -154,7 +154,7 @@ onMounted(loadList);
         <h1 class="text-xl font-semibold tracking-tight text-highlighted">
           {{ t("invoices.title") }}
         </h1>
-        <p class="text-sm text-muted">{{ t("invoices.subtitle") }}</p>
+        <p class="text-base text-muted">{{ t("invoices.subtitle") }}</p>
       </div>
       <div class="flex items-center gap-2">
         <UBadge
@@ -164,7 +164,7 @@ onMounted(loadList);
         />
         <UButton
           color="primary"
-          size="sm"
+          size="lg"
           icon="i-tabler-plus"
           :label="t('invoices.actions.new')"
           @click="startNew"
@@ -177,11 +177,11 @@ onMounted(loadList);
 
       <section class="space-y-3">
         <div class="flex items-center justify-between gap-2">
-          <h2 class="text-sm font-semibold text-highlighted">{{ t("invoices.title") }}</h2>
+          <h2 class="text-base font-semibold text-highlighted">{{ t("invoices.title") }}</h2>
           <UButton
             color="neutral"
             variant="ghost"
-            size="xs"
+            size="lg"
             icon="i-tabler-reload"
             :label="t('invoices.actions.refresh')"
             @click="loadList"
@@ -209,10 +209,10 @@ onMounted(loadList);
       <template #header>
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div class="space-y-1">
-            <p class="text-sm font-semibold text-highlighted">
+            <p class="text-base font-semibold text-highlighted">
               {{ detail?.invoice?.invoiceNumber || t("invoices.detail.title") }}
             </p>
-            <p class="text-xs text-muted">{{ detail?.invoice?.supplierName || "—" }}</p>
+            <p class="text-sm text-muted">{{ detail?.invoice?.supplierName || "—" }}</p>
           </div>
           <div class="flex items-center gap-2">
             <InvoiceStatusBadge :status="detail?.invoice?.status" />
@@ -220,7 +220,7 @@ onMounted(loadList);
               v-if="detail?.invoice?.status !== 'verified'"
               color="primary"
               variant="soft"
-              size="sm"
+              size="lg"
               icon="i-tabler-check"
               :label="t('invoices.actions.verify')"
               @click="verifyInvoice"
@@ -228,7 +228,7 @@ onMounted(loadList);
             <UButton
               color="neutral"
               variant="soft"
-              size="sm"
+              size="lg"
               icon="i-tabler-pencil"
               :label="t('invoices.actions.edit')"
               @click="startEdit"
@@ -236,7 +236,7 @@ onMounted(loadList);
             <UButton
               color="error"
               variant="soft"
-              size="sm"
+              size="lg"
               icon="i-tabler-trash"
               :label="t('invoices.actions.remove')"
               @click="removeInvoice"
@@ -245,7 +245,7 @@ onMounted(loadList);
         </div>
       </template>
 
-      <div v-if="detailLoading" class="flex items-center gap-2 py-8 text-sm text-muted">
+      <div v-if="detailLoading" class="flex items-center gap-2 py-8 text-base text-muted">
         <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
         {{ t("invoices.loading") }}
       </div>
@@ -253,34 +253,34 @@ onMounted(loadList);
       <div v-else-if="detail" class="space-y-5">
         <dl class="grid gap-3 sm:grid-cols-3">
           <div>
-            <dt class="text-xs text-muted">{{ t("invoices.form.issueDate") }}</dt>
-            <dd class="text-sm text-toned">{{ detail.invoice.issueDate || "—" }}</dd>
+            <dt class="text-sm text-muted">{{ t("invoices.form.issueDate") }}</dt>
+            <dd class="text-base text-toned">{{ detail.invoice.issueDate || "—" }}</dd>
           </div>
           <div>
-            <dt class="text-xs text-muted">{{ t("invoices.form.subtotal") }}</dt>
-            <dd class="text-sm text-toned" dir="ltr">
+            <dt class="text-sm text-muted">{{ t("invoices.form.subtotal") }}</dt>
+            <dd class="text-base text-toned" dir="ltr">
               {{ formatAmount(detail.invoice.subtotal, detail.invoice.currency) }}
             </dd>
           </div>
           <div>
-            <dt class="text-xs text-muted">{{ t("invoices.form.total") }}</dt>
-            <dd class="text-sm font-medium text-highlighted" dir="ltr">
+            <dt class="text-sm text-muted">{{ t("invoices.form.total") }}</dt>
+            <dd class="text-base font-medium text-highlighted" dir="ltr">
               {{ formatAmount(detail.invoice.total, detail.invoice.currency) }}
             </dd>
           </div>
         </dl>
 
         <div class="space-y-2">
-          <h3 class="text-sm font-medium text-highlighted">{{ t("invoices.detail.lines") }}</h3>
+          <h3 class="text-base font-medium text-highlighted">{{ t("invoices.detail.lines") }}</h3>
           <div
             v-if="detail.lines.length === 0"
-            class="rounded-lg border border-dashed border-default py-4 text-center text-xs text-muted"
+            class="rounded-lg border border-dashed border-default py-4 text-center text-sm text-muted"
           >
             {{ t("invoices.detail.noLines") }}
           </div>
           <div v-else class="overflow-x-auto rounded-lg border border-default">
-            <table class="w-full text-sm">
-              <thead class="bg-elevated text-xs text-muted">
+            <table class="w-full text-base">
+              <thead class="bg-elevated text-sm text-muted">
                 <tr>
                   <th class="px-3 py-2 text-start font-medium">
                     {{ t("invoices.form.description") }}
@@ -311,7 +311,7 @@ onMounted(loadList);
         </div>
 
         <div class="space-y-2">
-          <h3 class="text-sm font-medium text-highlighted">
+          <h3 class="text-base font-medium text-highlighted">
             {{ t("invoices.detail.provenance") }}
           </h3>
           <div class="flex flex-wrap gap-2">
@@ -320,7 +320,7 @@ onMounted(loadList);
               :key="row.id"
               color="neutral"
               variant="subtle"
-              size="sm"
+              size="lg"
               :label="`${row.fieldKey}: ${row.sourceKind}`"
             />
           </div>

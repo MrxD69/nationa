@@ -41,8 +41,8 @@ function translate(finding: Finding, field: "title" | "message"): string {
           :key="finding.id ?? index"
           class="rounded-lg border border-default/60 bg-default/40 p-3"
         >
-          <p class="text-sm font-medium text-highlighted">{{ translate(finding, "title") }}</p>
-          <p class="text-xs text-muted">{{ translate(finding, "message") }}</p>
+          <p class="text-base font-medium text-highlighted">{{ translate(finding, "title") }}</p>
+          <p class="text-sm text-muted">{{ translate(finding, "message") }}</p>
         </div>
 
         <UCheckbox v-model="acknowledged" :label="t('submissions.detail.resubmitAcknowledge')" />

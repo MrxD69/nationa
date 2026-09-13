@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AgencyMark from "~/components/agency/AgencyMark.vue";
 import type { ProcedureListItem } from "@nationa/api/services/procedures";
 
 definePageMeta({ layout: "app", middleware: "auth" });
@@ -82,20 +83,21 @@ async function startCase(template: ProcedureListItem): Promise<void> {
   <div class="mx-auto w-full max-w-7xl space-y-6">
     <div class="space-y-1">
       <h1 class="text-2xl font-semibold text-highlighted">{{ t("cases.new.title") }}</h1>
-      <p class="text-sm text-muted">{{ t("cases.new.subtitle") }}</p>
+      <p class="text-base text-muted">{{ t("cases.new.subtitle") }}</p>
     </div>
 
     <UAlert v-if="error" color="error" variant="subtle" :title="error" />
 
-    <div v-if="isLoading" class="flex items-center gap-2 text-sm text-muted">
+    <div v-if="isLoading" class="flex items-center gap-2 text-base text-muted">
       <UIcon name="i-tabler-loader-2" class="animate-spin" />
       <span>{{ t("cases.new.loading") }}</span>
     </div>
 
     <div v-else class="grid gap-8">
       <section v-for="group in groups" :key="group.agencyId" class="space-y-3">
-        <div class="flex items-center gap-2">
-          <h2 class="text-sm font-medium tracking-wide text-muted uppercase">
+        <div class="flex items-center gap-3">
+          <AgencyMark :agency-id="group.agencyId" size="md" />
+          <h2 class="text-lg font-semibold tracking-tight text-highlighted">
             {{ locale === "ar" ? (group.agencyNameAr ?? group.agencyNameFr) : group.agencyNameFr }}
           </h2>
         </div>
@@ -112,26 +114,26 @@ async function startCase(template: ProcedureListItem): Promise<void> {
                   <h3 class="text-base font-medium text-highlighted">
                     {{ templateName(template) }}
                   </h3>
-                  <p class="text-xs text-muted">{{ agencyName(template) }} · {{ template.code }}</p>
+                  <p class="text-sm text-muted">{{ agencyName(template) }} · {{ template.code }}</p>
                 </div>
-                <UBadge color="neutral" variant="subtle" size="sm">
+                <UBadge color="neutral" variant="subtle" size="lg">
                   {{ template.category ?? "—" }}
                 </UBadge>
               </div>
 
-              <p v-if="template.description" class="text-sm leading-6 text-muted">
+              <p v-if="template.description" class="text-base leading-6 text-muted">
                 {{ template.description }}
               </p>
 
               <div class="mt-auto flex items-center justify-between gap-2 pt-2">
-                <span class="text-xs text-muted">
+                <span class="text-sm text-muted">
                   {{ t("cases.new.steps", { count: template.stepCount }) }}
                   <template v-if="template.estimatedDays">
                     · {{ t("cases.new.days", { count: template.estimatedDays }) }}
                   </template>
                 </span>
                 <UButton
-                  size="sm"
+                  size="lg"
                   icon="i-tabler-player-play"
                   :loading="starting === template.id"
                   :label="t('cases.new.start')"

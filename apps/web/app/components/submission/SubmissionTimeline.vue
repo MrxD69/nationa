@@ -43,7 +43,7 @@ function iconFor(action?: string | null): string {
 </script>
 
 <template>
-  <div v-if="props.events.length === 0" class="text-sm text-muted">
+  <div v-if="props.events.length === 0" class="text-base text-muted">
     {{ t("submissions.timeline.empty") }}
   </div>
 
@@ -54,8 +54,8 @@ function iconFor(action?: string | null): string {
       >
         <UIcon :name="iconFor(event.action)" class="size-3.5" />
       </span>
-      <p class="text-sm text-highlighted">{{ event.summary || event.action }}</p>
-      <p class="text-xs text-muted">{{ formatDate(event.createdAt) }}</p>
+      <p class="text-base text-highlighted">{{ event.summary || event.action }}</p>
+      <p class="text-sm text-muted">{{ formatDate(event.createdAt) }}</p>
     </li>
   </ol>
 </template>

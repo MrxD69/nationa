@@ -92,15 +92,15 @@ onMounted(loadFindings);
 <template>
   <div class="grid gap-6">
     <div class="grid gap-2">
-      <h3 class="text-sm font-medium text-highlighted">{{ t("cases.review.valuesTitle") }}</h3>
+      <h3 class="text-base font-medium text-highlighted">{{ t("cases.review.valuesTitle") }}</h3>
       <div
         v-for="field in props.fields"
         :key="field.id"
         class="grid gap-1 border-b border-default py-2 last:border-0 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] sm:gap-4"
       >
-        <div class="text-sm text-muted">{{ fieldLabel(field.fieldKey) }}</div>
+        <div class="text-base text-muted">{{ fieldLabel(field.fieldKey) }}</div>
         <div class="grid gap-1">
-          <div class="text-sm text-highlighted">{{ displayValue(field) }}</div>
+          <div class="text-base text-highlighted">{{ displayValue(field) }}</div>
           <CaseFieldProvenance :provenance="field.provenance" />
         </div>
       </div>
@@ -114,9 +114,9 @@ onMounted(loadFindings);
 
     <div class="grid gap-3">
       <div class="flex items-center justify-between gap-2">
-        <h3 class="text-sm font-medium text-highlighted">{{ t("cases.review.checksTitle") }}</h3>
+        <h3 class="text-base font-medium text-highlighted">{{ t("cases.review.checksTitle") }}</h3>
         <UButton
-          size="xs"
+          size="lg"
           color="neutral"
           variant="outline"
           icon="i-tabler-shield-check"
@@ -134,13 +134,13 @@ onMounted(loadFindings);
         class="rounded-lg border border-default p-3"
       >
         <div class="flex items-center gap-2">
-          <UBadge :color="severityColor[finding.severity] ?? 'neutral'" variant="subtle" size="sm">
+          <UBadge :color="severityColor[finding.severity] ?? 'neutral'" variant="subtle" size="lg">
             {{ t(`cases.review.severity.${finding.severity}`, finding.severity) }}
           </UBadge>
-          <span class="text-sm font-medium text-highlighted">{{ finding.title }}</span>
+          <span class="text-base font-medium text-highlighted">{{ finding.title }}</span>
         </div>
-        <p class="mt-1 text-sm leading-6 text-muted">{{ finding.messagePlain }}</p>
-        <p v-if="finding.suggestedFix" class="mt-1 text-xs text-muted">
+        <p class="mt-1 text-base leading-6 text-muted">{{ finding.messagePlain }}</p>
+        <p v-if="finding.suggestedFix" class="mt-1 text-sm text-muted">
           {{ t("cases.review.suggestedFix") }}: {{ finding.suggestedFix }}
         </p>
       </div>

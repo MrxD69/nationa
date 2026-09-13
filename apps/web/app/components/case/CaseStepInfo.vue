@@ -40,18 +40,18 @@ function citationText(citation: Citation): string {
 
 <template>
   <div class="grid gap-4">
-    <p v-if="description" class="text-sm leading-6 text-muted">{{ description }}</p>
+    <p v-if="description" class="text-base leading-6 text-muted">{{ description }}</p>
 
     <div v-if="props.step.citations?.length" class="grid gap-3">
-      <h3 class="text-sm font-medium text-highlighted">{{ t("cases.citations.title") }}</h3>
+      <h3 class="text-base font-medium text-highlighted">{{ t("cases.citations.title") }}</h3>
       <UCard v-for="citation in props.step.citations" :key="citation.id">
         <div class="space-y-2">
           <div class="flex flex-wrap items-center gap-2">
-            <UBadge color="neutral" variant="subtle" size="sm">{{ citation.source }}</UBadge>
-            <span v-if="citation.article" class="text-xs text-muted">{{ citation.article }}</span>
+            <UBadge color="neutral" variant="subtle" size="lg">{{ citation.source }}</UBadge>
+            <span v-if="citation.article" class="text-sm text-muted">{{ citation.article }}</span>
           </div>
-          <div class="text-sm font-medium text-highlighted">{{ citationTitle(citation) }}</div>
-          <p v-if="citationText(citation)" class="text-sm leading-6 text-muted">
+          <div class="text-base font-medium text-highlighted">{{ citationTitle(citation) }}</div>
+          <p v-if="citationText(citation)" class="text-base leading-6 text-muted">
             {{ citationText(citation) }}
           </p>
           <UButton
@@ -59,7 +59,7 @@ function citationText(citation: Citation): string {
             :to="citation.url"
             target="_blank"
             external
-            size="xs"
+            size="lg"
             color="neutral"
             variant="link"
             icon="i-tabler-external-link"

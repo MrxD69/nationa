@@ -2,6 +2,7 @@
 import type { DropdownMenuItem } from "@nuxt/ui";
 
 import AppRailNotifications from "~/components/shell/AppRailNotifications.vue";
+import AppRailPinnedActions from "~/components/shell/AppRailPinnedActions.vue";
 import { RAIL_ITEMS, dirForLocale } from "~/constants/navigation";
 
 const { t, locale } = useI18n();
@@ -32,6 +33,7 @@ function isActive(to?: string): boolean {
     id="app-rail"
     :side="side"
     :toggle-side="side"
+    :menu="{ side, modal: false }"
     collapsible
     :default-size="16"
     :min-size="14"
@@ -47,14 +49,15 @@ function isActive(to?: string): boolean {
         <UButton
           color="neutral"
           variant="ghost"
+          size="lg"
           :square="collapsed"
           :block="!collapsed"
           :class="collapsed ? '' : 'justify-start'"
           :aria-label="t('shell.rail.profile')"
           :title="t('shell.rail.profile')"
         >
-          <UAvatar :alt="user?.email ?? ''" size="2xs" icon="i-tabler-user" />
-          <span v-if="!collapsed" class="truncate text-sm">
+          <UAvatar :alt="user?.email ?? ''" size="sm" icon="i-tabler-user" />
+          <span v-if="!collapsed" class="truncate text-base">
             {{ user?.email ?? t("common.user.guest") }}
           </span>
         </UButton>
@@ -62,9 +65,9 @@ function isActive(to?: string): boolean {
     </template>
 
     <template #default="{ collapsed }">
-      <nav class="flex w-full flex-col gap-1">
+      <nav class="flex w-full flex-col gap-1.5">
         <template v-for="item in RAIL_ITEMS" :key="item.key">
-          <AppRailNotifications v-if="item.action === 'notifications'" />
+          <AppRailNotifications v-if="item.action === 'notifications'" :collapsed="collapsed" />
 
           <UButton
             v-else
@@ -78,17 +81,20 @@ function isActive(to?: string): boolean {
             active-variant="soft"
             color="neutral"
             variant="ghost"
+            size="lg"
             :square="collapsed"
             :block="!collapsed"
             class="justify-start"
             @click="item.action === 'search' ? toggleCommandPalette() : undefined"
           />
+
+          <AppRailPinnedActions v-if="item.key === 'actions'" :collapsed="collapsed" />
         </template>
       </nav>
     </template>
 
     <template #footer="{ collapsed }">
-      <div class="flex w-full flex-col items-center gap-1.5">
+      <div class="flex w-full flex-col items-center gap-2">
         <LocaleSwitcher v-if="!collapsed" />
         <UColorModeButton />
 
@@ -100,6 +106,7 @@ function isActive(to?: string): boolean {
           :title="t('shell.rail.logoLabel')"
           color="neutral"
           variant="ghost"
+          size="lg"
           :square="collapsed"
           :block="!collapsed"
           class="justify-start"

@@ -27,14 +27,14 @@ function optionsFor(question: DocgenQuestion) {
   <UCard>
     <template #header>
       <div>
-        <h2 class="text-sm font-semibold text-highlighted">
+        <h2 class="text-base font-semibold text-highlighted">
           {{ t("docgen.questionnaire.title") }}
         </h2>
-        <p class="text-xs text-muted">{{ t("docgen.questionnaire.subtitle") }}</p>
+        <p class="text-sm text-muted">{{ t("docgen.questionnaire.subtitle") }}</p>
       </div>
     </template>
 
-    <div v-if="props.questions.length === 0" class="text-sm text-muted">
+    <div v-if="props.questions.length === 0" class="text-base text-muted">
       {{ t("docgen.questionnaire.empty") }}
     </div>
 

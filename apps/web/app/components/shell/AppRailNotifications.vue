@@ -10,6 +10,8 @@ type NotificationRow = {
   createdAt?: string | Date | null;
 };
 
+const props = withDefaults(defineProps<{ collapsed?: boolean }>(), { collapsed: false });
+
 const client = useApi();
 const { t } = useI18n();
 
@@ -77,19 +79,33 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <UPopover :open="open" @update:open="onOpenChange">
+  <UPopover :open="open" :content="{ align: 'start' }" @update:open="onOpenChange">
     <UButton
       color="neutral"
       variant="ghost"
-      square
+      size="lg"
+      :square="props.collapsed"
+      :block="!props.collapsed"
+      :class="props.collapsed ? 'relative' : 'relative justify-start'"
       :aria-label="t('notifications.title')"
       :title="t('notifications.title')"
-      class="relative"
     >
-      <UIcon name="i-tabler-bell" class="size-5" />
+      <UIcon name="i-tabler-bell" class="size-6 shrink-0" />
+
+      <span v-if="!props.collapsed" class="truncate">{{ t("notifications.title") }}</span>
+
+      <UBadge
+        v-if="unread > 0 && !props.collapsed"
+        color="error"
+        variant="solid"
+        size="md"
+        class="ms-auto shrink-0"
+        :label="unread > 9 ? '9+' : String(unread)"
+      />
+
       <span
-        v-if="unread > 0"
-        class="absolute -end-0.5 -top-0.5 flex min-w-4 items-center justify-center rounded-full bg-error px-1 text-[10px] font-semibold text-white"
+        v-else-if="unread > 0"
+        class="absolute -end-0.5 -top-0.5 flex min-w-5 items-center justify-center rounded-full bg-error px-1.5 text-xs font-semibold text-white"
       >
         {{ unread > 9 ? "9+" : unread }}
       </span>

@@ -27,7 +27,7 @@ function format(amount: number, currency: string): string {
 
 <template>
   <div class="grid gap-4">
-    <div v-if="props.loading" class="flex items-center gap-2 text-sm text-muted">
+    <div v-if="props.loading" class="flex items-center gap-2 text-base text-muted">
       <UIcon name="i-tabler-loader-2" class="animate-spin" />
       <span>{{ t("cases.payment.loading") }}</span>
     </div>
@@ -38,14 +38,14 @@ function format(amount: number, currency: string): string {
         :key="item.feeId"
         class="flex items-center justify-between gap-4 border-b border-default py-2 last:border-0"
       >
-        <span class="text-sm text-default">{{ item.label }}</span>
-        <span class="text-sm font-medium text-highlighted">
+        <span class="text-base text-default">{{ item.label }}</span>
+        <span class="text-base font-medium text-highlighted">
           {{ format(item.amount, item.currency) }}
         </span>
       </div>
 
       <div class="flex items-center justify-between gap-4 pt-2">
-        <span class="text-sm font-medium text-highlighted">{{ t("cases.payment.total") }}</span>
+        <span class="text-base font-medium text-highlighted">{{ t("cases.payment.total") }}</span>
         <span class="text-base font-semibold text-highlighted">
           {{ format(props.quote.total, props.quote.currency) }}
         </span>

@@ -47,8 +47,8 @@ function pretty(value: unknown): string {
       @click="open = !open"
     >
       <UIcon name="i-tabler-tool" class="size-4 shrink-0 text-muted" />
-      <span class="flex-1 truncate text-xs font-medium text-toned">{{ label }}</span>
-      <UBadge :color="status.color" variant="subtle" size="sm" :label="status.label" />
+      <span class="flex-1 truncate text-sm font-medium text-toned">{{ label }}</span>
+      <UBadge :color="status.color" variant="subtle" size="lg" :label="status.label" />
       <UIcon
         name="i-tabler-chevron-down"
         class="size-4 text-muted transition-transform"
@@ -57,17 +57,17 @@ function pretty(value: unknown): string {
     </button>
     <div v-if="open" class="space-y-2 border-t border-default p-3">
       <div v-if="input">
-        <p class="text-[11px] font-medium text-muted">{{ t("assistant.tools.title") }}</p>
+        <p class="text-sm font-medium text-muted">{{ t("assistant.tools.title") }}</p>
         <pre
-          class="mt-1 max-h-48 overflow-auto rounded-lg bg-elevated p-2 text-[11px] leading-4 text-muted"
+          class="mt-1 max-h-48 overflow-auto rounded-lg bg-elevated p-2 text-sm leading-5 text-muted"
           >{{ pretty(input) }}</pre>
       </div>
       <div v-if="output !== undefined">
         <pre
-          class="max-h-64 overflow-auto rounded-lg bg-elevated p-2 text-[11px] leading-4 text-muted"
+          class="max-h-64 overflow-auto rounded-lg bg-elevated p-2 text-sm leading-5 text-muted"
           >{{ pretty(output) }}</pre>
       </div>
-      <p v-if="errorText" class="text-xs text-error">{{ errorText }}</p>
+      <p v-if="errorText" class="text-sm text-error">{{ errorText }}</p>
     </div>
   </div>
 </template>

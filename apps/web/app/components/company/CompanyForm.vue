@@ -109,7 +109,7 @@ function inputType(key: string): "number" | "text" {
 <template>
   <form class="grid gap-8" @submit.prevent="emit('submit')">
     <section v-for="group in FIELD_GROUPS" :key="group.id" class="grid gap-4">
-      <h3 class="text-sm font-semibold text-highlighted">{{ t(group.titleKey) }}</h3>
+      <h3 class="text-base font-semibold text-highlighted">{{ t(group.titleKey) }}</h3>
 
       <div class="grid gap-4 sm:grid-cols-2">
         <template v-for="key in group.fields" :key="key">

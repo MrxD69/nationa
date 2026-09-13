@@ -114,7 +114,7 @@ async function rerun() {
         <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
           {{ t("checks.title") }}
         </h1>
-        <p class="text-sm text-muted">{{ t("checks.subtitle") }}</p>
+        <p class="text-base text-muted">{{ t("checks.subtitle") }}</p>
       </div>
       <UButton icon="i-tabler-reload" :loading="running" :disabled="!valid" @click="rerun">
         {{ t("checks.rerun") }}
@@ -132,13 +132,13 @@ async function rerun() {
 
     <template v-else>
       <div v-if="latestRun" class="mt-4 flex flex-wrap items-center gap-2">
-        <UBadge color="neutral" variant="soft" size="sm">
+        <UBadge color="neutral" variant="soft" size="lg">
           {{ t("checks.latestRun") }}
         </UBadge>
-        <UBadge :color="runColor(latestRun.status)" variant="subtle" size="sm">
+        <UBadge :color="runColor(latestRun.status)" variant="subtle" size="lg">
           {{ t(`checks.runStatus.${latestRun.status}`) }}
         </UBadge>
-        <span class="text-xs text-muted">
+        <span class="text-sm text-muted">
           {{ t("checks.findingsCount", { count: findings.length }) }}
         </span>
       </div>

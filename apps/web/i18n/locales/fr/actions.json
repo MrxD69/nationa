@@ -71,7 +71,10 @@
     "step": {
       "objective": "Objectif",
       "optional": "Optionnelle",
-      "required": "Obligatoire"
+      "required": "Obligatoire",
+      "officialForm": "Formulaire officiel",
+      "openForm": "Ouvrir le formulaire",
+      "formHint": "Voici à quoi ressemble le document demandé."
     },
     "severity": {
       "info": "Information",

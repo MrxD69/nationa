@@ -50,7 +50,7 @@ async function onRevoke(userId: string) {
           color="neutral"
           variant="ghost"
           icon="i-tabler-arrow-left"
-          size="sm"
+          size="lg"
           class="rtl:rotate-180"
           :label="t('companies.detail.back')"
         />
@@ -61,7 +61,7 @@ async function onRevoke(userId: string) {
           <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
             {{ t("companies.access.title") }}
           </h1>
-          <p class="text-sm text-muted">{{ t("companies.access.subtitle") }}</p>
+          <p class="text-base text-muted">{{ t("companies.access.subtitle") }}</p>
         </div>
 
         <UButton
@@ -75,12 +75,12 @@ async function onRevoke(userId: string) {
 
       <UCard>
         <template #header>
-          <h2 class="text-sm font-semibold text-highlighted">
+          <h2 class="text-base font-semibold text-highlighted">
             {{ t("companies.access.members") }}
           </h2>
         </template>
 
-        <div v-if="loading" class="flex items-center gap-2 text-sm text-muted">
+        <div v-if="loading" class="flex items-center gap-2 text-base text-muted">
           <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
           <span>{{ t("companies.loading") }}</span>
         </div>

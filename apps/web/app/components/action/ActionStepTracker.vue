@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import AgencyMark from "~/components/agency/AgencyMark.vue";
 import ActionProgressRing from "~/components/action/ActionProgressRing.vue";
 import ActionStatusBadge from "~/components/action/ActionStatusBadge.vue";
 import ActionNextCallout from "~/components/action/ActionNextCallout.vue";
 import ActionStepItem from "~/components/action/ActionStepItem.vue";
+import { useOpenActions } from "~/composables/useOpenActions";
 
 const props = defineProps<{
   templateId?: string;
@@ -18,6 +20,8 @@ const { data, isLoading, isError, error, refetch } = actions.trackerQuery({
   caseId: props.caseId,
   companyId: props.companyId,
 });
+
+const { track } = useOpenActions();
 
 const start = actions.startMutation();
 const runChecks = actions.runChecksMutation(props.caseId ?? "");
@@ -55,6 +59,30 @@ const nextStep = computed(() => {
 });
 
 const activeCaseId = computed(() => tracker.value?.case?.id ?? props.caseId ?? null);
+
+/*
+ * Pin a démarche to the rail once it has actually been started. Browsing the
+ * public catalogue should not clutter the sidebar; a filing in progress should
+ * be one click away from anywhere in the app.
+ */
+watch(
+  tracker,
+  (current) => {
+    if (!current || !current.case) {
+      return;
+    }
+    track({
+      templateId: current.action.id,
+      caseId: current.case.id,
+      companyId: current.case.companyId ?? props.companyId ?? null,
+      nameFr: current.action.nameFr,
+      nameAr: current.action.nameAr ?? null,
+      agencyId: current.action.agencyId ?? null,
+      progress: current.aggregate.progress,
+    });
+  },
+  { immediate: true },
+);
 
 function nextOpenIndex(): number {
   const current = tracker.value;
@@ -104,7 +132,7 @@ async function onStart(): Promise<void> {
 </script>
 
 <template>
-  <div v-if="isLoading" class="flex items-center gap-2 py-12 text-sm text-muted">
+  <div v-if="isLoading" class="flex items-center gap-2 py-12 text-base text-muted">
     <UIcon name="i-tabler-loader-2" class="animate-spin" />
     <span>{{ t("actions.tracker.loading") }}</span>
   </div>
@@ -120,7 +148,7 @@ async function onStart(): Promise<void> {
       <UButton
         color="error"
         variant="soft"
-        size="sm"
+        size="lg"
         :label="t('actions.hub.retry')"
         @click="refetch()"
       />
@@ -134,14 +162,15 @@ async function onStart(): Promise<void> {
     >
       <div class="min-w-0 space-y-2">
         <div class="flex flex-wrap items-center gap-2">
-          <UBadge color="neutral" variant="subtle" size="sm">{{ agencyName }}</UBadge>
+          <AgencyMark :agency-id="tracker.action.agencyId" size="sm" :alt="agencyName" />
+          <span class="text-base font-semibold text-toned">{{ agencyName }}</span>
           <ActionStatusBadge :state="tracker.aggregate.state" />
-          <span v-if="tracker.action.estimatedDays" class="text-xs text-muted">
+          <span v-if="tracker.action.estimatedDays" class="text-sm text-muted">
             {{ t("actions.hub.days", { count: tracker.action.estimatedDays }) }}
           </span>
         </div>
         <h1 class="text-xl font-semibold text-highlighted">{{ name }}</h1>
-        <p v-if="tracker.action.description" class="max-w-2xl text-sm leading-6 text-muted">
+        <p v-if="tracker.action.description" class="max-w-2xl text-base leading-6 text-muted">
           {{ tracker.action.description }}
         </p>
       </div>
@@ -181,77 +210,73 @@ async function onStart(): Promise<void> {
             :total="tracker.steps.length"
             :last="index === tracker.steps.length - 1"
             :default-open="index === nextOpenIndex()"
+            :agency-id="tracker.action.agencyId"
           />
         </ol>
       </section>
 
-      <aside class="space-y-4 lg:border-s lg:border-default lg:ps-6">
-        <UCard variant="subtle">
-          <div class="space-y-3">
-            <h2 class="text-sm font-semibold text-highlighted">
-              {{ t("actions.tracker.verification") }}
-            </h2>
-            <div class="space-y-1 text-sm text-muted">
-              <p>
-                {{
-                  tracker.verification.hasRun
-                    ? t("actions.tracker.verified")
-                    : t("actions.tracker.noRun")
-                }}
-              </p>
-              <p v-if="tracker.verification.ranAt" class="text-xs">
-                {{ t("actions.tracker.lastRun") }}:
-                {{ new Date(tracker.verification.ranAt).toLocaleString(locale) }}
-              </p>
-              <div class="flex flex-wrap gap-2 pt-1">
-                <UBadge
-                  v-if="tracker.verification.openErrors"
-                  color="warning"
-                  variant="subtle"
-                  size="xs"
-                >
-                  {{ t("actions.severity.error") }}: {{ tracker.verification.openErrors }}
-                </UBadge>
-                <UBadge
-                  v-if="tracker.verification.openBlockers"
-                  color="error"
-                  variant="subtle"
-                  size="xs"
-                >
-                  {{ t("actions.severity.blocker") }}: {{ tracker.verification.openBlockers }}
-                </UBadge>
-              </div>
-            </div>
-          </div>
-        </UCard>
-
-        <UCard v-if="tracker.feeSummary" variant="subtle">
-          <div class="space-y-3">
-            <h2 class="text-sm font-semibold text-highlighted">
-              {{ t("actions.tracker.fees") }}
-            </h2>
-            <ul class="grid gap-1.5">
-              <li
-                v-for="item in tracker.feeSummary.items"
-                :key="item.feeId"
-                class="flex items-center justify-between gap-2 text-sm"
-              >
-                <span class="min-w-0 truncate text-muted">{{ item.label }}</span>
-                <span class="shrink-0 font-medium text-toned">
-                  {{ item.amount.toFixed(2) }} {{ item.currency }}
-                </span>
-              </li>
-            </ul>
-            <div
-              class="flex items-center justify-between gap-2 border-t border-default pt-2 text-sm"
+      <aside class="divide-y divide-default lg:border-s lg:border-default lg:ps-6">
+        <section class="space-y-3 py-4 first:pt-0">
+          <h2 class="text-lg font-semibold text-highlighted">
+            {{ t("actions.tracker.verification") }}
+          </h2>
+          <p class="text-base text-muted">
+            {{
+              tracker.verification.hasRun
+                ? t("actions.tracker.verified")
+                : t("actions.tracker.noRun")
+            }}
+          </p>
+          <p v-if="tracker.verification.ranAt" class="text-base text-muted">
+            {{ t("actions.tracker.lastRun") }}:
+            {{ new Date(tracker.verification.ranAt).toLocaleString(locale) }}
+          </p>
+          <div
+            v-if="tracker.verification.openErrors || tracker.verification.openBlockers"
+            class="flex flex-wrap gap-2"
+          >
+            <UBadge
+              v-if="tracker.verification.openErrors"
+              color="warning"
+              variant="subtle"
+              size="lg"
             >
-              <span class="font-medium text-highlighted">{{ t("cases.payment.total") }}</span>
-              <span class="font-semibold text-highlighted">
-                {{ tracker.feeSummary.total.toFixed(2) }} {{ tracker.feeSummary.currency }}
-              </span>
-            </div>
+              {{ t("actions.severity.error") }}: {{ tracker.verification.openErrors }}
+            </UBadge>
+            <UBadge
+              v-if="tracker.verification.openBlockers"
+              color="error"
+              variant="subtle"
+              size="lg"
+            >
+              {{ t("actions.severity.blocker") }}: {{ tracker.verification.openBlockers }}
+            </UBadge>
           </div>
-        </UCard>
+        </section>
+
+        <section v-if="tracker.feeSummary" class="space-y-3 py-4">
+          <h2 class="text-lg font-semibold text-highlighted">{{ t("actions.tracker.fees") }}</h2>
+          <ul class="grid gap-2">
+            <li
+              v-for="item in tracker.feeSummary.items"
+              :key="item.feeId"
+              class="flex items-center justify-between gap-2 text-base"
+            >
+              <span class="min-w-0 truncate text-muted">{{ item.label }}</span>
+              <span class="shrink-0 font-medium text-toned">
+                {{ item.amount.toFixed(2) }} {{ item.currency }}
+              </span>
+            </li>
+          </ul>
+          <div
+            class="flex items-center justify-between gap-2 border-t border-default pt-3 text-base"
+          >
+            <span class="font-medium text-highlighted">{{ t("cases.payment.total") }}</span>
+            <span class="font-semibold text-highlighted">
+              {{ tracker.feeSummary.total.toFixed(2) }} {{ tracker.feeSummary.currency }}
+            </span>
+          </div>
+        </section>
       </aside>
     </div>
   </div>

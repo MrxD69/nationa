@@ -29,23 +29,23 @@ function formatDate(value?: string | Date | null) {
 <template>
   <div class="flex max-h-96 w-80 flex-col">
     <div class="flex items-center justify-between gap-2 border-b border-default px-3 py-2">
-      <span class="text-sm font-semibold text-highlighted">{{ t("notifications.title") }}</span>
+      <span class="text-base font-semibold text-highlighted">{{ t("notifications.title") }}</span>
       <UButton
         color="neutral"
         variant="ghost"
-        size="xs"
+        size="lg"
         icon="i-tabler-checks"
         :label="t('notifications.markAllRead')"
         @click="emit('markAllRead')"
       />
     </div>
 
-    <div v-if="loading" class="flex items-center gap-2 px-3 py-6 text-xs text-muted">
+    <div v-if="loading" class="flex items-center gap-2 px-3 py-6 text-sm text-muted">
       <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
       {{ t("notifications.loading") }}
     </div>
 
-    <div v-else-if="items.length === 0" class="px-3 py-6 text-center text-xs text-muted">
+    <div v-else-if="items.length === 0" class="px-3 py-6 text-center text-sm text-muted">
       {{ t("notifications.empty") }}
     </div>
 
@@ -63,11 +63,11 @@ function formatDate(value?: string | Date | null) {
             class="mt-1.5 size-2 shrink-0 rounded-full bg-primary"
           />
           <div class="min-w-0 flex-1">
-            <p class="truncate text-sm text-highlighted">{{ notification.title }}</p>
-            <p v-if="notification.body" class="line-clamp-2 text-xs text-muted">
+            <p class="truncate text-base text-highlighted">{{ notification.title }}</p>
+            <p v-if="notification.body" class="line-clamp-2 text-sm text-muted">
               {{ notification.body }}
             </p>
-            <p class="mt-0.5 text-[11px] text-muted">{{ formatDate(notification.createdAt) }}</p>
+            <p class="mt-0.5 text-sm text-muted">{{ formatDate(notification.createdAt) }}</p>
           </div>
         </div>
       </li>

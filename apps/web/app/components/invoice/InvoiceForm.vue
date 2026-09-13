@@ -147,7 +147,7 @@ function submit() {
 <template>
   <UCard>
     <template #header>
-      <h2 class="text-sm font-semibold text-highlighted">
+      <h2 class="text-base font-semibold text-highlighted">
         {{ props.invoice?.id ? t("invoices.form.editTitle") : t("invoices.form.newTitle") }}
       </h2>
     </template>
@@ -179,11 +179,11 @@ function submit() {
 
       <div class="space-y-2">
         <div class="flex items-center justify-between gap-2">
-          <h3 class="text-sm font-medium text-highlighted">{{ t("invoices.form.lines") }}</h3>
+          <h3 class="text-base font-medium text-highlighted">{{ t("invoices.form.lines") }}</h3>
           <UButton
             color="neutral"
             variant="soft"
-            size="xs"
+            size="lg"
             icon="i-tabler-plus"
             :label="t('invoices.form.addLine')"
             @click="addLine"
@@ -222,7 +222,7 @@ function submit() {
           <UButton
             color="neutral"
             variant="ghost"
-            size="xs"
+            size="lg"
             icon="i-tabler-trash"
             :aria-label="t('invoices.form.removeLine')"
             @click="removeLine(index)"
@@ -230,17 +230,17 @@ function submit() {
         </div>
       </div>
 
-      <dl class="grid grid-cols-3 gap-2 rounded-lg bg-elevated p-3 text-sm">
+      <dl class="grid grid-cols-3 gap-2 rounded-lg bg-elevated p-3 text-base">
         <div>
-          <dt class="text-xs text-muted">{{ t("invoices.form.subtotal") }}</dt>
+          <dt class="text-sm text-muted">{{ t("invoices.form.subtotal") }}</dt>
           <dd class="text-toned" dir="ltr">{{ totals.subtotal }}</dd>
         </div>
         <div>
-          <dt class="text-xs text-muted">{{ t("invoices.form.taxAmount") }}</dt>
+          <dt class="text-sm text-muted">{{ t("invoices.form.taxAmount") }}</dt>
           <dd class="text-toned" dir="ltr">{{ totals.taxAmount }}</dd>
         </div>
         <div>
-          <dt class="text-xs text-muted">{{ t("invoices.form.total") }}</dt>
+          <dt class="text-sm text-muted">{{ t("invoices.form.total") }}</dt>
           <dd class="font-medium text-highlighted" dir="ltr">{{ totals.total }}</dd>
         </div>
       </dl>

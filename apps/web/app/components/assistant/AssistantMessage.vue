@@ -62,7 +62,7 @@ function proposalFor(part: any) {
       :class="isUser ? 'bg-primary text-inverted' : 'bg-elevated text-highlighted'"
     >
       <template v-for="(part, index) in parts" :key="index">
-        <p v-if="part.type === 'text'" class="whitespace-pre-wrap text-sm leading-6">
+        <p v-if="part.type === 'text'" class="whitespace-pre-wrap text-base leading-6">
           {{ part.text }}
         </p>
 

@@ -128,7 +128,7 @@ async function upload(): Promise<void> {
     </div>
 
     <div v-if="existingDocuments.length" class="grid gap-2">
-      <h3 class="text-sm font-medium text-highlighted">{{ t("cases.upload.uploaded") }}</h3>
+      <h3 class="text-base font-medium text-highlighted">{{ t("cases.upload.uploaded") }}</h3>
       <div
         v-for="document in existingDocuments"
         :key="document.id"
@@ -136,9 +136,9 @@ async function upload(): Promise<void> {
       >
         <div class="flex min-w-0 items-center gap-2">
           <UIcon name="i-tabler-file" class="size-4 shrink-0 text-muted" />
-          <span class="truncate text-sm">{{ document.title }}</span>
+          <span class="truncate text-base">{{ document.title }}</span>
         </div>
-        <UBadge :color="statusColor[document.status] ?? 'neutral'" variant="subtle" size="sm">
+        <UBadge :color="statusColor[document.status] ?? 'neutral'" variant="subtle" size="lg">
           {{ t(`cases.upload.status.${document.status}`, document.status) }}
         </UBadge>
       </div>

@@ -129,7 +129,7 @@ async function addNote(body: string) {
       icon="i-tabler-arrow-left"
       color="neutral"
       variant="ghost"
-      size="sm"
+      size="lg"
       class="mb-4"
       :ui="{ leadingIcon: 'rtl:rotate-180' }"
     >

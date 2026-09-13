@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AgencyMark from "~/components/agency/AgencyMark.vue";
 import type { ActionCatalogItem } from "~/composables/useActions";
 import ActionStatusBadge from "~/components/action/ActionStatusBadge.vue";
 
@@ -36,14 +37,15 @@ const cta = computed(() =>
       <div class="flex items-start justify-between gap-3">
         <div class="min-w-0 space-y-1">
           <div class="flex flex-wrap items-center gap-2">
-            <UBadge color="neutral" variant="subtle" size="sm">
+            <AgencyMark :agency-id="props.item.agencyId" size="sm" />
+            <span class="text-base font-semibold text-toned">
               {{ t(`actions.agencies.${props.item.agencyId}`, props.item.agencyId) }}
-            </UBadge>
-            <span v-if="props.item.category" class="text-xs text-muted">
+            </span>
+            <span v-if="props.item.category" class="text-sm text-muted">
               {{ props.item.category }}
             </span>
           </div>
-          <h3 class="truncate text-sm font-semibold text-highlighted" :title="name">
+          <h3 class="truncate text-base font-semibold text-highlighted" :title="name">
             {{ name }}
           </h3>
         </div>
@@ -52,11 +54,11 @@ const cta = computed(() =>
     </template>
 
     <div class="flex flex-1 flex-col gap-4">
-      <p v-if="props.item.description" class="line-clamp-3 text-sm text-muted">
+      <p v-if="props.item.description" class="line-clamp-3 text-base text-muted">
         {{ props.item.description }}
       </p>
 
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
         <span class="inline-flex items-center gap-1">
           <UIcon name="i-tabler-list-numbers" class="size-4" />
           {{ t("actions.hub.steps", { count: props.item.stepCount }) }}
@@ -72,10 +74,10 @@ const cta = computed(() =>
       </div>
 
       <div class="mt-auto space-y-3">
-        <UProgress :model-value="props.item.progress" size="sm" />
+        <UProgress :model-value="props.item.progress" size="lg" />
         <UButton
           :to="to"
-          size="sm"
+          size="lg"
           block
           :variant="props.item.status === 'not_started' ? 'solid' : 'outline'"
           trailing-icon="i-tabler-arrow-right"

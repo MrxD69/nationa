@@ -44,7 +44,7 @@ function translate(finding: Finding, field: "title" | "message" | "fix"): string
 </script>
 
 <template>
-  <div v-if="ordered.length === 0" class="text-sm text-muted">
+  <div v-if="ordered.length === 0" class="text-base text-muted">
     {{ t("officer.review.noFindings") }}
   </div>
 
@@ -56,13 +56,15 @@ function translate(finding: Finding, field: "title" | "message" | "fix"): string
     >
       <div class="flex flex-wrap items-center gap-2">
         <SeverityBadge :severity="finding.severity" />
-        <span class="text-xs text-muted">{{
+        <span class="text-sm text-muted">{{
           t(`checks.status.${finding.status}`, finding.status)
         }}</span>
       </div>
-      <h3 class="mt-2 text-sm font-semibold text-highlighted">{{ translate(finding, "title") }}</h3>
-      <p class="mt-1 text-sm text-toned">{{ translate(finding, "message") }}</p>
-      <p v-if="translate(finding, 'fix')" class="mt-2 text-xs text-muted">
+      <h3 class="mt-2 text-base font-semibold text-highlighted">
+        {{ translate(finding, "title") }}
+      </h3>
+      <p class="mt-1 text-base text-toned">{{ translate(finding, "message") }}</p>
+      <p v-if="translate(finding, 'fix')" class="mt-2 text-sm text-muted">
         {{ t("checks.detail.suggestedFix") }} : {{ translate(finding, "fix") }}
       </p>
     </article>

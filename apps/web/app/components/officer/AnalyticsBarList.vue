@@ -14,14 +14,14 @@ const max = computed(() => Math.max(...props.items.map((item) => item.value), 1)
 <template>
   <UCard>
     <template #header>
-      <h2 class="text-sm font-semibold text-highlighted">{{ title }}</h2>
+      <h2 class="text-base font-semibold text-highlighted">{{ title }}</h2>
     </template>
 
-    <p v-if="items.length === 0" class="text-sm text-muted">{{ emptyLabel }}</p>
+    <p v-if="items.length === 0" class="text-base text-muted">{{ emptyLabel }}</p>
 
     <ul v-else class="space-y-3">
       <li v-for="item in items" :key="item.label" class="space-y-1">
-        <div class="flex items-center justify-between gap-3 text-xs">
+        <div class="flex items-center justify-between gap-3 text-sm">
           <span class="truncate text-toned">{{ item.label }}</span>
           <span class="shrink-0 font-medium text-muted">{{ item.hint ?? item.value }}</span>
         </div>

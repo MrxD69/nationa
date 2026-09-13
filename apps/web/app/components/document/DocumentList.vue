@@ -51,7 +51,7 @@ const groups = computed(() => {
 
 <template>
   <div class="space-y-6">
-    <div v-if="loading" class="flex items-center justify-center gap-2 py-12 text-sm text-muted">
+    <div v-if="loading" class="flex items-center justify-center gap-2 py-12 text-base text-muted">
       <UIcon name="i-tabler-loader-2" class="size-5 animate-spin" />
       {{ t("documents.list.loading") }}
     </div>
@@ -62,19 +62,19 @@ const groups = computed(() => {
     >
       <div class="flex flex-col items-center gap-2 text-center">
         <UIcon name="i-tabler-files-off" class="size-8 text-muted" />
-        <p class="text-sm font-medium text-toned">{{ t("documents.list.empty") }}</p>
-        <p class="text-xs text-muted">{{ t("documents.list.emptyHint") }}</p>
+        <p class="text-base font-medium text-toned">{{ t("documents.list.empty") }}</p>
+        <p class="text-sm text-muted">{{ t("documents.list.emptyHint") }}</p>
       </div>
     </div>
 
     <div v-else class="space-y-6">
       <section v-for="group in groups" :key="group.id" class="space-y-3">
         <div class="flex items-center justify-between gap-2">
-          <h2 class="text-sm font-semibold text-highlighted">{{ group.name }}</h2>
+          <h2 class="text-base font-semibold text-highlighted">{{ group.name }}</h2>
           <UBadge color="neutral" variant="subtle" :label="String(group.items.length)" />
         </div>
 
-        <div class="grid gap-3 lg:grid-cols-2">
+        <div class="divide-y divide-default overflow-hidden rounded-lg border border-default">
           <DocumentCard
             v-for="item in group.items"
             :key="item.document.id"

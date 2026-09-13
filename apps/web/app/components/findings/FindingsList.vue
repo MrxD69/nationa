@@ -34,13 +34,13 @@ const groups = computed(() =>
   <div class="space-y-8">
     <section v-for="group in groups" :key="group.severity" class="space-y-3">
       <header class="flex items-center gap-2">
-        <h2 class="text-sm font-semibold tracking-tight text-highlighted">
+        <h2 class="text-base font-semibold tracking-tight text-highlighted">
           {{ t(`checks.groups.${group.severity}`) }}
         </h2>
-        <UBadge color="neutral" variant="soft" size="sm">{{ group.items.length }}</UBadge>
+        <UBadge color="neutral" variant="soft" size="lg">{{ group.items.length }}</UBadge>
       </header>
 
-      <div class="grid gap-3 md:grid-cols-2">
+      <div class="divide-y divide-default overflow-hidden rounded-lg border border-default">
         <FindingCard
           v-for="finding in group.items"
           :key="finding.id"

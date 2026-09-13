@@ -65,6 +65,7 @@ const navigationItems = computed<CommandPaletteItem[]>(() => {
     items.push({
       id: `tab:${tab.key}`,
       label: t(tab.labelKey),
+      icon: tab.icon,
       onSelect: () => navigate(to),
     });
   }

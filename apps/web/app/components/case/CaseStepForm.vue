@@ -73,7 +73,7 @@ function fieldValue(key: string): unknown {
     </UFormField>
 
     <div v-if="addressFields.length" class="grid gap-4 rounded-lg border border-default p-4">
-      <h3 class="text-sm font-medium text-highlighted">{{ t("cases.sections.addresses") }}</h3>
+      <h3 class="text-base font-medium text-highlighted">{{ t("cases.sections.addresses") }}</h3>
       <UFormField
         v-for="field in addressFields"
         :key="field.key"

@@ -36,7 +36,7 @@ function confidence(value: unknown): string | null {
       :key="`${kindOf(entry)}-${index}`"
       :color="colors[kindOf(entry)] ?? 'neutral'"
       variant="subtle"
-      size="sm"
+      size="lg"
     >
       {{ label(kindOf(entry)) }}
       <span v-if="confidence(entry.confidence)">· {{ confidence(entry.confidence) }}</span>

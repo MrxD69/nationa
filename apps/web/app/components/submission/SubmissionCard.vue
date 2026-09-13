@@ -58,10 +58,10 @@ const link = computed(() => ({
     <UCard class="transition hover:ring-2 hover:ring-primary/40">
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div class="min-w-0 space-y-1">
-          <p class="truncate text-sm font-semibold text-highlighted">
+          <p class="truncate text-base font-semibold text-highlighted">
             {{ companyName || t("submissions.title") }}
           </p>
-          <p class="text-xs text-muted">
+          <p class="text-sm text-muted">
             <span v-if="agencyName">{{ agencyName }}</span>
             <span v-if="agencyName && formatDate(submission.submittedAt)"> · </span>
             <span v-if="formatDate(submission.submittedAt)">

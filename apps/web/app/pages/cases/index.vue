@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AgencyMark from "~/components/agency/AgencyMark.vue";
 definePageMeta({ layout: "app", middleware: "auth" });
 
 const { locale, t } = useI18n();
@@ -63,12 +64,12 @@ function formatDate(value: string | Date | null | undefined): string {
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div class="space-y-1">
         <h1 class="text-2xl font-semibold text-highlighted">{{ t("cases.list.title") }}</h1>
-        <p class="text-sm text-muted">{{ t("cases.list.subtitle") }}</p>
+        <p class="text-base text-muted">{{ t("cases.list.subtitle") }}</p>
       </div>
       <UButton to="/cases/new" icon="i-tabler-plus" :label="t('cases.list.new')" />
     </div>
 
-    <div v-if="isLoading" class="flex items-center gap-2 text-sm text-muted">
+    <div v-if="isLoading" class="flex items-center gap-2 text-base text-muted">
       <UIcon name="i-tabler-loader-2" class="animate-spin" />
       <span>{{ t("cases.list.loading") }}</span>
     </div>
@@ -84,7 +85,7 @@ function formatDate(value: string | Date | null | undefined): string {
         <UButton
           color="error"
           variant="soft"
-          size="sm"
+          size="lg"
           :label="t('cases.list.retry')"
           @click="refetch()"
         />
@@ -95,31 +96,33 @@ function formatDate(value: string | Date | null | undefined): string {
       <UAlert color="neutral" variant="subtle" :title="t('cases.list.empty')" />
     </div>
 
-    <div v-else class="grid gap-3">
-      <NuxtLink v-for="item in cases" :key="item.id" :to="`/cases/${item.id}`" class="block">
-        <UCard>
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <div class="min-w-0 space-y-1">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="truncate text-sm font-medium text-highlighted">
-                  {{ caseTitle(item) }}
-                </span>
-                <UBadge :color="statusColor[item.status] ?? 'neutral'" variant="subtle" size="sm">
-                  {{ t(`cases.status.${item.status}`, item.status) }}
-                </UBadge>
-              </div>
-              <p class="text-xs text-muted">
-                {{ procedureName(item) }}
-                <span v-if="item.procedure?.agencyId">· {{ item.procedure.agencyId }}</span>
-                <span v-if="formatDate(item.updatedAt)">· {{ formatDate(item.updatedAt) }}</span>
-              </p>
-            </div>
-            <UIcon
-              name="i-tabler-chevron-right"
-              class="size-5 shrink-0 text-muted rtl:rotate-180"
-            />
+    <div v-else class="divide-y divide-default overflow-hidden rounded-lg border border-default">
+      <NuxtLink
+        v-for="item in cases"
+        :key="item.id"
+        :to="`/cases/${item.id}`"
+        class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-elevated"
+      >
+        <div class="min-w-0 space-y-1.5">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="truncate text-lg font-semibold text-highlighted">
+              {{ caseTitle(item) }}
+            </span>
+            <UBadge :color="statusColor[item.status] ?? 'neutral'" variant="subtle" size="lg">
+              {{ t(`cases.status.${item.status}`, item.status) }}
+            </UBadge>
           </div>
-        </UCard>
+          <p class="flex flex-wrap items-center gap-2 text-base text-muted">
+            {{ procedureName(item) }}
+            <span v-if="item.procedure?.agencyId" class="inline-flex items-center gap-1.5">
+              ·
+              <AgencyMark :agency-id="item.procedure.agencyId" size="sm" />
+            </span>
+            <span v-if="formatDate(item.updatedAt)">· {{ formatDate(item.updatedAt) }}</span>
+          </p>
+        </div>
+
+        <UIcon name="i-tabler-chevron-right" class="size-6 shrink-0 text-muted rtl:rotate-180" />
       </NuxtLink>
     </div>
   </div>

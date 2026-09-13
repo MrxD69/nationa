@@ -16,7 +16,7 @@ watch(
 
 <template>
   <UContainer class="flex min-h-[calc(100vh-4rem)] items-center justify-center py-8">
-    <div class="flex items-center gap-2 text-sm text-muted">
+    <div class="flex items-center gap-2 text-base text-muted">
       <UIcon name="i-lucide-loader-2" class="animate-spin" />
       <span>Confirming…</span>
     </div>

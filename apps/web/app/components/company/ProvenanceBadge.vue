@@ -48,6 +48,6 @@ const color = computed(() => {
 
 <template>
   <UTooltip :text="tooltip">
-    <UBadge :color="color" variant="subtle" size="sm" :label="displayLabel" />
+    <UBadge :color="color" variant="subtle" size="lg" :label="displayLabel" />
   </UTooltip>
 </template>

@@ -67,12 +67,12 @@ const columns = computed<TableColumn<Row>[]>(() => [
     accessorKey: "key",
     header: t("documents.fields.key"),
     cell: ({ row }) =>
-      h("span", { class: "text-sm font-medium text-highlighted" }, labelFor(row.original)),
+      h("span", { class: "text-base font-medium text-highlighted" }, labelFor(row.original)),
   },
   {
     accessorKey: "valueText",
     header: t("documents.fields.value"),
-    cell: ({ row }) => h("span", { class: "break-words text-sm" }, displayValue(row.original)),
+    cell: ({ row }) => h("span", { class: "break-words text-base" }, displayValue(row.original)),
   },
   {
     accessorKey: "confidence",
@@ -80,7 +80,7 @@ const columns = computed<TableColumn<Row>[]>(() => [
     cell: ({ row }) =>
       h(
         "span",
-        { class: ["text-sm font-medium", confidenceClass(row.original)] },
+        { class: ["text-base font-medium", confidenceClass(row.original)] },
         formatConfidence(row.original),
       ),
   },

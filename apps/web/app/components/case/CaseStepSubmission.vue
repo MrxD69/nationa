@@ -32,7 +32,7 @@ function isReady(step: SubmissionStep): boolean {
 <template>
   <div class="grid gap-4">
     <div class="grid gap-2">
-      <h3 class="text-sm font-medium text-highlighted">{{ t("cases.submission.checklist") }}</h3>
+      <h3 class="text-base font-medium text-highlighted">{{ t("cases.submission.checklist") }}</h3>
       <div
         v-for="step in props.steps"
         :key="step.id"
@@ -44,9 +44,9 @@ function isReady(step: SubmissionStep): boolean {
             :class="isReady(step) ? 'text-success' : 'text-muted'"
             class="size-4 shrink-0"
           />
-          <span class="truncate text-sm">{{ title(step) }}</span>
+          <span class="truncate text-base">{{ title(step) }}</span>
         </div>
-        <UBadge :color="isReady(step) ? 'success' : 'neutral'" variant="subtle" size="sm">
+        <UBadge :color="isReady(step) ? 'success' : 'neutral'" variant="subtle" size="lg">
           {{ t(`cases.stepStatus.${step.status}`, step.status) }}
         </UBadge>
       </div>

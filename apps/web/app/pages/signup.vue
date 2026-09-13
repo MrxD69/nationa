@@ -92,7 +92,7 @@ async function submit() {
             <h1 class="text-lg font-semibold text-highlighted">
               {{ t("auth.signup.checkEmail.title") }}
             </h1>
-            <p class="text-sm text-muted">
+            <p class="text-base text-muted">
               {{ t("auth.signup.checkEmail.description", { email }) }}
             </p>
           </div>
@@ -113,13 +113,13 @@ async function submit() {
               <h1 class="text-xl font-semibold tracking-tight text-highlighted">
                 {{ t("auth.signup.title") }}
               </h1>
-              <p class="text-sm text-muted">{{ t("auth.signup.subtitle") }}</p>
+              <p class="text-base text-muted">{{ t("auth.signup.subtitle") }}</p>
             </div>
           </template>
 
           <form class="grid gap-6" @submit.prevent="submit">
             <div class="space-y-3">
-              <p class="text-sm font-medium text-highlighted">
+              <p class="text-base font-medium text-highlighted">
                 {{ t("auth.signup.roleTitle") }}
               </p>
               <div class="grid gap-3 sm:grid-cols-3">
@@ -146,10 +146,10 @@ async function submit() {
                     <UIcon :name="role.icon" class="size-6" />
                   </span>
                   <span class="space-y-1">
-                    <span class="block text-sm font-semibold text-highlighted">
+                    <span class="block text-base font-semibold text-highlighted">
                       {{ role.title }}
                     </span>
-                    <span class="block text-xs leading-relaxed text-muted">
+                    <span class="block text-sm leading-relaxed text-muted">
                       {{ role.description }}
                     </span>
                   </span>
@@ -191,7 +191,7 @@ async function submit() {
           </form>
         </UCard>
 
-        <p class="mt-6 text-center text-sm text-muted">
+        <p class="mt-6 text-center text-base text-muted">
           {{ t("auth.signup.haveAccount") }}
           <NuxtLink to="/login" class="font-medium text-primary hover:underline">
             {{ t("auth.signup.login") }}

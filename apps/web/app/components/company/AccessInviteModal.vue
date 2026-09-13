@@ -103,9 +103,9 @@ async function submit() {
             :description="t('companies.access.tokenHelp')"
           />
           <div class="flex items-center gap-2 rounded-lg border border-default p-3">
-            <code class="min-w-0 flex-1 truncate text-xs">{{ invitationLink }}</code>
+            <code class="min-w-0 flex-1 truncate text-sm">{{ invitationLink }}</code>
             <UButton
-              size="xs"
+              size="lg"
               color="neutral"
               variant="soft"
               :icon="copied ? 'i-tabler-check' : 'i-tabler-copy'"

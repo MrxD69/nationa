@@ -18,7 +18,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <div v-if="loading" class="flex items-center gap-2 text-sm text-muted">
+  <div v-if="loading" class="flex items-center gap-2 text-base text-muted">
     <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
     <span>{{ t("companies.loading") }}</span>
   </div>
@@ -32,11 +32,11 @@ const { t } = useI18n();
     </div>
     <div class="space-y-1">
       <p class="font-medium text-highlighted">{{ t("companies.empty.title") }}</p>
-      <p class="text-sm text-muted">{{ t("companies.empty.description") }}</p>
+      <p class="text-base text-muted">{{ t("companies.empty.description") }}</p>
     </div>
   </div>
 
-  <div v-else class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+  <div v-else class="divide-y divide-default overflow-hidden rounded-lg border border-default">
     <CompanyCard v-for="company in companies" :key="company.id" :company="company" />
   </div>
 </template>

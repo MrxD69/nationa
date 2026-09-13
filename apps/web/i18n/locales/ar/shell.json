@@ -3,12 +3,15 @@
     "rail": {
       "companies": "الشركات",
       "submissions": "المُقدَّمات",
+      "actions": "الإجراءات",
       "notifications": "الإشعارات",
       "search": "بحث",
       "settings": "الإعدادات",
       "help": "المساعدة",
       "profile": "الملف الشخصي",
-      "logoLabel": "الصفحة الرئيسية لـ Nationa"
+      "logoLabel": "الصفحة الرئيسية لـ Nationa",
+      "openActions": "الإجراءات الجارية",
+      "unpin": "إزالة من القائمة"
     },
     "company": {
       "select": "اختر شركة",
@@ -20,7 +23,6 @@
         "papers": "المستندات",
         "invoices": "الفواتير",
         "filings": "التصاريح",
-        "actions": "الإجراءات",
         "cases": "الملفات",
         "checks": "عمليات التحقق",
         "docgen": "توليد الوثائق"

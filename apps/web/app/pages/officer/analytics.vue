@@ -110,12 +110,12 @@ watch(agencyId, () => {
         <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
           {{ t("officer.analytics.title") }}
         </h1>
-        <p class="text-sm text-muted">{{ t("officer.analytics.subtitle") }}</p>
+        <p class="text-base text-muted">{{ t("officer.analytics.subtitle") }}</p>
       </div>
       <AgencySwitcher v-model="agencyId" :agencies="agencies" />
     </div>
 
-    <div v-if="loading" class="flex items-center gap-2 text-sm text-muted">
+    <div v-if="loading" class="flex items-center gap-2 text-base text-muted">
       <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
       <span>{{ t("officer.common.loading") }}</span>
     </div>
@@ -131,7 +131,7 @@ watch(agencyId, () => {
         <UButton
           color="error"
           variant="soft"
-          size="sm"
+          size="lg"
           :label="t('officer.common.retry')"
           @click="load()"
         />

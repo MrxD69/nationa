@@ -49,7 +49,7 @@ function isDivergent(index: number): boolean {
 
 <template>
   <section class="space-y-2">
-    <h3 class="text-sm font-medium text-highlighted">{{ t("checks.compared.title") }}</h3>
+    <h3 class="text-base font-medium text-highlighted">{{ t("checks.compared.title") }}</h3>
 
     <div v-if="refs.length > 0" class="grid gap-3 sm:grid-cols-2">
       <UCard
@@ -58,27 +58,27 @@ function isDivergent(index: number): boolean {
         :class="isDivergent(index) ? 'ring-2 ring-error' : ''"
       >
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <UBadge color="neutral" variant="soft" size="sm">
+          <UBadge color="neutral" variant="soft" size="lg">
             {{ sourceLabel(ref.source) }}
           </UBadge>
           <UBadge
             v-if="isDivergent(index)"
             color="error"
             variant="soft"
-            size="sm"
+            size="lg"
             icon="i-tabler-alert-triangle"
           >
             {{ t("checks.compared.mismatch") }}
           </UBadge>
         </div>
 
-        <p v-if="fieldLabel(ref)" class="mt-2 text-xs text-muted">{{ fieldLabel(ref) }}</p>
-        <p class="mt-1 break-words text-sm font-medium text-highlighted" dir="auto">
+        <p v-if="fieldLabel(ref)" class="mt-2 text-sm text-muted">{{ fieldLabel(ref) }}</p>
+        <p class="mt-1 break-words text-base font-medium text-highlighted" dir="auto">
           {{ ref.value ?? "—" }}
         </p>
       </UCard>
     </div>
 
-    <p v-else class="text-sm text-muted">{{ t("checks.compared.empty") }}</p>
+    <p v-else class="text-base text-muted">{{ t("checks.compared.empty") }}</p>
   </section>
 </template>

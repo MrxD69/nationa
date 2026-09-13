@@ -20,49 +20,39 @@ const displayName = computed(
 </script>
 
 <template>
-  <UCard class="flex h-full flex-col">
-    <div class="flex items-start justify-between gap-3">
-      <div class="min-w-0">
-        <NuxtLink
-          :to="`/companies/${company.id}`"
-          class="block truncate font-medium text-highlighted hover:underline"
-        >
-          {{ displayName }}
-        </NuxtLink>
-        <p v-if="company.uniqueIdentifier" class="mt-0.5 truncate text-xs text-muted">
-          {{ company.uniqueIdentifier }}
-        </p>
-      </div>
+  <NuxtLink
+    :to="`/companies/${company.id}`"
+    class="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-elevated focus:outline-none focus-visible:bg-elevated"
+  >
+    <UIcon name="i-tabler-building-skyscraper" class="size-8 shrink-0 text-muted" />
 
-      <UBadge
-        v-if="company.status"
-        color="neutral"
-        variant="subtle"
-        size="sm"
-        :label="t(`companies.status.${company.status}`)"
-      />
+    <div class="min-w-0 flex-1 space-y-1">
+      <p class="truncate text-lg font-semibold text-highlighted">{{ displayName }}</p>
+
+      <div class="flex flex-wrap items-center gap-2 text-base text-muted">
+        <span v-if="company.uniqueIdentifier" class="truncate">
+          {{ company.uniqueIdentifier }}
+        </span>
+        <span v-if="company.taxId" class="truncate">{{ company.taxId }}</span>
+      </div>
     </div>
 
-    <div class="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted">
+    <div class="flex shrink-0 flex-wrap items-center justify-end gap-2">
       <UBadge
         v-if="company.role"
         color="neutral"
         variant="outline"
-        size="sm"
+        size="lg"
         :label="t(`companies.roles.${company.role}`)"
       />
-      <span v-if="company.taxId">{{ company.taxId }}</span>
-    </div>
-
-    <template #footer>
-      <UButton
-        :to="`/companies/${company.id}`"
+      <UBadge
+        v-if="company.status"
         color="neutral"
-        variant="ghost"
-        icon="i-tabler-arrow-right"
-        block
-        :label="t('companies.card.open')"
+        variant="subtle"
+        size="lg"
+        :label="t(`companies.status.${company.status}`)"
       />
-    </template>
-  </UCard>
+      <UIcon name="i-tabler-chevron-right" class="size-6 text-muted rtl:rotate-180" />
+    </div>
+  </NuxtLink>
 </template>

@@ -77,12 +77,14 @@ watch(
   <UCard class="flex h-full flex-col">
     <template #header>
       <div class="flex items-center justify-between gap-2">
-        <h2 class="text-sm font-semibold text-highlighted">{{ t("officer.review.documents") }}</h2>
-        <UBadge color="neutral" variant="soft" size="sm">{{ documents.length }}</UBadge>
+        <h2 class="text-base font-semibold text-highlighted">
+          {{ t("officer.review.documents") }}
+        </h2>
+        <UBadge color="neutral" variant="soft" size="lg">{{ documents.length }}</UBadge>
       </div>
     </template>
 
-    <div v-if="documents.length === 0" class="text-sm text-muted">
+    <div v-if="documents.length === 0" class="text-base text-muted">
       {{ t("officer.review.noDocuments") }}
     </div>
 
@@ -91,7 +93,7 @@ watch(
         <li v-for="(entry, index) in documents" :key="entry.version?.id ?? index">
           <button
             type="button"
-            class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-start text-sm transition"
+            class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-start text-base transition"
             :class="
               entry.version?.id === selectedId
                 ? 'bg-elevated text-highlighted'
@@ -117,7 +119,7 @@ watch(
           class="flex h-80 flex-col items-center justify-center gap-2 p-4 text-center text-muted"
         >
           <UIcon name="i-tabler-file-off" class="size-6" />
-          <p class="text-sm">{{ t("officer.review.previewUnavailable") }}</p>
+          <p class="text-base">{{ t("officer.review.previewUnavailable") }}</p>
         </div>
 
         <img v-else-if="isImage" :src="url" alt="" class="max-h-[32rem] w-full object-contain" />
@@ -125,7 +127,7 @@ watch(
         <iframe v-else-if="isPdf" :src="url" class="h-96 w-full lg:h-[32rem]" title="document" />
 
         <div v-else class="flex h-80 flex-col items-center justify-center gap-3 p-4 text-center">
-          <p class="text-sm text-muted">{{ t("officer.review.previewUnavailable") }}</p>
+          <p class="text-base text-muted">{{ t("officer.review.previewUnavailable") }}</p>
         </div>
 
         <div v-if="url" class="flex justify-end border-t border-default p-2">
@@ -133,7 +135,7 @@ watch(
             :to="url"
             target="_blank"
             rel="noopener"
-            size="xs"
+            size="lg"
             color="neutral"
             variant="ghost"
             icon="i-tabler-external-link"

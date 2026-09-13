@@ -1,5 +1,26 @@
 export default defineAppConfig({
   ui: {
+    /*
+     * Size floor. This platform is used by older, non-technical people, so the
+     * defaults sit a step or two above Nuxt UI's own "md": controls default to
+     * "xl" (text-base, size-6 icons) and every button clears a 44px hit target.
+     */
+    button: {
+      slots: { base: "min-h-11" },
+      defaultVariants: { size: "xl" },
+    },
+    input: { defaultVariants: { size: "xl" } },
+    inputNumber: { defaultVariants: { size: "xl" } },
+    textarea: { defaultVariants: { size: "xl" } },
+    select: { defaultVariants: { size: "xl" } },
+    selectMenu: { defaultVariants: { size: "xl" } },
+    inputMenu: { defaultVariants: { size: "xl" } },
+    checkbox: { defaultVariants: { size: "xl" } },
+    radioGroup: { defaultVariants: { size: "xl" } },
+    switch: { defaultVariants: { size: "xl" } },
+    formField: { defaultVariants: { size: "xl" } },
+    badge: { defaultVariants: { size: "lg" } },
+
     colors: {
       primary: "brand",
       neutral: "slate",

@@ -136,14 +136,14 @@ function continueToApp() {
       <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
         {{ t("onboarding.title") }}
       </h1>
-      <p class="text-sm text-muted">{{ t("onboarding.subtitle") }}</p>
+      <p class="text-base text-muted">{{ t("onboarding.subtitle") }}</p>
     </div>
 
     <div class="mb-8 flex items-center justify-center gap-2">
       <template v-for="(item, index) in steps" :key="item.id">
         <div class="flex items-center gap-2">
           <span
-            class="flex size-6 items-center justify-center rounded-full text-xs font-medium"
+            class="flex size-6 items-center justify-center rounded-full text-sm font-medium"
             :class="
               index <= activeStepIndex ? 'bg-inverted text-inverted' : 'bg-elevated text-muted'
             "
@@ -151,7 +151,7 @@ function continueToApp() {
             {{ index + 1 }}
           </span>
           <span
-            class="text-xs"
+            class="text-sm"
             :class="index <= activeStepIndex ? 'text-highlighted' : 'text-muted'"
           >
             {{ item.label }}
@@ -163,7 +163,7 @@ function continueToApp() {
 
     <div
       v-if="profileQuery.isPending.value"
-      class="flex items-center justify-center gap-2 py-12 text-sm text-muted"
+      class="flex items-center justify-center gap-2 py-12 text-base text-muted"
     >
       <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
       <span>{{ t("onboarding.loading") }}</span>
@@ -202,7 +202,7 @@ function continueToApp() {
                 <span class="block text-base font-medium text-highlighted">
                   {{ option.title }}
                 </span>
-                <span class="block text-sm text-muted">{{ option.description }}</span>
+                <span class="block text-base text-muted">{{ option.description }}</span>
               </span>
             </div>
           </UButton>
@@ -218,26 +218,26 @@ function continueToApp() {
           </template>
 
           <div class="grid gap-5">
-            <p class="text-sm text-muted">{{ t("onboarding.consent.intro") }}</p>
+            <p class="text-base text-muted">{{ t("onboarding.consent.intro") }}</p>
 
             <dl class="grid gap-4">
               <div class="space-y-1">
-                <dt class="text-sm font-medium text-highlighted">
+                <dt class="text-base font-medium text-highlighted">
                   {{ t("onboarding.consent.dataTitle") }}
                 </dt>
-                <dd class="text-sm text-muted">{{ t("onboarding.consent.data") }}</dd>
+                <dd class="text-base text-muted">{{ t("onboarding.consent.data") }}</dd>
               </div>
               <div class="space-y-1">
-                <dt class="text-sm font-medium text-highlighted">
+                <dt class="text-base font-medium text-highlighted">
                   {{ t("onboarding.consent.whyTitle") }}
                 </dt>
-                <dd class="text-sm text-muted">{{ t("onboarding.consent.why") }}</dd>
+                <dd class="text-base text-muted">{{ t("onboarding.consent.why") }}</dd>
               </div>
               <div class="space-y-1">
-                <dt class="text-sm font-medium text-highlighted">
+                <dt class="text-base font-medium text-highlighted">
                   {{ t("onboarding.consent.retentionTitle") }}
                 </dt>
-                <dd class="text-sm text-muted">{{ t("onboarding.consent.retention") }}</dd>
+                <dd class="text-base text-muted">{{ t("onboarding.consent.retention") }}</dd>
               </div>
             </dl>
 
@@ -275,7 +275,7 @@ function continueToApp() {
               <h2 class="text-lg font-medium text-highlighted">
                 {{ t("onboarding.finish.title") }}
               </h2>
-              <p class="text-sm text-muted">{{ t("onboarding.finish.description") }}</p>
+              <p class="text-base text-muted">{{ t("onboarding.finish.description") }}</p>
             </div>
             <UButton size="lg" :label="finishLabel" @click="continueToApp" />
           </div>

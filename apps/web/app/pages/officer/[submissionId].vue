@@ -58,12 +58,12 @@ const backLink = computed(() => ({
         color="neutral"
         variant="ghost"
         icon="i-tabler-arrow-left"
-        size="sm"
+        size="lg"
         :label="t('officer.review.back')"
       />
     </div>
 
-    <div v-if="loading" class="flex items-center gap-2 text-sm text-muted">
+    <div v-if="loading" class="flex items-center gap-2 text-base text-muted">
       <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
       <span>{{ t("officer.common.loading") }}</span>
     </div>

@@ -47,7 +47,7 @@ const formattedScore = computed(() => {
 <template>
   <UBadge :color="config.color" :variant="config.variant" :icon="config.icon" class="gap-1.5">
     <span>{{ t(`submissions.cleanliness.${tier}`, tier) }}</span>
-    <span v-if="showScore && formattedScore" class="font-mono text-xs opacity-80">
+    <span v-if="showScore && formattedScore" class="font-mono text-sm opacity-80">
       {{ formattedScore }}
     </span>
   </UBadge>

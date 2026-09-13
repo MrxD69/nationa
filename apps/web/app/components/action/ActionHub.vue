@@ -76,12 +76,12 @@ function retry(): void {
   <div class="space-y-8">
     <div class="space-y-2" v-reveal="{ y: 12, duration: 0.45 }">
       <h1 class="text-2xl font-semibold text-highlighted">{{ t("actions.title") }}</h1>
-      <p class="text-sm text-muted">{{ t("actions.subtitle") }}</p>
+      <p class="text-base text-muted">{{ t("actions.subtitle") }}</p>
     </div>
 
     <ActionSearchIntent v-model="query" />
 
-    <div v-if="isLoading" class="flex items-center gap-2 text-sm text-muted">
+    <div v-if="isLoading" class="flex items-center gap-2 text-base text-muted">
       <UIcon name="i-tabler-loader-2" class="animate-spin" />
       <span>{{ t("actions.hub.loading") }}</span>
     </div>
@@ -97,7 +97,7 @@ function retry(): void {
         <UButton
           color="error"
           variant="soft"
-          size="sm"
+          size="lg"
           :label="t('actions.hub.retry')"
           @click="retry"
         />
@@ -106,9 +106,9 @@ function retry(): void {
 
     <template v-else-if="showingSearch">
       <div class="space-y-1">
-        <h2 class="text-sm font-semibold text-highlighted">{{ t("actions.search.results") }}</h2>
+        <h2 class="text-base font-semibold text-highlighted">{{ t("actions.search.results") }}</h2>
       </div>
-      <div v-if="displayItems.length === 0" class="text-sm text-muted">
+      <div v-if="displayItems.length === 0" class="text-base text-muted">
         {{ t("actions.search.empty") }}
       </div>
       <div v-else class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -123,17 +123,19 @@ function retry(): void {
 
     <template v-else>
       <section v-if="outstandingItems.length" class="space-y-3">
-        <h2 class="text-sm font-semibold text-highlighted">{{ t("actions.hub.outstanding") }}</h2>
+        <h2 class="text-base font-semibold text-highlighted">{{ t("actions.hub.outstanding") }}</h2>
         <ActionOutstandingList :items="outstandingItems" :company-id="props.companyId" />
       </section>
 
       <section class="space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
-          <h2 class="text-sm font-semibold text-highlighted">{{ t("actions.hub.allActions") }}</h2>
+          <h2 class="text-base font-semibold text-highlighted">
+            {{ t("actions.hub.allActions") }}
+          </h2>
           <ActionAgencyNav v-model="selectedAgency" :agencies="agencies" />
         </div>
 
-        <div v-if="displayItems.length === 0" class="text-sm text-muted">
+        <div v-if="displayItems.length === 0" class="text-base text-muted">
           {{ t("actions.hub.empty") }}
         </div>
         <div v-else class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

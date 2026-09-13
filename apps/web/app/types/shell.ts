@@ -11,6 +11,7 @@ export interface RailItem {
 
 export interface CompanyNavItem {
   key: string; // "overview" | "papers" | "invoices" | "filings" | "actions" | "cases" | "checks" | "docgen"
+  icon: string; // iconify name, e.g. "i-tabler-layout-dashboard"
   labelKey: string; // "shell.company.tabs.<key>"
   to: string; // may contain the token ":companyId"
   priority: number; // lower = more prominent

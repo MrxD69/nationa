@@ -38,13 +38,13 @@ const body = computed(() => {
           <UBadge
             color="neutral"
             variant="subtle"
-            size="sm"
+            size="lg"
             :label="rule.source || t('assistant.citation.title')"
           />
-          <span v-if="rule.article" class="text-xs font-medium text-toned">{{ rule.article }}</span>
+          <span v-if="rule.article" class="text-sm font-medium text-toned">{{ rule.article }}</span>
         </div>
-        <p v-if="title" class="text-sm font-medium text-highlighted">{{ title }}</p>
-        <p v-if="body" class="line-clamp-4 text-xs leading-5 text-muted" dir="ltr">{{ body }}</p>
+        <p v-if="title" class="text-base font-medium text-highlighted">{{ title }}</p>
+        <p v-if="body" class="line-clamp-4 text-sm leading-5 text-muted" dir="ltr">{{ body }}</p>
         <UButton
           v-if="rule.url"
           :to="rule.url"
@@ -52,7 +52,7 @@ const body = computed(() => {
           external
           color="neutral"
           variant="link"
-          size="xs"
+          size="lg"
           icon="i-tabler-external-link"
           :label="t('assistant.citation.open')"
         />

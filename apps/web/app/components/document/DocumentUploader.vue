@@ -66,8 +66,10 @@ async function startUpload() {
       <div class="flex items-center gap-2">
         <UIcon name="i-tabler-cloud-upload" class="size-5 text-primary" />
         <div>
-          <h2 class="text-sm font-semibold text-highlighted">{{ t("documents.upload.title") }}</h2>
-          <p class="text-xs text-muted">{{ t("documents.upload.subtitle") }}</p>
+          <h2 class="text-base font-semibold text-highlighted">
+            {{ t("documents.upload.title") }}
+          </h2>
+          <p class="text-sm text-muted">{{ t("documents.upload.subtitle") }}</p>
         </div>
       </div>
     </template>
@@ -80,13 +82,13 @@ async function startUpload() {
       />
 
       <div v-if="requiredFields.length > 0" class="flex flex-wrap items-center gap-1.5">
-        <span class="text-xs text-muted">{{ t("documents.upload.requiredHint") }}</span>
+        <span class="text-sm text-muted">{{ t("documents.upload.requiredHint") }}</span>
         <UBadge
           v-for="field in requiredFields"
           :key="field"
           color="neutral"
           variant="subtle"
-          size="sm"
+          size="lg"
           :label="fieldLabel(field)"
         />
       </div>
@@ -102,7 +104,7 @@ async function startUpload() {
 
       <template v-if="isUploading">
         <UProgress :model-value="progress" :max="100" color="primary" />
-        <p class="text-xs text-muted">
+        <p class="text-sm text-muted">
           {{
             status === "uploading"
               ? t("documents.upload.uploading")

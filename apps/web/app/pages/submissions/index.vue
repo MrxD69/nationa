@@ -46,10 +46,10 @@ onMounted(load);
       <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
         {{ t("submissions.title") }}
       </h1>
-      <p class="text-sm text-muted">{{ t("submissions.subtitle") }}</p>
+      <p class="text-base text-muted">{{ t("submissions.subtitle") }}</p>
     </div>
 
-    <div v-if="loading" class="flex items-center gap-2 text-sm text-muted">
+    <div v-if="loading" class="flex items-center gap-2 text-base text-muted">
       <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
       <span>{{ t("submissions.loading") }}</span>
     </div>
@@ -65,7 +65,7 @@ onMounted(load);
         <UButton
           color="error"
           variant="soft"
-          size="sm"
+          size="lg"
           :label="t('submissions.error.retry')"
           @click="load"
         />

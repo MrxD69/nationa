@@ -46,7 +46,7 @@ onMounted(load);
 
 <template>
   <div class="space-y-1.5">
-    <label class="text-xs font-medium text-toned">{{ t("documents.upload.typeLabel") }}</label>
+    <label class="text-sm font-medium text-toned">{{ t("documents.upload.typeLabel") }}</label>
     <USelect
       v-model="model"
       :items="items"
@@ -55,6 +55,6 @@ onMounted(load);
       icon="i-tabler-file-description"
       class="w-full"
     />
-    <p v-if="error" class="text-xs text-error">{{ t("documents.errors.generic") }}</p>
+    <p v-if="error" class="text-sm text-error">{{ t("documents.errors.generic") }}</p>
   </div>
 </template>

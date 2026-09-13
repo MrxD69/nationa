@@ -68,10 +68,10 @@ async function start() {
       <div class="flex items-center gap-2">
         <UIcon name="i-tabler-cloud-upload" class="size-5 text-primary" />
         <div>
-          <h2 class="text-sm font-semibold text-highlighted">
+          <h2 class="text-base font-semibold text-highlighted">
             {{ t("invoices.upload.title") }}
           </h2>
-          <p class="text-xs text-muted">{{ t("invoices.upload.subtitle") }}</p>
+          <p class="text-sm text-muted">{{ t("invoices.upload.subtitle") }}</p>
         </div>
       </div>
     </template>
@@ -88,7 +88,7 @@ async function start() {
 
       <template v-if="busy">
         <UProgress :model-value="progress" :max="100" color="primary" />
-        <p class="text-xs text-muted">
+        <p class="text-sm text-muted">
           {{ extracting ? t("invoices.upload.processing") : t("invoices.upload.uploading") }}
         </p>
       </template>

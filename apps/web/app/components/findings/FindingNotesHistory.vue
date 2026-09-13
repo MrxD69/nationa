@@ -42,23 +42,23 @@ function submit() {
 
 <template>
   <section class="space-y-3">
-    <h3 class="text-sm font-medium text-highlighted">{{ t("checks.notes.title") }}</h3>
+    <h3 class="text-base font-medium text-highlighted">{{ t("checks.notes.title") }}</h3>
 
     <div v-if="notes.length > 0" class="space-y-2">
       <UCard v-for="note in notes" :key="note.id">
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <UBadge color="neutral" variant="soft" size="sm">
+          <UBadge color="neutral" variant="soft" size="lg">
             {{ t(`checks.notes.kind.${note.kind}`) }}
           </UBadge>
-          <span class="text-xs text-muted" dir="auto">{{ formatDate(note.createdAt) }}</span>
+          <span class="text-sm text-muted" dir="auto">{{ formatDate(note.createdAt) }}</span>
         </div>
-        <p class="mt-2 whitespace-pre-wrap break-words text-sm text-toned" dir="auto">
+        <p class="mt-2 whitespace-pre-wrap break-words text-base text-toned" dir="auto">
           {{ note.body }}
         </p>
       </UCard>
     </div>
 
-    <p v-else class="text-sm text-muted">{{ t("checks.notes.empty") }}</p>
+    <p v-else class="text-base text-muted">{{ t("checks.notes.empty") }}</p>
 
     <div class="space-y-2">
       <UTextarea
@@ -71,7 +71,7 @@ function submit() {
       <div class="flex justify-end">
         <UButton
           icon="i-tabler-send"
-          size="sm"
+          size="lg"
           :disabled="draft.trim().length === 0"
           :loading="busy"
           @click="submit"

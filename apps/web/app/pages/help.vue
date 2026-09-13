@@ -16,7 +16,7 @@ const faqItems = computed(() => [
   <UContainer class="max-w-3xl space-y-8 py-8">
     <div class="space-y-1">
       <h1 class="text-2xl font-semibold text-highlighted">{{ t("help.title") }}</h1>
-      <p class="text-sm text-muted">{{ t("help.subtitle") }}</p>
+      <p class="text-base text-muted">{{ t("help.subtitle") }}</p>
     </div>
 
     <UAccordion :items="faqItems" />
@@ -25,7 +25,7 @@ const faqItems = computed(() => [
       <div class="flex flex-wrap items-center justify-between gap-4">
         <div class="space-y-1">
           <p class="font-medium text-highlighted">{{ t("help.contact.label") }}</p>
-          <p class="text-sm text-muted">{{ t("help.contact.description") }}</p>
+          <p class="text-base text-muted">{{ t("help.contact.description") }}</p>
         </div>
         <UButton icon="i-tabler-sparkles" :label="t('shell.ai.open')" @click="setOpen(true)" />
       </div>

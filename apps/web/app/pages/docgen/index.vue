@@ -65,7 +65,7 @@ async function onGenerate(): Promise<void> {
   <div class="mx-auto w-full max-w-4xl space-y-6">
     <div class="space-y-1">
       <h1 class="text-xl font-semibold tracking-tight text-highlighted">{{ t("docgen.title") }}</h1>
-      <p class="text-sm text-muted">{{ t("docgen.subtitle") }}</p>
+      <p class="text-base text-muted">{{ t("docgen.subtitle") }}</p>
     </div>
 
     <UAlert

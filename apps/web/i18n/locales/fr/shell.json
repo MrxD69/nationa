@@ -3,12 +3,15 @@
     "rail": {
       "companies": "Entreprises",
       "submissions": "Soumissions",
+      "actions": "Démarches",
       "notifications": "Notifications",
       "search": "Rechercher",
       "settings": "Paramètres",
       "help": "Aide",
       "profile": "Profil",
-      "logoLabel": "Accueil Nationa"
+      "logoLabel": "Accueil Nationa",
+      "openActions": "Démarches en cours",
+      "unpin": "Retirer de la liste"
     },
     "company": {
       "select": "Sélectionner une entreprise",
@@ -20,7 +23,6 @@
         "papers": "Documents",
         "invoices": "Factures",
         "filings": "Déclarations",
-        "actions": "Démarches",
         "cases": "Dossiers",
         "checks": "Vérifications",
         "docgen": "Génération de documents"

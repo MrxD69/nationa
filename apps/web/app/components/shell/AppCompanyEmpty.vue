@@ -8,7 +8,7 @@
 
         <div class="space-y-1">
           <p class="font-medium text-highlighted">{{ $t("shell.companyEmpty.title") }}</p>
-          <p class="text-sm text-muted">{{ $t("shell.companyEmpty.description") }}</p>
+          <p class="text-base text-muted">{{ $t("shell.companyEmpty.description") }}</p>
         </div>
 
         <div class="flex flex-wrap items-center justify-center gap-2">

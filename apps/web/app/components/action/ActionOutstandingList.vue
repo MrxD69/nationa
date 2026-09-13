@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AgencyMark from "~/components/agency/AgencyMark.vue";
 import type { ActionCatalogItem } from "~/composables/useActions";
 import ActionStatusBadge from "~/components/action/ActionStatusBadge.vue";
 
@@ -19,33 +20,38 @@ function to(item: ActionCatalogItem) {
 </script>
 
 <template>
-  <div class="grid gap-2" data-reveal-item>
+  <div data-reveal-item>
     <div
       v-if="props.items.length === 0"
-      class="rounded-lg border border-dashed border-default px-4 py-3 text-sm text-muted"
+      class="rounded-lg border border-dashed border-default px-5 py-4 text-base text-muted"
     >
       {{ t("actions.hub.outstandingEmpty") }}
     </div>
 
-    <NuxtLink
-      v-for="item in props.items"
-      :key="item.id"
-      :to="to(item)"
-      class="group flex items-center justify-between gap-3 rounded-lg border border-default bg-elevated px-4 py-3 transition-colors hover:border-primary"
-    >
-      <div class="min-w-0 space-y-0.5">
-        <div class="truncate text-sm font-medium text-highlighted">{{ name(item) }}</div>
-        <div class="text-xs text-muted">
-          {{ t(`actions.agencies.${item.agencyId}`, item.agencyId) }}
+    <div v-else class="divide-y divide-default overflow-hidden rounded-lg border border-default">
+      <NuxtLink
+        v-for="item in props.items"
+        :key="item.id"
+        :to="to(item)"
+        class="group flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-elevated"
+      >
+        <AgencyMark :agency-id="item.agencyId" size="sm" />
+
+        <div class="min-w-0 flex-1 space-y-0.5">
+          <div class="truncate text-base font-medium text-highlighted">{{ name(item) }}</div>
+          <div class="text-base text-muted">
+            {{ t(`actions.agencies.${item.agencyId}`, item.agencyId) }}
+          </div>
         </div>
-      </div>
-      <div class="flex shrink-0 items-center gap-2">
-        <ActionStatusBadge :state="item.status" />
-        <UIcon
-          name="i-tabler-chevron-right"
-          class="size-4 text-muted transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5"
-        />
-      </div>
-    </NuxtLink>
+
+        <div class="flex shrink-0 items-center gap-2">
+          <ActionStatusBadge :state="item.status" />
+          <UIcon
+            name="i-tabler-chevron-right"
+            class="size-6 text-muted transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5"
+          />
+        </div>
+      </NuxtLink>
+    </div>
   </div>
 </template>

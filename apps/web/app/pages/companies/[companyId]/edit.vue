@@ -113,7 +113,7 @@ async function submit() {
           color="neutral"
           variant="ghost"
           icon="i-tabler-arrow-left"
-          size="sm"
+          size="lg"
           class="rtl:rotate-180"
           :label="t('companies.detail.back')"
         />
@@ -123,12 +123,12 @@ async function submit() {
         <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
           {{ t("companies.edit.title") }}
         </h1>
-        <p class="text-sm text-muted">{{ t("companies.edit.subtitle") }}</p>
+        <p class="text-base text-muted">{{ t("companies.edit.subtitle") }}</p>
       </div>
 
       <UAlert v-if="error" color="error" variant="subtle" :title="error" />
 
-      <div v-if="isPending" class="flex items-center gap-2 text-sm text-muted">
+      <div v-if="isPending" class="flex items-center gap-2 text-base text-muted">
         <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
         <span>{{ t("companies.loading") }}</span>
       </div>

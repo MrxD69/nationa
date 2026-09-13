@@ -72,10 +72,10 @@ function formatDate(value: string | Date): string {
     <header class="space-y-3">
       <div class="flex flex-wrap items-center gap-2">
         <SeverityBadge :severity="finding.severity" />
-        <UBadge color="neutral" variant="outline" size="sm">
+        <UBadge color="neutral" variant="outline" size="lg">
           {{ t(`checks.status.${finding.status}`) }}
         </UBadge>
-        <UBadge color="neutral" variant="soft" size="sm">
+        <UBadge color="neutral" variant="soft" size="lg">
           {{ t("checks.detail.code") }} : {{ finding.code }}
         </UBadge>
       </div>
@@ -84,9 +84,9 @@ function formatDate(value: string | Date): string {
         {{ translate("title") }}
       </h1>
 
-      <p class="text-sm leading-6 text-toned" dir="auto">{{ translate("message") }}</p>
+      <p class="text-base leading-6 text-toned" dir="auto">{{ translate("message") }}</p>
 
-      <p class="text-xs text-muted">
+      <p class="text-sm text-muted">
         {{ t("checks.detail.createdAt") }} : {{ formatDate(finding.createdAt) }}
       </p>
     </header>

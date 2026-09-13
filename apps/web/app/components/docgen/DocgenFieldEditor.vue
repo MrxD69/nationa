@@ -47,8 +47,8 @@ function sourceLabel(kind: string): string {
   <UCard>
     <template #header>
       <div>
-        <h2 class="text-sm font-semibold text-highlighted">{{ t("docgen.editor.title") }}</h2>
-        <p class="text-xs text-muted">{{ t("docgen.editor.subtitle") }}</p>
+        <h2 class="text-base font-semibold text-highlighted">{{ t("docgen.editor.title") }}</h2>
+        <p class="text-sm text-muted">{{ t("docgen.editor.subtitle") }}</p>
       </div>
     </template>
 
@@ -74,14 +74,14 @@ function sourceLabel(kind: string): string {
           <UBadge
             :color="colors[field.sourceKind] ?? 'neutral'"
             variant="subtle"
-            size="sm"
+            size="lg"
             :label="sourceLabel(field.sourceKind)"
           />
           <UBadge
             v-if="field.citingKeys.length > 0"
             color="info"
             variant="subtle"
-            size="sm"
+            size="lg"
             :label="t('docgen.editor.citations', { count: field.citingKeys.length })"
           />
         </div>

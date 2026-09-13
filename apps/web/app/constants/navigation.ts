@@ -23,6 +23,12 @@ export const RAIL_ITEMS: RailItem[] = [
     to: "/submissions",
   },
   {
+    key: "actions",
+    icon: "i-tabler-list-check",
+    labelKey: "shell.rail.actions",
+    to: "/actions",
+  },
+  {
     key: "notifications",
     icon: "i-tabler-bell",
     labelKey: "shell.rail.notifications",
@@ -51,20 +57,15 @@ export const RAIL_ITEMS: RailItem[] = [
 export const COMPANY_TABS: CompanyNavItem[] = [
   {
     key: "overview",
+    icon: "i-tabler-layout-dashboard",
     labelKey: "shell.company.tabs.overview",
     to: "/companies/:companyId",
     priority: 10,
     matchPrefixes: ["/companies/:companyId"],
   },
   {
-    key: "actions",
-    labelKey: "shell.company.tabs.actions",
-    to: "/actions",
-    priority: 20,
-    matchPrefixes: ["/actions"],
-  },
-  {
     key: "cases",
+    icon: "i-tabler-folders",
     labelKey: "shell.company.tabs.cases",
     to: "/cases",
     priority: 30,
@@ -72,6 +73,7 @@ export const COMPANY_TABS: CompanyNavItem[] = [
   },
   {
     key: "papers",
+    icon: "i-tabler-files",
     labelKey: "shell.company.tabs.papers",
     to: "/companies/:companyId/documents",
     priority: 40,
@@ -79,6 +81,7 @@ export const COMPANY_TABS: CompanyNavItem[] = [
   },
   {
     key: "invoices",
+    icon: "i-tabler-file-invoice",
     labelKey: "shell.company.tabs.invoices",
     to: "/companies/:companyId/invoices",
     priority: 50,
@@ -86,6 +89,7 @@ export const COMPANY_TABS: CompanyNavItem[] = [
   },
   {
     key: "filings",
+    icon: "i-tabler-file-text",
     labelKey: "shell.company.tabs.filings",
     to: "/companies/:companyId/filings",
     priority: 60,
@@ -93,6 +97,7 @@ export const COMPANY_TABS: CompanyNavItem[] = [
   },
   {
     key: "checks",
+    icon: "i-tabler-shield-check",
     labelKey: "shell.company.tabs.checks",
     to: "/findings",
     priority: 70,
@@ -100,6 +105,7 @@ export const COMPANY_TABS: CompanyNavItem[] = [
   },
   {
     key: "docgen",
+    icon: "i-tabler-file-plus",
     labelKey: "shell.company.tabs.docgen",
     to: "/docgen",
     priority: 80,

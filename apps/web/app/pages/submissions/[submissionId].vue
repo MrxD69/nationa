@@ -152,13 +152,13 @@ onMounted(load);
         color="neutral"
         variant="ghost"
         icon="i-tabler-arrow-left"
-        size="sm"
+        size="lg"
         :label="t('submissions.back')"
         :ui="{ leadingIcon: 'rtl:rotate-180' }"
       />
     </div>
 
-    <div v-if="loading" class="flex items-center gap-2 text-sm text-muted">
+    <div v-if="loading" class="flex items-center gap-2 text-base text-muted">
       <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
       <span>{{ t("submissions.loading") }}</span>
     </div>
@@ -172,13 +172,13 @@ onMounted(load);
     />
 
     <template v-else>
-      <UCard>
+      <section class="space-y-4 rounded-lg border border-default p-5">
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div class="min-w-0 space-y-1">
             <h1 class="truncate text-xl font-semibold text-highlighted">
               {{ companyName || t("submissions.detail.title") }}
             </h1>
-            <p v-if="agencyName" class="text-xs text-muted">{{ agencyName }}</p>
+            <p v-if="agencyName" class="text-sm text-muted">{{ agencyName }}</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <CleanlinessBadge :tier="cleanlinessTier" :score="cleanlinessScore" />
@@ -186,7 +186,7 @@ onMounted(load);
           </div>
         </div>
 
-        <dl class="mt-4 grid gap-4 text-xs sm:grid-cols-3">
+        <dl class="grid gap-4 text-base sm:grid-cols-3">
           <div>
             <dt class="text-muted">{{ t("submissions.detail.submittedAt") }}</dt>
             <dd class="text-toned">{{ formatDate(submission.submittedAt) }}</dd>
@@ -200,7 +200,7 @@ onMounted(load);
             <dd class="truncate text-toned">{{ agencyName || "—" }}</dd>
           </div>
         </dl>
-      </UCard>
+      </section>
 
       <UAlert
         v-if="latestReview"
@@ -234,25 +234,22 @@ onMounted(load);
         />
       </div>
 
-      <div class="grid gap-4 lg:grid-cols-2">
-        <UCard>
-          <template #header>
-            <h2 class="text-sm font-semibold text-highlighted">
-              {{ t("submissions.detail.findings") }}
-            </h2>
-          </template>
+      <!-- Sections of one submission, so one surface with dividers rather than two cards. -->
+      <div class="divide-y divide-default overflow-hidden rounded-lg border border-default">
+        <section class="space-y-4 p-5">
+          <h2 class="text-lg font-semibold text-highlighted">
+            {{ t("submissions.detail.findings") }}
+          </h2>
           <FindingsList v-if="findings.length > 0" :findings="findings" :company-id="companyId" />
-          <p v-else class="text-sm text-muted">{{ t("submissions.detail.noFindings") }}</p>
-        </UCard>
+          <p v-else class="text-base text-muted">{{ t("submissions.detail.noFindings") }}</p>
+        </section>
 
-        <UCard>
-          <template #header>
-            <h2 class="text-sm font-semibold text-highlighted">
-              {{ t("submissions.timeline.title") }}
-            </h2>
-          </template>
+        <section class="space-y-4 p-5">
+          <h2 class="text-lg font-semibold text-highlighted">
+            {{ t("submissions.timeline.title") }}
+          </h2>
           <SubmissionTimeline :events="activity" />
-        </UCard>
+        </section>
       </div>
 
       <DocumentViewer :documents="documents" :company-id="companyId" />

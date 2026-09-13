@@ -55,7 +55,7 @@ async function submitConnect() {
           <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
             {{ t("companies.title") }}
           </h1>
-          <p class="text-sm text-muted">{{ t("companies.subtitle") }}</p>
+          <p class="text-base text-muted">{{ t("companies.subtitle") }}</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -72,7 +72,7 @@ async function submitConnect() {
 
       <div class="flex items-center gap-1 rounded-lg border border-default p-1">
         <UButton
-          size="sm"
+          size="lg"
           :color="view === 'all' ? 'primary' : 'neutral'"
           :variant="view === 'all' ? 'solid' : 'ghost'"
           class="flex-1 sm:flex-none"
@@ -80,7 +80,7 @@ async function submitConnect() {
           @click="setView('all')"
         />
         <UButton
-          size="sm"
+          size="lg"
           :color="view === 'accounting' ? 'primary' : 'neutral'"
           :variant="view === 'accounting' ? 'solid' : 'ghost'"
           class="flex-1 sm:flex-none"
@@ -120,7 +120,7 @@ async function submitConnect() {
           </template>
 
           <form class="grid gap-4" @submit.prevent="submitConnect">
-            <p class="text-sm text-muted">{{ t("companies.connectModal.description") }}</p>
+            <p class="text-base text-muted">{{ t("companies.connectModal.description") }}</p>
 
             <UAlert v-if="connectError" color="error" variant="subtle" :title="connectError" />
 

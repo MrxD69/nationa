@@ -30,25 +30,25 @@ function formatDate(value?: string | Date | null): string {
 <template>
   <div class="flex min-h-0 flex-col">
     <div class="flex items-center justify-between gap-2 pb-2">
-      <h2 class="text-sm font-semibold text-highlighted">{{ t("assistant.conversations") }}</h2>
+      <h2 class="text-base font-semibold text-highlighted">{{ t("assistant.conversations") }}</h2>
       <UButton
         color="primary"
         variant="soft"
-        size="xs"
+        size="lg"
         icon="i-tabler-plus"
         :label="t('assistant.newConversation')"
         @click="emit('new')"
       />
     </div>
 
-    <div v-if="loading" class="flex items-center gap-2 py-4 text-xs text-muted">
+    <div v-if="loading" class="flex items-center gap-2 py-4 text-sm text-muted">
       <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
       {{ t("assistant.loading") }}
     </div>
 
     <div
       v-else-if="conversations.length === 0"
-      class="rounded-xl border border-dashed border-default p-4 text-center text-xs text-muted"
+      class="rounded-xl border border-dashed border-default p-4 text-center text-sm text-muted"
     >
       {{ t("assistant.noConversations") }}
     </div>
@@ -64,15 +64,15 @@ function formatDate(value?: string | Date | null): string {
             class="min-w-0 flex-1 text-start"
             @click="emit('select', conversation.id)"
           >
-            <p class="truncate text-sm text-highlighted">
+            <p class="truncate text-base text-highlighted">
               {{ conversation.title || t("assistant.newConversation") }}
             </p>
-            <p class="text-[11px] text-muted">{{ formatDate(conversation.updatedAt) }}</p>
+            <p class="text-sm text-muted">{{ formatDate(conversation.updatedAt) }}</p>
           </button>
           <UButton
             color="neutral"
             variant="ghost"
-            size="xs"
+            size="lg"
             icon="i-tabler-trash"
             :aria-label="t('assistant.delete')"
             class="opacity-0 group-hover:opacity-100"

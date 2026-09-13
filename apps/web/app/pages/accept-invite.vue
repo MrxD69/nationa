@@ -46,7 +46,7 @@ onMounted(async () => {
 
       <div
         v-if="state === 'working' || state === 'idle'"
-        class="flex items-center gap-2 text-sm text-muted"
+        class="flex items-center gap-2 text-base text-muted"
       >
         <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
         <span>{{ t("companies.acceptInvite.working") }}</span>

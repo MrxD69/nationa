@@ -104,7 +104,7 @@ async function reprocess(id: string) {
         <h1 class="text-xl font-semibold tracking-tight text-highlighted">
           {{ t("documents.title") }}
         </h1>
-        <p class="text-sm text-muted">{{ t("documents.subtitle") }}</p>
+        <p class="text-base text-muted">{{ t("documents.subtitle") }}</p>
       </div>
       <UBadge
         color="neutral"
@@ -118,11 +118,11 @@ async function reprocess(id: string) {
 
       <section class="space-y-3">
         <div class="flex items-center justify-between gap-2">
-          <h2 class="text-sm font-semibold text-highlighted">{{ t("documents.list.title") }}</h2>
+          <h2 class="text-base font-semibold text-highlighted">{{ t("documents.list.title") }}</h2>
           <UButton
             color="neutral"
             variant="ghost"
-            size="xs"
+            size="lg"
             icon="i-tabler-reload"
             :label="t('documents.list.refresh')"
             @click="refresh()"
@@ -145,10 +145,10 @@ async function reprocess(id: string) {
       <template #header>
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div class="min-w-0 space-y-1">
-            <p class="truncate text-sm font-semibold text-highlighted">
+            <p class="truncate text-base font-semibold text-highlighted">
               {{ selectedBundle?.document.title ?? t("documents.detail.title") }}
             </p>
-            <p class="text-xs text-muted">{{ t("documents.detail.subtitle") }}</p>
+            <p class="text-sm text-muted">{{ t("documents.detail.subtitle") }}</p>
           </div>
           <div class="flex items-center gap-2">
             <UBadge
@@ -161,7 +161,7 @@ async function reprocess(id: string) {
             <UButton
               color="neutral"
               variant="soft"
-              size="sm"
+              size="lg"
               icon="i-tabler-reload"
               :loading="reprocessingId === selectedId"
               :label="t('documents.extraction.reprocess')"
@@ -173,7 +173,7 @@ async function reprocess(id: string) {
 
       <div
         v-if="detailLoading"
-        class="flex items-center justify-center gap-2 py-8 text-sm text-muted"
+        class="flex items-center justify-center gap-2 py-8 text-base text-muted"
       >
         <UIcon name="i-tabler-loader-2" class="size-5 animate-spin" />
         {{ t("documents.detail.loading") }}

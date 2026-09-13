@@ -39,7 +39,7 @@ const LABEL_KEYS: Record<FindingStatus, string> = {
       :icon="action.icon"
       color="neutral"
       variant="soft"
-      size="sm"
+      size="lg"
       :loading="busy"
       @click="emit('change', action.status)"
     >

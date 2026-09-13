@@ -24,36 +24,36 @@ const { t } = useI18n();
 <template>
   <div
     v-if="props.members.length === 0"
-    class="rounded-lg border border-dashed border-default px-6 py-10 text-center text-sm text-muted"
+    class="rounded-lg border border-dashed border-default px-6 py-10 text-center text-base text-muted"
   >
     {{ t("companies.access.noMembers") }}
   </div>
 
-  <ul v-else class="divide-y divide-default">
+  <ul v-else class="divide-y divide-default overflow-hidden rounded-lg border border-default">
     <li
       v-for="member in props.members"
       :key="member.userId"
-      class="flex items-center justify-between gap-4 py-3"
+      class="flex items-center justify-between gap-4 px-5 py-4"
     >
       <div class="min-w-0">
-        <p class="truncate text-sm font-medium text-highlighted">
+        <p class="truncate text-base font-medium text-highlighted">
           {{ member.email ?? member.userId }}
         </p>
-        <div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted">
+        <div class="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted">
           <UBadge
             color="neutral"
             variant="subtle"
-            size="sm"
+            size="lg"
             :label="t(`companies.roles.${member.role}`)"
           />
-          <UBadge color="neutral" variant="outline" size="sm" :label="member.status" />
+          <UBadge color="neutral" variant="outline" size="lg" :label="member.status" />
         </div>
       </div>
 
       <UButton
         color="error"
         variant="ghost"
-        size="xs"
+        size="lg"
         icon="i-tabler-user-minus"
         :disabled="
           props.busy || member.userId === props.currentUserId || member.status === 'revoked'

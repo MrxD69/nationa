@@ -47,11 +47,11 @@ const obligationOptions = computed(() =>
     </div>
 
     <div class="flex items-center justify-between gap-2">
-      <p class="text-xs text-muted">{{ t("filings.period.previewHint") }}</p>
+      <p class="text-sm text-muted">{{ t("filings.period.previewHint") }}</p>
       <UButton
         color="neutral"
         variant="soft"
-        size="sm"
+        size="lg"
         icon="i-tabler-calculator"
         :loading="loading"
         :label="t('filings.period.preview')"

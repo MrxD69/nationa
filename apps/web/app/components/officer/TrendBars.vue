@@ -22,10 +22,10 @@ function shortDate(value: string): string {
 <template>
   <UCard>
     <template #header>
-      <h2 class="text-sm font-semibold text-highlighted">{{ title }}</h2>
+      <h2 class="text-base font-semibold text-highlighted">{{ title }}</h2>
     </template>
 
-    <p v-if="items.length === 0" class="text-sm text-muted">{{ emptyLabel }}</p>
+    <p v-if="items.length === 0" class="text-base text-muted">{{ emptyLabel }}</p>
 
     <div v-else class="flex h-40 items-end gap-2 overflow-x-auto">
       <div

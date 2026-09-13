@@ -146,13 +146,13 @@ function formatValue(key: string, value: unknown): string {
           color="neutral"
           variant="ghost"
           icon="i-tabler-arrow-left"
-          size="sm"
+          size="lg"
           class="rtl:rotate-180"
           :label="t('companies.detail.back')"
         />
       </div>
 
-      <div v-if="isPending" class="flex items-center gap-2 text-sm text-muted">
+      <div v-if="isPending" class="flex items-center gap-2 text-base text-muted">
         <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
         <span>{{ t("companies.loading") }}</span>
       </div>
@@ -175,17 +175,17 @@ function formatValue(key: string, value: unknown): string {
                 v-if="company.status"
                 color="neutral"
                 variant="subtle"
-                size="sm"
+                size="lg"
                 :label="t(`companies.status.${company.status}`)"
               />
               <UBadge
                 v-if="role"
                 color="neutral"
                 variant="outline"
-                size="sm"
+                size="lg"
                 :label="t(`companies.roles.${role}`)"
               />
-              <span v-if="company.uniqueIdentifier" class="text-xs text-muted">
+              <span v-if="company.uniqueIdentifier" class="text-sm text-muted">
                 {{ company.uniqueIdentifier }}
               </span>
             </div>
@@ -211,12 +211,12 @@ function formatValue(key: string, value: unknown): string {
 
         <UCard v-for="group in DETAIL_GROUPS" :key="group.id">
           <template #header>
-            <h2 class="text-sm font-semibold text-highlighted">{{ t(group.titleKey) }}</h2>
+            <h2 class="text-base font-semibold text-highlighted">{{ t(group.titleKey) }}</h2>
           </template>
 
           <dl class="grid gap-4 sm:grid-cols-2">
             <div v-for="key in group.fields" :key="key" class="space-y-1">
-              <dt class="flex items-center gap-2 text-xs font-medium text-muted">
+              <dt class="flex items-center gap-2 text-sm font-medium text-muted">
                 <span>{{ t(`companies.form.${key}`) }}</span>
                 <ProvenanceBadge
                   v-if="provenanceByField[key]"
@@ -224,7 +224,7 @@ function formatValue(key: string, value: unknown): string {
                   :confidence="provenanceByField[key].confidence ?? null"
                 />
               </dt>
-              <dd class="text-sm text-highlighted">{{ formatValue(key, company[key]) }}</dd>
+              <dd class="text-base text-highlighted">{{ formatValue(key, company[key]) }}</dd>
             </div>
           </dl>
         </UCard>

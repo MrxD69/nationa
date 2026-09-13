@@ -114,7 +114,7 @@ watch([agencyId, status, tier, sort], () => {
         <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
           {{ t("officer.queue.title") }}
         </h1>
-        <p class="text-sm text-muted">{{ t("officer.queue.subtitle") }}</p>
+        <p class="text-base text-muted">{{ t("officer.queue.subtitle") }}</p>
       </div>
       <AgencySwitcher v-model="agencyId" :agencies="agencies" />
     </div>
@@ -144,7 +144,7 @@ watch([agencyId, status, tier, sort], () => {
           <UButton
             color="error"
             variant="soft"
-            size="sm"
+            size="lg"
             :label="t('officer.common.retry')"
             @click="load()"
           />

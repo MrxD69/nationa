@@ -28,13 +28,13 @@ const severityColor: Record<string, "info" | "warning" | "error"> = {
   <div class="space-y-4">
     <div class="flex flex-wrap items-center justify-between gap-2">
       <div>
-        <h2 class="text-sm font-semibold text-highlighted">{{ t("docgen.preview.title") }}</h2>
-        <p class="text-xs text-muted">{{ t("docgen.preview.subtitle") }}</p>
+        <h2 class="text-base font-semibold text-highlighted">{{ t("docgen.preview.title") }}</h2>
+        <p class="text-sm text-muted">{{ t("docgen.preview.subtitle") }}</p>
       </div>
       <div class="flex flex-wrap items-center gap-1">
-        <UBadge color="secondary" variant="subtle" size="sm" :label="t('docgen.source.ai')" />
-        <UBadge color="neutral" variant="subtle" size="sm" :label="t('docgen.source.blank')" />
-        <UBadge color="info" variant="subtle" size="sm" :label="t('docgen.source.document')" />
+        <UBadge color="secondary" variant="subtle" size="lg" :label="t('docgen.source.ai')" />
+        <UBadge color="neutral" variant="subtle" size="lg" :label="t('docgen.source.blank')" />
+        <UBadge color="info" variant="subtle" size="lg" :label="t('docgen.source.document')" />
       </div>
     </div>
 
@@ -68,10 +68,10 @@ const severityColor: Record<string, "info" | "warning" | "error"> = {
 
     <UCard v-if="citations.length > 0">
       <template #header>
-        <h3 class="text-xs font-semibold text-highlighted">{{ t("docgen.preview.citations") }}</h3>
+        <h3 class="text-sm font-semibold text-highlighted">{{ t("docgen.preview.citations") }}</h3>
       </template>
       <ul class="space-y-2">
-        <li v-for="citation in citations" :key="citation.id" class="text-xs text-toned">
+        <li v-for="citation in citations" :key="citation.id" class="text-sm text-toned">
           <UIcon name="i-tabler-file-text" class="me-1 inline size-3.5 align-[-2px]" />
           <a
             v-if="citation.url"

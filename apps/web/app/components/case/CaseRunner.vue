@@ -206,7 +206,7 @@ async function cancel(): Promise<void> {
 </script>
 
 <template>
-  <div v-if="isLoading" class="flex items-center gap-2 py-12 text-sm text-muted">
+  <div v-if="isLoading" class="flex items-center gap-2 py-12 text-base text-muted">
     <UIcon name="i-tabler-loader-2" class="animate-spin" />
     <span>{{ t("cases.runner.loading") }}</span>
   </div>
@@ -220,7 +220,7 @@ async function cancel(): Promise<void> {
             {{ t(`cases.status.${detail.case.status}`, detail.case.status) }}
           </UBadge>
         </div>
-        <p class="text-sm text-muted">
+        <p class="text-base text-muted">
           {{ detail.template.nameFr }}
           <span v-if="detail.template.agencyNameFr">· {{ detail.template.agencyNameFr }}</span>
         </p>
@@ -230,7 +230,7 @@ async function cancel(): Promise<void> {
         v-if="detail.case.status !== 'cancelled' && detail.case.status !== 'submitted'"
         color="neutral"
         variant="outline"
-        size="sm"
+        size="lg"
         icon="i-tabler-x"
         :label="t('cases.runner.cancel')"
         @click="cancel"
@@ -252,7 +252,7 @@ async function cancel(): Promise<void> {
               t("cases.runner.step", { position: currentStep.position })
             }}
           </h2>
-          <p v-if="currentStep.template?.description" class="text-sm leading-6 text-muted">
+          <p v-if="currentStep.template?.description" class="text-base leading-6 text-muted">
             {{ currentStep.template.description }}
           </p>
         </div>

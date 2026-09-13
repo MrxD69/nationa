@@ -47,7 +47,7 @@ function formatAmount(total?: string | null, currency?: string | null) {
 
 <template>
   <div>
-    <div v-if="loading" class="flex items-center gap-2 py-8 text-sm text-muted">
+    <div v-if="loading" class="flex items-center gap-2 py-8 text-base text-muted">
       <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
       {{ t("invoices.loading") }}
     </div>
@@ -56,13 +56,13 @@ function formatAmount(total?: string | null, currency?: string | null) {
       v-else-if="items.length === 0"
       class="rounded-xl border border-dashed border-default py-10 text-center"
     >
-      <p class="text-sm font-medium text-toned">{{ t("invoices.empty") }}</p>
-      <p class="text-xs text-muted">{{ t("invoices.emptyHint") }}</p>
+      <p class="text-base font-medium text-toned">{{ t("invoices.empty") }}</p>
+      <p class="text-sm text-muted">{{ t("invoices.emptyHint") }}</p>
     </div>
 
     <div v-else class="overflow-x-auto rounded-xl border border-default">
-      <table class="w-full text-sm">
-        <thead class="bg-elevated text-xs text-muted">
+      <table class="w-full text-base">
+        <thead class="bg-elevated text-sm text-muted">
           <tr>
             <th class="px-3 py-2 text-start font-medium">{{ t("invoices.table.number") }}</th>
             <th class="px-3 py-2 text-start font-medium">{{ t("invoices.table.supplier") }}</th>

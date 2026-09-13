@@ -215,7 +215,7 @@ onMounted(() => {
         <UButton
           color="neutral"
           variant="ghost"
-          size="sm"
+          size="lg"
           class="min-w-0 flex-1 justify-start"
           :aria-label="t('assistant.conversations')"
         >
@@ -253,7 +253,7 @@ onMounted(() => {
       <UButton
         color="primary"
         variant="soft"
-        size="sm"
+        size="lg"
         square
         icon="i-tabler-plus"
         :aria-label="t('assistant.newConversation')"
@@ -263,7 +263,7 @@ onMounted(() => {
       <UButton
         color="neutral"
         variant="ghost"
-        size="sm"
+        size="lg"
         square
         icon="i-tabler-x"
         :aria-label="t('shell.ai.close')"
@@ -280,7 +280,7 @@ onMounted(() => {
           <h2 class="text-base font-semibold text-highlighted">
             {{ t("assistant.emptyTitle") }}
           </h2>
-          <p class="text-sm text-muted">{{ t("assistant.emptySubtitle") }}</p>
+          <p class="text-base text-muted">{{ t("assistant.emptySubtitle") }}</p>
         </div>
       </div>
 
@@ -295,7 +295,7 @@ onMounted(() => {
         @reject="onRejectProposal"
       />
 
-      <div v-if="status === 'submitted'" class="flex items-center gap-2 text-xs text-muted">
+      <div v-if="status === 'submitted'" class="flex items-center gap-2 text-sm text-muted">
         <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
         {{ t("assistant.thinking") }}
       </div>
@@ -320,7 +320,7 @@ onMounted(() => {
           @reload="() => regenerate()"
         />
       </UChatPrompt>
-      <p class="mt-2 text-[11px] text-muted">{{ t("assistant.disclaimer") }}</p>
+      <p class="mt-2 text-sm text-muted">{{ t("assistant.disclaimer") }}</p>
     </div>
   </div>
 </template>

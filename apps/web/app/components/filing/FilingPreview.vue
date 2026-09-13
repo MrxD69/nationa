@@ -26,31 +26,31 @@ const net = computed(() => props.totals?.netTaxDue ?? 0);
   <div class="space-y-4">
     <dl class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       <div class="rounded-lg border border-default p-3">
-        <dt class="text-xs text-muted">{{ t("filings.preview.outputBase") }}</dt>
-        <dd class="text-sm font-medium text-highlighted" dir="ltr">
+        <dt class="text-sm text-muted">{{ t("filings.preview.outputBase") }}</dt>
+        <dd class="text-base font-medium text-highlighted" dir="ltr">
           {{ amount(totals?.outputBase) }}
         </dd>
       </div>
       <div class="rounded-lg border border-default p-3">
-        <dt class="text-xs text-muted">{{ t("filings.preview.outputTax") }}</dt>
-        <dd class="text-sm font-medium text-highlighted" dir="ltr">
+        <dt class="text-sm text-muted">{{ t("filings.preview.outputTax") }}</dt>
+        <dd class="text-base font-medium text-highlighted" dir="ltr">
           {{ amount(totals?.outputTax) }}
         </dd>
       </div>
       <div class="rounded-lg border border-default p-3">
-        <dt class="text-xs text-muted">{{ t("filings.preview.inputBase") }}</dt>
-        <dd class="text-sm font-medium text-highlighted" dir="ltr">
+        <dt class="text-sm text-muted">{{ t("filings.preview.inputBase") }}</dt>
+        <dd class="text-base font-medium text-highlighted" dir="ltr">
           {{ amount(totals?.inputBase) }}
         </dd>
       </div>
       <div class="rounded-lg border border-default p-3">
-        <dt class="text-xs text-muted">{{ t("filings.preview.inputTax") }}</dt>
-        <dd class="text-sm font-medium text-highlighted" dir="ltr">
+        <dt class="text-sm text-muted">{{ t("filings.preview.inputTax") }}</dt>
+        <dd class="text-base font-medium text-highlighted" dir="ltr">
           {{ amount(totals?.inputTax) }}
         </dd>
       </div>
       <div class="rounded-lg border border-primary/40 bg-primary/5 p-3">
-        <dt class="text-xs text-muted">{{ t("filings.preview.netTaxDue") }}</dt>
+        <dt class="text-sm text-muted">{{ t("filings.preview.netTaxDue") }}</dt>
         <dd
           class="text-base font-semibold"
           :class="net >= 0 ? 'text-highlighted' : 'text-success'"
@@ -62,10 +62,10 @@ const net = computed(() => props.totals?.netTaxDue ?? 0);
     </dl>
 
     <div v-if="totals?.byRate?.length" class="space-y-2">
-      <h3 class="text-sm font-medium text-highlighted">{{ t("filings.preview.byRate") }}</h3>
+      <h3 class="text-base font-medium text-highlighted">{{ t("filings.preview.byRate") }}</h3>
       <div class="overflow-x-auto rounded-lg border border-default">
-        <table class="w-full text-sm">
-          <thead class="bg-elevated text-xs text-muted">
+        <table class="w-full text-base">
+          <thead class="bg-elevated text-sm text-muted">
             <tr>
               <th class="px-3 py-2 text-start font-medium">{{ t("filings.preview.rate") }}</th>
               <th class="px-3 py-2 text-end font-medium">{{ t("filings.preview.base") }}</th>
@@ -89,7 +89,7 @@ const net = computed(() => props.totals?.netTaxDue ?? 0);
       </div>
     </div>
 
-    <p class="text-xs text-muted">
+    <p class="text-sm text-muted">
       {{ t("filings.preview.invoiceCount", { count: totals?.invoiceCount ?? 0 }) }}
     </p>
     <UAlert

@@ -45,7 +45,7 @@ function print(): void {
       <UButton
         color="neutral"
         variant="soft"
-        size="sm"
+        size="lg"
         icon="i-tabler-printer"
         :label="t('docgen.artifact.print')"
         @click="print"
@@ -61,7 +61,7 @@ function print(): void {
       <div v-html="props.payload.render.html" />
     </div>
 
-    <dl class="grid gap-1 text-xs text-muted">
+    <dl class="grid gap-1 text-sm text-muted">
       <div v-if="resolvedDocumentId" class="flex flex-wrap gap-2">
         <dt class="font-medium">{{ t("docgen.artifact.documentId") }}</dt>
         <dd class="break-all">{{ resolvedDocumentId }}</dd>

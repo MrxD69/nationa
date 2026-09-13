@@ -25,5 +25,5 @@ const label = computed(() => {
 </script>
 
 <template>
-  <UBadge v-if="status" :color="color" variant="subtle" size="sm" :label="label" />
+  <UBadge v-if="status" :color="color" variant="subtle" size="lg" :label="label" />
 </template>

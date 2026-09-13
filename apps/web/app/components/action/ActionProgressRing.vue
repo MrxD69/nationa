@@ -1,5 +1,8 @@
 <script setup lang="ts">
-const props = defineProps<{ value: number; size?: number; label?: string }>();
+const props = withDefaults(
+  defineProps<{ value: number; size?: number; label?: string; showValue?: boolean }>(),
+  { showValue: true },
+);
 
 const { t } = useI18n();
 
@@ -54,11 +57,12 @@ const dimensions = computed(() => {
         />
       </svg>
       <span
-        class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-highlighted"
+        v-if="props.showValue"
+        class="absolute inset-0 flex items-center justify-center text-base font-semibold text-highlighted"
       >
         {{ dimensions.value }}%
       </span>
     </div>
-    <span v-if="props.label" class="text-xs text-muted">{{ props.label }}</span>
+    <span v-if="props.label" class="text-sm text-muted">{{ props.label }}</span>
   </div>
 </template>

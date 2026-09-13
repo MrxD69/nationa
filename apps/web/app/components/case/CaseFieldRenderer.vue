@@ -126,7 +126,7 @@ function onNumber(value: string | number): void {
         @update:model-value="onNumber"
       >
         <template #trailing>
-          <span class="text-xs text-muted">TND</span>
+          <span class="text-sm text-muted">TND</span>
         </template>
       </UInput>
     </template>
@@ -169,7 +169,7 @@ function onNumber(value: string | number): void {
     <template v-else-if="props.field.type === 'address'">
       <div class="grid gap-3">
         <div v-for="part in ADDRESS_LOCALES" :key="part" class="grid gap-2">
-          <div class="text-xs font-medium text-muted">{{ part.toUpperCase() }}</div>
+          <div class="text-sm font-medium text-muted">{{ part.toUpperCase() }}</div>
           <div class="grid gap-2 sm:grid-cols-2">
             <UInput
               v-for="partField in ADDRESS_PARTS"

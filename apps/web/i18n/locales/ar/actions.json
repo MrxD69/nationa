@@ -71,7 +71,10 @@
     "step": {
       "objective": "الهدف",
       "optional": "اختيارية",
-      "required": "إلزامية"
+      "required": "إلزامية",
+      "officialForm": "النموذج الرسمي",
+      "openForm": "فتح النموذج",
+      "formHint": "هكذا يبدو المستند المطلوب."
     },
     "severity": {
       "info": "معلومة",

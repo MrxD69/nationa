@@ -148,24 +148,24 @@ const artifactView = computed(() => approved.value ?? draft.value);
     <div class="flex flex-wrap items-start justify-between gap-3">
       <div class="space-y-1">
         <div class="flex items-center gap-2">
-          <NuxtLink to="/docgen" class="text-xs text-muted hover:underline">
+          <NuxtLink to="/docgen" class="text-sm text-muted hover:underline">
             {{ t("docgen.title") }}
           </NuxtLink>
           <UBadge
             color="neutral"
             variant="subtle"
-            size="sm"
+            size="lg"
             :label="t(`docgen.status.${status}`, status)"
           />
         </div>
         <h1 class="text-xl font-semibold tracking-tight text-highlighted">
           {{ t("docgen.workspace.title") }}
         </h1>
-        <p class="text-sm text-muted">{{ t("docgen.workspace.subtitle") }}</p>
+        <p class="text-base text-muted">{{ t("docgen.workspace.subtitle") }}</p>
       </div>
     </div>
 
-    <div v-if="isPending && !draft" class="flex items-center gap-2 py-8 text-sm text-muted">
+    <div v-if="isPending && !draft" class="flex items-center gap-2 py-8 text-base text-muted">
       <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
       {{ t("docgen.loading") }}
     </div>

@@ -51,7 +51,7 @@ async function submit() {
             <h1 class="text-xl font-semibold tracking-tight text-highlighted">
               {{ t("auth.login.title") }}
             </h1>
-            <p class="text-sm text-muted">{{ t("auth.login.subtitle") }}</p>
+            <p class="text-base text-muted">{{ t("auth.login.subtitle") }}</p>
           </div>
         </template>
 
@@ -89,7 +89,7 @@ async function submit() {
         </form>
       </UCard>
 
-      <p class="mt-6 text-center text-sm text-muted">
+      <p class="mt-6 text-center text-base text-muted">
         {{ t("auth.login.noAccount") }}
         <NuxtLink to="/signup" class="font-medium text-primary hover:underline">
           {{ t("auth.login.signup") }}

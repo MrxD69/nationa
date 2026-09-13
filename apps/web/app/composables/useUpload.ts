@@ -22,6 +22,7 @@ export type UploadResult = {
   documentId: string;
   versionId: string;
   storageKey: string;
+  fileName?: string;
 };
 
 export type DocumentRow = {
@@ -166,7 +167,7 @@ export function useUpload() {
         documentId: requested.documentId,
         versionId: requested.versionId,
         storageKey: requested.storageKey,
-        fileName: file.name,
+        fileName: requested.fileName ?? file.name,
         mimeType,
         size: file.size,
         runExtraction: true,
@@ -179,6 +180,7 @@ export function useUpload() {
         documentId: requested.documentId,
         versionId: requested.versionId,
         storageKey: requested.storageKey,
+        fileName: requested.fileName ?? file.name,
       };
     } catch (caught) {
       error.value = caught instanceof Error ? caught.message : String(caught);

@@ -15,7 +15,7 @@ const name = computed(() =>
     :href="props.form.pdf"
     target="_blank"
     rel="noopener"
-    class="flex items-center gap-4 rounded-lg border border-default p-3 transition-colors hover:border-primary hover:bg-elevated"
+    class="hover-lift flex items-center gap-4 rounded-lg border border-default p-3 hover:border-primary"
   >
     <img
       :src="props.form.thumb"
@@ -24,7 +24,7 @@ const name = computed(() =>
       height="136"
       loading="lazy"
       decoding="async"
-      class="h-34 w-24 shrink-0 rounded-md border border-muted bg-white object-cover object-top"
+      class="img-outline h-34 w-24 shrink-0 rounded-md bg-white object-cover object-top"
     />
 
     <span class="min-w-0 flex-1 space-y-1">

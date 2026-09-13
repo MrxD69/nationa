@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import LoadingState from "~/components/ui/LoadingState.vue";
+
 definePageMeta({ layout: "auth", middleware: "auth" });
 
 const { $orpc } = useNuxtApp();
@@ -17,9 +19,8 @@ await navigateTo(landing.value ?? "/companies");
 </script>
 
 <template>
-  <div class="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center gap-3">
+  <div class="flex w-full flex-col items-center justify-center gap-2">
     <span class="text-lg font-semibold text-highlighted">{{ t("common.appName") }}</span>
-    <UIcon name="i-tabler-loader-2" class="size-6 animate-spin text-muted" />
-    <span class="text-base text-muted">{{ t("common.loading") }}</span>
+    <LoadingState />
   </div>
 </template>

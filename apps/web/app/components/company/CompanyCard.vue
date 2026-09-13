@@ -12,17 +12,21 @@ type CompanyCardData = {
 
 const props = defineProps<{ company: CompanyCardData }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
-const displayName = computed(
-  () => props.company.tradeName || props.company.legalNameAr || props.company.legalName,
-);
+const displayName = computed(() => {
+  const company = props.company;
+  if (locale.value.startsWith("ar")) {
+    return company.legalNameAr || company.tradeName || company.legalName;
+  }
+  return company.tradeName || company.legalName;
+});
 </script>
 
 <template>
   <NuxtLink
     :to="`/companies/${company.id}`"
-    class="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-elevated focus:outline-none focus-visible:bg-elevated"
+    class="hover-surface flex items-center gap-4 px-5 py-4 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
   >
     <UIcon name="i-tabler-building-skyscraper" class="size-8 shrink-0 text-muted" />
 
@@ -30,10 +34,12 @@ const displayName = computed(
       <p class="truncate text-lg font-semibold text-highlighted">{{ displayName }}</p>
 
       <div class="flex flex-wrap items-center gap-2 text-base text-muted">
-        <span v-if="company.uniqueIdentifier" class="truncate">
+        <span v-if="company.uniqueIdentifier" class="truncate tabular-nums" dir="ltr">
           {{ company.uniqueIdentifier }}
         </span>
-        <span v-if="company.taxId" class="truncate">{{ company.taxId }}</span>
+        <span v-if="company.taxId" class="truncate tabular-nums" dir="ltr">{{
+          company.taxId
+        }}</span>
       </div>
     </div>
 

@@ -33,6 +33,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{ (event: "update:modelValue", value: unknown): void }>();
 
+const { t } = useI18n();
+
 const stringValue = computed(() =>
   props.modelValue === null || props.modelValue === undefined ? "" : String(props.modelValue),
 );
@@ -64,12 +66,16 @@ const address = computed<AddressValue>(() => {
   return {};
 });
 
-const ADDRESS_PARTS: Array<{ key: keyof AddressParts; label: string }> = [
-  { key: "street", label: "street" },
-  { key: "city", label: "city" },
-  { key: "postalCode", label: "postalCode" },
-  { key: "governorate", label: "governorate" },
-];
+const ADDRESS_PARTS = [
+  "street",
+  "building",
+  "office",
+  "locality",
+  "postalCode",
+  "city",
+  "governorate",
+  "country",
+] as const;
 
 const ADDRESS_LOCALES = ["fr", "ar"] as const;
 
@@ -169,20 +175,22 @@ function onNumber(value: string | number): void {
     <template v-else-if="props.field.type === 'address'">
       <div class="grid gap-3">
         <div v-for="part in ADDRESS_LOCALES" :key="part" class="grid gap-2">
-          <div class="text-sm font-medium text-muted">{{ part.toUpperCase() }}</div>
+          <div class="text-sm font-medium text-muted">{{ t(`cases.address.${part}`) }}</div>
           <div class="grid gap-2 sm:grid-cols-2">
             <UInput
               v-for="partField in ADDRESS_PARTS"
-              :key="`${part}-${partField.key}`"
-              :model-value="address[part]?.[partField.key] ?? ''"
-              :placeholder="String(partField.key)"
-              @update:model-value="addressPartHandler(part, partField.key)"
+              :key="`${part}-${partField}`"
+              :model-value="address[part]?.[partField] ?? ''"
+              :placeholder="t(`cases.address.${partField}`)"
+              :aria-label="t(`cases.address.${partField}`)"
+              @update:model-value="addressPartHandler(part, partField)"
             />
           </div>
         </div>
         <UTextarea
           :model-value="address.raw ?? ''"
-          :placeholder="'raw'"
+          :placeholder="t('cases.address.raw')"
+          :aria-label="t('cases.address.raw')"
           :rows="2"
           @update:model-value="setAddressRaw"
         />

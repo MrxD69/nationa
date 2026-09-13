@@ -19,6 +19,14 @@ function onInput(value: string | number): void {
   timer = setTimeout(() => emit("search", next), 300);
 }
 
+function clear(): void {
+  if (timer) {
+    clearTimeout(timer);
+  }
+  emit("update:modelValue", "");
+  emit("search", "");
+}
+
 onBeforeUnmount(() => {
   if (timer) {
     clearTimeout(timer);
@@ -30,10 +38,20 @@ onBeforeUnmount(() => {
   <UInput
     :model-value="props.modelValue"
     :placeholder="props.placeholder ?? t('actions.search.placeholder')"
+    :aria-label="t('actions.filters.searchLabel')"
     icon="i-tabler-search"
-    size="lg"
     class="w-full"
     :ui="{ base: 'w-full' }"
     @update:model-value="onInput"
-  />
+  >
+    <template v-if="props.modelValue" #trailing>
+      <UButton
+        color="neutral"
+        variant="ghost"
+        icon="i-tabler-x"
+        :aria-label="t('actions.filters.clear')"
+        @click="clear"
+      />
+    </template>
+  </UInput>
 </template>

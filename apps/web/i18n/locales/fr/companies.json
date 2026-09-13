@@ -35,12 +35,14 @@
       "title": "Nouvelle entreprise",
       "subtitle": "Renseignez les informations légales de la société.",
       "portfolio": "Je suis comptable et je crée cette entreprise pour un client",
-      "submit": "Créer l'entreprise"
+      "submit": "Créer l'entreprise",
+      "stickyHint": "Vérifiez les informations puis créez l'entreprise."
     },
     "edit": {
       "title": "Modifier l'entreprise",
       "subtitle": "Mettez à jour les informations légales. Chaque champ modifié est tracé.",
-      "submit": "Enregistrer les modifications"
+      "submit": "Enregistrer les modifications",
+      "stickyHint": "Enregistrez vos modifications."
     },
     "detail": {
       "title": "Fiche entreprise",
@@ -57,7 +59,18 @@
       "provenance": "Provenance",
       "noValue": "—",
       "role": "Votre rôle",
-      "scopes": "Permissions"
+      "scopes": "Permissions",
+      "summary": "Résumé",
+      "showAll": "Afficher toutes les informations",
+      "showLess": "Masquer les informations vides",
+      "emptySection": "Aucune information pour cette section.",
+      "demarche": {
+        "title": "Démarche RNE",
+        "hint": "Cette information ne peut pas être modifiée directement — elle nécessite une démarche officielle.",
+        "cta": "Cliquez pour lancer cette démarche",
+        "aria": "Démarche pour modifier ce champ",
+        "fallback": "Modifier les informations de l'entreprise"
+      }
     },
     "access": {
       "title": "Accès",
@@ -72,6 +85,10 @@
       "send": "Envoyer l'invitation",
       "cancel": "Annuler",
       "revoke": "Révoquer",
+      "revokeTitle": "Révoquer cet accès ?",
+      "revokeBody": "Cette personne perdra immédiatement l'accès à cette entreprise.",
+      "revokeConfirm": "Révoquer l'accès",
+      "revokeCancel": "Annuler",
       "noMembers": "Aucun membre pour le moment.",
       "tokenTitle": "Lien d'invitation",
       "tokenHelp": "Partagez ce lien avec la personne invitée. Il expire bientôt.",

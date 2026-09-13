@@ -25,5 +25,5 @@ const text = computed(() => props.label ?? t(`actions.state.${props.state}`, pro
 </script>
 
 <template>
-  <UBadge :color="color" variant="subtle" :size="props.size ?? 'sm'">{{ text }}</UBadge>
+  <UBadge :color="color" variant="subtle" :size="props.size ?? 'lg'">{{ text }}</UBadge>
 </template>

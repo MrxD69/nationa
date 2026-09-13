@@ -45,17 +45,19 @@ function submit() {
     <h3 class="text-base font-medium text-highlighted">{{ t("checks.notes.title") }}</h3>
 
     <div v-if="notes.length > 0" class="space-y-2">
-      <UCard v-for="note in notes" :key="note.id">
+      <div v-for="note in notes" :key="note.id" class="rounded-lg border border-default p-4">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <UBadge color="neutral" variant="soft" size="lg">
             {{ t(`checks.notes.kind.${note.kind}`) }}
           </UBadge>
-          <span class="text-sm text-muted" dir="auto">{{ formatDate(note.createdAt) }}</span>
+          <span class="text-sm text-muted tabular" dir="auto">{{
+            formatDate(note.createdAt)
+          }}</span>
         </div>
         <p class="mt-2 whitespace-pre-wrap break-words text-base text-toned" dir="auto">
           {{ note.body }}
         </p>
-      </UCard>
+      </div>
     </div>
 
     <p v-else class="text-base text-muted">{{ t("checks.notes.empty") }}</p>
@@ -71,7 +73,6 @@ function submit() {
       <div class="flex justify-end">
         <UButton
           icon="i-tabler-send"
-          size="lg"
           :disabled="draft.trim().length === 0"
           :loading="busy"
           @click="submit"

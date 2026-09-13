@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import EmptyState from "~/components/ui/EmptyState.vue";
+
 type AccessMember = {
   userId: string;
   email?: string | null;
@@ -18,16 +20,27 @@ const props = defineProps<{
 
 const emit = defineEmits<{ revoke: [userId: string] }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+function formatDate(value?: string | Date | null): string {
+  if (!value) {
+    return "";
+  }
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+  return new Intl.DateTimeFormat(locale.value, { dateStyle: "medium" }).format(date);
+}
 </script>
 
 <template>
-  <div
+  <EmptyState
     v-if="props.members.length === 0"
-    class="rounded-lg border border-dashed border-default px-6 py-10 text-center text-base text-muted"
-  >
-    {{ t("companies.access.noMembers") }}
-  </div>
+    size="sm"
+    icon="i-tabler-users"
+    :title="t('companies.access.noMembers')"
+  />
 
   <ul v-else class="divide-y divide-default overflow-hidden rounded-lg border border-default">
     <li
@@ -47,13 +60,19 @@ const { t } = useI18n();
             :label="t(`companies.roles.${member.role}`)"
           />
           <UBadge color="neutral" variant="outline" size="lg" :label="member.status" />
+          <span
+            v-if="formatDate(member.grantedAt)"
+            class="inline-flex items-center gap-1 tabular-nums"
+          >
+            <UIcon name="i-tabler-calendar" class="size-4" />
+            <span dir="ltr">{{ formatDate(member.grantedAt) }}</span>
+          </span>
         </div>
       </div>
 
       <UButton
         color="error"
         variant="ghost"
-        size="lg"
         icon="i-tabler-user-minus"
         :disabled="
           props.busy || member.userId === props.currentUserId || member.status === 'revoked'

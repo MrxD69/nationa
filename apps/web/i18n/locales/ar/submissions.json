@@ -59,7 +59,13 @@
       "resubmitAcknowledge": "أقرّ بالملاحظات المانعة",
       "resubmitted": "أُعيد إرسال الطلب للدراسة",
       "blockers": "ملاحظات مانعة",
-      "blockersDescription": "يجب الإقرار بـ {count} ملاحظة مانعة قبل الإرسال."
+      "blockersDescription": "يجب الإقرار بـ {count} ملاحظة مانعة قبل الإرسال.",
+      "blockerAcknowledgeAll": "أقرّ بهذه الملاحظات المانعة",
+      "blockerAcknowledgeHint": "حدّد هذا المربع لتتمكن من إعادة الإرسال.",
+      "confirmResubmitTitle": "إعادة الإرسال؟",
+      "confirmResubmitBody": "سيُعاد إرسال ملفك للدراسة.",
+      "confirmResubmit": "إرسال",
+      "cancel": "إلغاء"
     },
     "timeline": {
       "title": "التسلسل الزمني",

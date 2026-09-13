@@ -23,6 +23,8 @@
       "fields": "{count} champs",
       "empty": "Aucun modèle de document disponible.",
       "selectTemplate": "Sélectionnez un modèle",
+      "chooseTemplate": "Choisissez un modèle",
+      "chooseMode": "Choisissez un mode",
       "generate": "Générer le document",
       "provenanceNotice": "L'IA ne décide jamais à votre place et n'envoie rien automatiquement. Chaque champ indique sa provenance et doit être approuvé par vous."
     },
@@ -44,7 +46,8 @@
       "subtitle": "Modifiez les valeurs si nécessaire. Vos modifications sont marquées comme saisies par vous.",
       "placeholder": "Valeur du champ",
       "citations": "{count} référence(s)",
-      "save": "Enregistrer les modifications"
+      "save": "Enregistrer les modifications",
+      "stickyHint": "Enregistrez vos modifications avant d'approuver."
     },
     "approval": {
       "title": "Approbation",
@@ -59,7 +62,9 @@
       "generated": "Document généré",
       "print": "Imprimer / PDF",
       "documentId": "Identifiant du document",
-      "storageKey": "Clé de stockage"
+      "storageKey": "Clé de stockage",
+      "technical": "Détails techniques",
+      "technicalHint": "Informations internes, non nécessaires à l'usage courant."
     },
     "source": {
       "user": "Saisi",
@@ -80,7 +85,8 @@
       "generateFailed": "Échec de la génération du document",
       "updateFailed": "Échec de l'enregistrement des modifications",
       "approveFailed": "Échec de l'approbation du document",
-      "rejectFailed": "Échec du rejet du brouillon"
+      "rejectFailed": "Échec du rejet du brouillon",
+      "missingTemplate": "Sélectionnez un modèle pour continuer."
     }
   }
 }

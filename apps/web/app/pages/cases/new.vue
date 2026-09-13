@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import AgencyMark from "~/components/agency/AgencyMark.vue";
+import EmptyState from "~/components/ui/EmptyState.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
+import PageHeader from "~/components/ui/PageHeader.vue";
 import type { ProcedureListItem } from "@nationa/api/services/procedures";
 
 definePageMeta({ layout: "app", middleware: "auth" });
@@ -80,20 +83,24 @@ async function startCase(template: ProcedureListItem): Promise<void> {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-7xl space-y-6">
-    <div class="space-y-1">
-      <h1 class="text-2xl font-semibold text-highlighted">{{ t("cases.new.title") }}</h1>
-      <p class="text-base text-muted">{{ t("cases.new.subtitle") }}</p>
-    </div>
+  <div class="mx-auto w-full max-w-6xl space-y-6">
+    <PageHeader
+      :title="t('cases.new.title')"
+      :subtitle="t('cases.new.subtitle')"
+      back-to="/cases"
+      max-width="max-w-6xl"
+    />
 
     <UAlert v-if="error" color="error" variant="subtle" :title="error" />
 
-    <div v-if="isLoading" class="flex items-center gap-2 text-base text-muted">
-      <UIcon name="i-tabler-loader-2" class="animate-spin" />
-      <span>{{ t("cases.new.loading") }}</span>
-    </div>
+    <LoadingState
+      v-if="isLoading"
+      variant="skeleton-grid"
+      :count="6"
+      :label="t('cases.new.loading')"
+    />
 
-    <div v-else class="grid gap-8">
+    <template v-else-if="groups.length">
       <section v-for="group in groups" :key="group.agencyId" class="space-y-3">
         <div class="flex items-center gap-3">
           <AgencyMark :agency-id="group.agencyId" size="md" />
@@ -103,54 +110,48 @@ async function startCase(template: ProcedureListItem): Promise<void> {
         </div>
 
         <div class="grid gap-3 sm:grid-cols-2">
-          <UCard
+          <div
             v-for="template in group.templates"
             :key="template.id"
-            class="flex h-full flex-col"
+            class="hover-lift flex h-full flex-col gap-3 rounded-lg border border-default p-4 hover:border-primary/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30"
           >
-            <div class="flex h-full flex-col gap-3">
-              <div class="flex items-start justify-between gap-2">
-                <div class="min-w-0 space-y-1">
-                  <h3 class="text-base font-medium text-highlighted">
-                    {{ templateName(template) }}
-                  </h3>
-                  <p class="text-sm text-muted">{{ agencyName(template) }} · {{ template.code }}</p>
-                </div>
-                <UBadge color="neutral" variant="subtle" size="lg">
-                  {{ template.category ?? "—" }}
-                </UBadge>
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 space-y-1">
+                <h3 class="text-base font-medium text-highlighted">
+                  {{ templateName(template) }}
+                </h3>
+                <p class="text-sm text-muted">{{ agencyName(template) }} · {{ template.code }}</p>
               </div>
-
-              <p v-if="template.description" class="text-base leading-6 text-muted">
-                {{ template.description }}
-              </p>
-
-              <div class="mt-auto flex items-center justify-between gap-2 pt-2">
-                <span class="text-sm text-muted">
-                  {{ t("cases.new.steps", { count: template.stepCount }) }}
-                  <template v-if="template.estimatedDays">
-                    · {{ t("cases.new.days", { count: template.estimatedDays }) }}
-                  </template>
-                </span>
-                <UButton
-                  size="lg"
-                  icon="i-tabler-player-play"
-                  :loading="starting === template.id"
-                  :label="t('cases.new.start')"
-                  @click="startCase(template)"
-                />
-              </div>
+              <UBadge color="neutral" variant="subtle" size="lg">
+                {{ template.category ?? "—" }}
+              </UBadge>
             </div>
-          </UCard>
+
+            <p v-if="template.description" class="text-base leading-6 text-muted">
+              {{ template.description }}
+            </p>
+
+            <div class="mt-auto flex items-center justify-between gap-2 pt-2">
+              <span class="text-sm text-muted">
+                {{ t("cases.new.steps", { count: template.stepCount }) }}
+                <template v-if="template.estimatedDays">
+                  · {{ t("cases.new.days", { count: template.estimatedDays }) }}
+                </template>
+              </span>
+              <UButton
+                icon="i-tabler-player-play"
+                :loading="starting === template.id"
+                :label="t('cases.new.start')"
+                @click="startCase(template)"
+              />
+            </div>
+          </div>
         </div>
       </section>
+    </template>
 
-      <UAlert
-        v-if="groups.length === 0"
-        color="neutral"
-        variant="subtle"
-        :title="t('cases.new.empty')"
-      />
-    </div>
+    <EmptyState v-else icon="i-tabler-file-search" :title="t('cases.new.empty')">
+      <UButton to="/cases" color="neutral" variant="outline" :label="t('cases.runner.back')" />
+    </EmptyState>
   </div>
 </template>

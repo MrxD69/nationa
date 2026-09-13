@@ -18,10 +18,18 @@ const props = defineProps<{
   loading?: boolean;
 }>();
 
+const emit = defineEmits<{ pay: [] }>();
+
 const { t } = useI18n();
+const toast = useToast();
 
 function format(amount: number, currency: string): string {
   return `${amount.toFixed(3)} ${currency}`;
+}
+
+function onPay(): void {
+  toast.add({ title: t("cases.payment.paySoon"), color: "info" });
+  emit("pay");
 }
 </script>
 
@@ -59,14 +67,23 @@ function format(amount: number, currency: string): string {
         :title="t('cases.payment.companylessTitle')"
         :description="t('cases.payment.companyless')"
       />
-      <UAlert
-        v-else
-        color="neutral"
-        variant="subtle"
-        icon="i-tabler-credit-card"
-        :title="t('cases.payment.stubTitle')"
-        :description="t('cases.payment.stub')"
-      />
+      <template v-else>
+        <UAlert
+          color="neutral"
+          variant="subtle"
+          icon="i-tabler-credit-card"
+          :title="t('cases.payment.stubTitle')"
+          :description="t('cases.payment.stub')"
+        />
+        <div class="flex justify-end">
+          <UButton
+            color="primary"
+            icon="i-tabler-credit-card"
+            :label="t('cases.payment.pay')"
+            @click="onPay"
+          />
+        </div>
+      </template>
     </template>
 
     <UAlert

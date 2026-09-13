@@ -1,12 +1,14 @@
 export type AppDir = "ltr" | "rtl";
-export type RailAction = "notifications" | "search" | "language" | "theme";
+export type RailSection = "workspace" | "account";
 
 export interface RailItem {
   key: string;
   icon: string; // iconify name, e.g. "i-tabler-building-skyscraper"
   labelKey: string; // i18n key, e.g. "shell.rail.companies"
-  to?: string; // route path when it navigates
-  action?: RailAction; // behavior when it does not navigate
+  label?: string; // pre-resolved label override (e.g. the owner's company name)
+  to: string; // route path this item navigates to
+  section: RailSection; // group heading this item sits under
+  badgeCount?: number; // reco count badge (actions item only, hidden when 0/undefined)
 }
 
 export interface CompanyNavItem {

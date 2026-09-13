@@ -5,6 +5,7 @@ import { companyProcedure, userProcedure } from "../builders";
 import {
   attachDocumentToCase,
   getDocumentDetail,
+  getDocumentUrl,
   listActiveDocumentTypes,
   listCaseDocuments,
   listCompanyDocuments,
@@ -38,6 +39,15 @@ export const documentsRouter = {
       }),
     )
     .handler(({ context, input }) => getDocumentDetail(context, input)),
+
+  url: companyProcedure("documents.read")
+    .input(
+      z.object({
+        companyId: z.string().min(1),
+        documentId: z.guid(),
+      }),
+    )
+    .handler(({ context, input }) => getDocumentUrl(context, input)),
 
   create: companyProcedure("documents.write")
     .input(

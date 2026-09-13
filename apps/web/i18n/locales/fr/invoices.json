@@ -15,9 +15,20 @@
       "needs_review": "À vérifier",
       "verified": "Vérifiée"
     },
+    "groups": {
+      "purchase": "Achats",
+      "sale": "Ventes",
+      "other": "Autres"
+    },
+    "list": {
+      "title": "Liste des factures",
+      "emptyAction": "Importer une facture"
+    },
     "upload": {
       "title": "Importer une facture",
       "subtitle": "Déposez une facture pour l'extraire automatiquement.",
+      "label": "Déposer une facture",
+      "description": "PDF, JPG ou PNG.",
       "button": "Importer et extraire",
       "uploading": "Téléversement…",
       "processing": "Extraction…",
@@ -62,17 +73,28 @@
     },
     "detail": {
       "title": "Détail de la facture",
+      "select": "Sélectionnez une facture",
+      "selectHint": "Choisissez une facture dans la liste pour voir son détail.",
+      "close": "Fermer",
       "lines": "Lignes",
       "noLines": "Aucune ligne",
-      "provenance": "Provenance des champs"
+      "provenance": "Provenance des champs",
+      "technical": "Détails techniques",
+      "confirmDeleteTitle": "Supprimer cette facture ?",
+      "confirmDeleteBody": "Cette action est définitive.",
+      "confirmDelete": "Supprimer",
+      "cancel": "Annuler"
     },
     "actions": {
       "verify": "Vérifier",
       "edit": "Modifier",
       "remove": "Supprimer",
+      "view": "Ouvrir",
       "close": "Fermer",
       "new": "Nouvelle facture",
-      "refresh": "Actualiser"
+      "refresh": "Actualiser",
+      "createdToast": "Facture enregistrée.",
+      "verifiedToast": "Facture vérifiée."
     },
     "provenance": {
       "source": "Source",

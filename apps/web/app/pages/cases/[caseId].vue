@@ -22,7 +22,7 @@ watch(
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-7xl">
+  <div class="mx-auto w-full max-w-6xl">
     <CaseRunner v-if="caseId" :key="caseId" :case-id="caseId" />
   </div>
 </template>

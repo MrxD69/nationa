@@ -54,8 +54,11 @@ const link = computed(() => ({
 </script>
 
 <template>
-  <NuxtLink :to="link" class="block focus:outline-none">
-    <UCard class="transition hover:ring-2 hover:ring-primary/40">
+  <NuxtLink
+    :to="link"
+    class="group flex items-center gap-4 rounded-lg border border-default p-5 transition-control hover-surface focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+  >
+    <div class="min-w-0 flex-1">
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div class="min-w-0 space-y-1">
           <p class="truncate text-base font-semibold text-highlighted">
@@ -78,6 +81,8 @@ const link = computed(() => ({
           <SubmissionStatusBadge :status="submission.status" />
         </div>
       </div>
-    </UCard>
+    </div>
+
+    <UIcon name="i-tabler-chevron-right" class="size-5 shrink-0 text-muted rtl:rotate-180" />
   </NuxtLink>
 </template>

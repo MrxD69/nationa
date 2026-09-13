@@ -18,12 +18,31 @@ export async function ensureProfile(context: Context): Promise<Profile> {
   const existing = await repo.findProfileByUserId(context.db, user.id);
 
   if (existing) {
+    const answers = existing.onboardingAnswers ?? {};
+    const backfill: Partial<NewProfile> = {};
+
+    if (!existing.displayName && user.displayName) {
+      backfill.displayName = user.displayName;
+    }
+    if (!answers.professional && user.professional) {
+      backfill.onboardingAnswers = { ...answers, professional: user.professional };
+    }
+
+    if (Object.keys(backfill).length > 0) {
+      const updated = await repo.updateProfile(context.db, user.id, backfill);
+      if (updated) {
+        return updated;
+      }
+    }
+
     return existing;
   }
 
   const created = await repo.insertProfile(context.db, {
     userId: user.id,
     accountType: parseAccountType(user.accountType) ?? "owner",
+    ...(user.displayName ? { displayName: user.displayName } : {}),
+    ...(user.professional ? { onboardingAnswers: { professional: user.professional } } : {}),
   });
 
   if (created) {

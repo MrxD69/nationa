@@ -21,6 +21,8 @@ const emit = defineEmits<{
 
 const parts = computed(() => (props.message.parts ?? []) as any[]);
 const isUser = computed(() => props.message.role === "user");
+const textParts = computed(() => parts.value.filter((part) => part?.type === "text"));
+const cardParts = computed(() => parts.value.filter((part) => part?.type !== "text"));
 
 function toolName(part: any): string {
   if (part.type === "dynamic-tool") {
@@ -62,15 +64,25 @@ function proposalFor(part: any) {
 <template>
   <div class="flex flex-col gap-2" :class="isUser ? 'items-end' : 'items-start'">
     <div
-      class="max-w-full space-y-2 rounded-2xl px-4 py-3"
-      :class="isUser ? 'bg-primary text-inverted' : 'bg-elevated text-highlighted'"
+      v-if="textParts.length"
+      class="max-w-full space-y-2 rounded-lg px-4 py-3"
+      :class="
+        isUser ? 'bg-primary text-inverted' : 'border border-default bg-elevated text-highlighted'
+      "
     >
-      <template v-for="(part, index) in parts" :key="index">
-        <p v-if="part.type === 'text'" class="whitespace-pre-wrap text-base leading-6">
-          {{ part.text }}
-        </p>
+      <p
+        v-for="(part, index) in textParts"
+        :key="`text-${index}`"
+        class="whitespace-pre-wrap text-base leading-6"
+        dir="auto"
+      >
+        {{ part.text }}
+      </p>
+    </div>
 
-        <template v-else-if="isTool(part)">
+    <div v-if="!isUser && cardParts.length" class="w-full space-y-2">
+      <template v-for="(part, index) in cardParts" :key="`card-${index}`">
+        <template v-if="isTool(part)">
           <CitationCard
             v-if="toolName(part) === 'citeRule' && toolOutput(part) && !toolOutput(part).error"
             :rule="toolOutput(part)"

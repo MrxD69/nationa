@@ -47,7 +47,7 @@ function isActive(entry: PinnedAction): boolean {
     <div
       v-for="entry in pinned"
       :key="entry.templateId"
-      class="group/pin flex w-full items-center gap-1"
+      class="group flex w-full items-center gap-1"
       :class="props.collapsed ? 'justify-center' : ''"
     >
       <NuxtLink
@@ -55,7 +55,7 @@ function isActive(entry: PinnedAction): boolean {
         :title="`${label(entry)} — ${Math.round(entry.progress)}%`"
         :aria-label="`${label(entry)} — ${Math.round(entry.progress)}%`"
         :aria-current="isActive(entry) ? 'page' : undefined"
-        class="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-1.5 transition-colors"
+        class="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 transition-colors"
         :class="[
           props.collapsed ? 'justify-center' : 'justify-start',
           isActive(entry) ? 'bg-primary/10 text-primary' : 'text-toned hover:bg-elevated',
@@ -83,7 +83,7 @@ function isActive(entry: PinnedAction): boolean {
         size="sm"
         square
         icon="i-tabler-x"
-        class="opacity-0 focus-visible:opacity-100 group-hover/pin:opacity-100"
+        class="reveal-on-hover shrink-0"
         :aria-label="t('shell.rail.unpin')"
         :title="t('shell.rail.unpin')"
         @click="unpin(entry.templateId)"

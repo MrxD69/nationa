@@ -63,53 +63,39 @@ async function start() {
 </script>
 
 <template>
-  <UCard>
-    <template #header>
-      <div class="flex items-center gap-2">
-        <UIcon name="i-tabler-cloud-upload" class="size-5 text-primary" />
-        <div>
-          <h2 class="text-base font-semibold text-highlighted">
-            {{ t("invoices.upload.title") }}
-          </h2>
-          <p class="text-sm text-muted">{{ t("invoices.upload.subtitle") }}</p>
-        </div>
-      </div>
+  <div class="space-y-4">
+    <UFileUpload
+      v-model="file"
+      accept="application/pdf,image/jpeg,image/png"
+      :disabled="busy || disabled"
+      icon="i-tabler-receipt"
+      :label="t('invoices.upload.label')"
+      :description="t('invoices.upload.description')"
+    />
+
+    <template v-if="busy">
+      <UProgress :model-value="progress" :max="100" color="primary" />
+      <p class="text-sm text-muted">
+        {{ extracting ? t("invoices.upload.processing") : t("invoices.upload.uploading") }}
+      </p>
     </template>
 
-    <div class="space-y-4">
-      <UFileUpload
-        v-model="file"
-        accept="application/pdf,image/jpeg,image/png"
-        :disabled="busy || disabled"
-        icon="i-tabler-receipt"
-        :label="t('invoices.upload.subtitle')"
-        :description="t('invoices.upload.subtitle')"
-      />
+    <UAlert
+      v-if="errorMessage"
+      color="error"
+      variant="soft"
+      icon="i-tabler-alert-triangle"
+      :title="errorMessage"
+    />
 
-      <template v-if="busy">
-        <UProgress :model-value="progress" :max="100" color="primary" />
-        <p class="text-sm text-muted">
-          {{ extracting ? t("invoices.upload.processing") : t("invoices.upload.uploading") }}
-        </p>
-      </template>
-
-      <UAlert
-        v-if="errorMessage"
-        color="error"
-        variant="soft"
-        icon="i-tabler-alert-triangle"
-        :title="errorMessage"
-      />
-
-      <UButton
-        block
-        color="primary"
-        icon="i-tabler-upload"
-        :loading="busy"
-        :disabled="!file || busy || disabled"
-        :label="t('invoices.upload.button')"
-        @click="start"
-      />
-    </div>
-  </UCard>
+    <UButton
+      block
+      color="primary"
+      icon="i-tabler-upload"
+      :loading="busy"
+      :disabled="!file || busy || disabled"
+      :label="t('invoices.upload.button')"
+      @click="start"
+    />
+  </div>
 </template>

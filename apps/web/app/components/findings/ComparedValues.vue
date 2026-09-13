@@ -52,9 +52,10 @@ function isDivergent(index: number): boolean {
     <h3 class="text-base font-medium text-highlighted">{{ t("checks.compared.title") }}</h3>
 
     <div v-if="refs.length > 0" class="grid gap-3 sm:grid-cols-2">
-      <UCard
+      <div
         v-for="(ref, index) in refs"
         :key="`${ref.source}-${ref.field ?? index}`"
+        class="rounded-lg border border-default bg-elevated/40 p-4"
         :class="isDivergent(index) ? 'ring-2 ring-error' : ''"
       >
         <div class="flex flex-wrap items-center justify-between gap-2">
@@ -76,7 +77,7 @@ function isDivergent(index: number): boolean {
         <p class="mt-1 break-words text-base font-medium text-highlighted" dir="auto">
           {{ ref.value ?? "—" }}
         </p>
-      </UCard>
+      </div>
     </div>
 
     <p v-else class="text-base text-muted">{{ t("checks.compared.empty") }}</p>

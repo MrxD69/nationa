@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import SubmissionCard from "~/components/submission/SubmissionCard.vue";
+import PageHeader from "~/components/ui/PageHeader.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
+import EmptyState from "~/components/ui/EmptyState.vue";
 
 definePageMeta({ layout: "app", middleware: "auth" });
 
@@ -41,41 +44,32 @@ onMounted(load);
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-5xl space-y-6">
-    <div class="space-y-1">
-      <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
-        {{ t("submissions.title") }}
-      </h1>
-      <p class="text-base text-muted">{{ t("submissions.subtitle") }}</p>
-    </div>
+  <div class="mx-auto w-full max-w-6xl space-y-6">
+    <PageHeader
+      :title="t('submissions.title')"
+      :subtitle="t('submissions.subtitle')"
+      icon="i-tabler-send"
+      max-width="max-w-none"
+    />
 
-    <div v-if="loading" class="flex items-center gap-2 text-base text-muted">
-      <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
-      <span>{{ t("submissions.loading") }}</span>
-    </div>
+    <LoadingState v-if="loading" variant="skeleton-list" :count="4" />
 
     <UAlert
       v-else-if="error"
       color="error"
       variant="subtle"
+      icon="i-tabler-alert-triangle"
       :title="t('submissions.error.title')"
       :description="error"
     >
       <template #actions>
-        <UButton
-          color="error"
-          variant="soft"
-          size="lg"
-          :label="t('submissions.error.retry')"
-          @click="load"
-        />
+        <UButton color="error" variant="soft" :label="t('submissions.error.retry')" @click="load" />
       </template>
     </UAlert>
 
-    <UAlert
+    <EmptyState
       v-else-if="submissions.length === 0"
-      color="neutral"
-      variant="soft"
+      icon="i-tabler-inbox"
       :title="t('submissions.empty')"
       :description="t('submissions.emptyDescription')"
     />

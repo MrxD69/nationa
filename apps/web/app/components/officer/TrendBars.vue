@@ -20,10 +20,8 @@ function shortDate(value: string): string {
 </script>
 
 <template>
-  <UCard>
-    <template #header>
-      <h2 class="text-base font-semibold text-highlighted">{{ title }}</h2>
-    </template>
+  <section class="space-y-3 border-t border-default pt-4">
+    <h2 class="text-sm font-semibold text-highlighted">{{ title }}</h2>
 
     <p v-if="items.length === 0" class="text-base text-muted">{{ emptyLabel }}</p>
 
@@ -41,5 +39,5 @@ function shortDate(value: string): string {
         <span class="text-[0.625rem] text-muted">{{ shortDate(item.date) }}</span>
       </div>
     </div>
-  </UCard>
+  </section>
 </template>

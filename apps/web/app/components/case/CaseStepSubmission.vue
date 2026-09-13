@@ -36,7 +36,7 @@ function isReady(step: SubmissionStep): boolean {
       <div
         v-for="step in props.steps"
         :key="step.id"
-        class="flex items-center justify-between gap-3 rounded-lg border border-default px-3 py-2"
+        class="flex items-center justify-between gap-3 rounded-md border border-default px-3 py-2"
       >
         <div class="flex min-w-0 items-center gap-2">
           <UIcon

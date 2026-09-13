@@ -7,6 +7,9 @@ import CaseStepPayment from "~/components/case/CaseStepPayment.vue";
 import CaseStepReview from "~/components/case/CaseStepReview.vue";
 import CaseStepSubmission from "~/components/case/CaseStepSubmission.vue";
 import CaseStepUpload from "~/components/case/CaseStepUpload.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
+import PageHeader from "~/components/ui/PageHeader.vue";
+import StickyActionBar from "~/components/ui/StickyActionBar.vue";
 
 type RunnerField = {
   id: string;
@@ -19,7 +22,7 @@ type RunnerField = {
 
 const props = defineProps<{ caseId: string }>();
 
-const { t } = useI18n();
+const { locale, t } = useI18n();
 const api = useCase();
 const { templatesQuery, defaultLanguage } = useDocgen();
 
@@ -83,6 +86,43 @@ const submissionReady = computed(() => {
   return required.every((step) => step.status === "completed");
 });
 
+const caseTitle = computed(() => detail.value?.case.title ?? "");
+
+const procedureName = computed(() => {
+  const template = detail.value?.template;
+  if (!template) {
+    return "";
+  }
+  if (locale.value === "ar") {
+    return template.nameAr ?? template.nameFr ?? "";
+  }
+  return template.nameFr ?? "";
+});
+
+const agencyName = computed(() => {
+  const template = detail.value?.template;
+  if (!template) {
+    return "";
+  }
+  if (locale.value === "ar") {
+    return template.agencyNameAr ?? template.agencyNameFr ?? "";
+  }
+  return template.agencyNameFr ?? "";
+});
+
+const runnerSubtitle = computed(() =>
+  [procedureName.value, agencyName.value].filter(Boolean).join(" · "),
+);
+
+const isLastStep = computed(
+  () => steps.value.length > 0 && currentIndex.value === steps.value.length - 1,
+);
+
+const canCancel = computed(() => {
+  const status = detail.value?.case.status;
+  return status !== "cancelled" && status !== "submitted";
+});
+
 const statusColor: Record<
   string,
   "primary" | "info" | "success" | "warning" | "error" | "neutral"
@@ -140,6 +180,19 @@ function fieldEntries() {
 
 const saving = ref(false);
 const error = ref<string | null>(null);
+const stepError = ref<string | null>(null);
+const cancelOpen = ref(false);
+const cancelling = ref(false);
+
+function hasMissingRequired(): boolean {
+  return currentStepFields.value.some(
+    (field: { key: string; required?: boolean }) =>
+      field.required &&
+      (formValues.value[field.key] === null ||
+        formValues.value[field.key] === undefined ||
+        formValues.value[field.key] === ""),
+  );
+}
 
 async function saveCurrent(): Promise<void> {
   if (currentStep.value?.template?.stepType !== "form" || currentStepFields.value.length === 0) {
@@ -153,7 +206,12 @@ async function saveCurrent(): Promise<void> {
 }
 
 async function continueStep(): Promise<void> {
-  if (!currentStep.value) {
+  if (!currentStep.value || isLastStep.value) {
+    return;
+  }
+  stepError.value = null;
+  if (currentStep.value.template?.stepType === "form" && hasMissingRequired()) {
+    stepError.value = t("cases.runner.required");
     return;
   }
   saving.value = true;
@@ -218,46 +276,46 @@ async function submit(): Promise<void> {
 
 async function cancel(): Promise<void> {
   error.value = null;
+  cancelling.value = true;
   try {
     await cancelCase.mutateAsync({ caseId: props.caseId });
+    cancelOpen.value = false;
     await refetch();
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : String(cause);
+  } finally {
+    cancelling.value = false;
   }
 }
 </script>
 
 <template>
-  <div v-if="isLoading" class="flex items-center gap-2 py-12 text-base text-muted">
-    <UIcon name="i-tabler-loader-2" class="animate-spin" />
-    <span>{{ t("cases.runner.loading") }}</span>
-  </div>
+  <LoadingState v-if="isLoading" variant="spinner" :label="t('cases.runner.loading')" />
 
   <div v-else-if="detail" class="grid gap-6">
-    <div class="flex flex-wrap items-start justify-between gap-3">
-      <div class="min-w-0 space-y-1">
-        <div class="flex flex-wrap items-center gap-2">
-          <h1 class="truncate text-xl font-semibold text-highlighted">{{ detail.case.title }}</h1>
-          <UBadge :color="statusColor[detail.case.status] ?? 'neutral'" variant="subtle">
-            {{ t(`cases.status.${detail.case.status}`, detail.case.status) }}
-          </UBadge>
-        </div>
-        <p class="text-base text-muted">
-          {{ detail.template.nameFr }}
-          <span v-if="detail.template.agencyNameFr">· {{ detail.template.agencyNameFr }}</span>
-        </p>
-      </div>
-
-      <UButton
-        v-if="detail.case.status !== 'cancelled' && detail.case.status !== 'submitted'"
-        color="neutral"
-        variant="outline"
-        size="lg"
-        icon="i-tabler-x"
-        :label="t('cases.runner.cancel')"
-        @click="cancel"
-      />
-    </div>
+    <PageHeader
+      :title="caseTitle"
+      :subtitle="runnerSubtitle"
+      back-to="/cases"
+      :back-label="t('cases.runner.back')"
+      max-width="max-w-6xl"
+    >
+      <template #meta>
+        <UBadge :color="statusColor[detail.case.status] ?? 'neutral'" variant="subtle" size="lg">
+          {{ t(`cases.status.${detail.case.status}`, detail.case.status) }}
+        </UBadge>
+      </template>
+      <template #actions>
+        <UButton
+          v-if="canCancel"
+          color="neutral"
+          variant="outline"
+          icon="i-tabler-x"
+          :label="t('cases.runner.cancel')"
+          @click="cancelOpen = true"
+        />
+      </template>
+    </PageHeader>
 
     <UAlert v-if="error" color="error" variant="subtle" :title="error" />
 
@@ -268,7 +326,7 @@ async function cancel(): Promise<void> {
 
       <section v-if="currentStep" class="grid gap-6">
         <div class="space-y-1">
-          <h2 class="text-lg font-medium text-highlighted">
+          <h2 class="text-lg font-semibold text-highlighted">
             {{
               currentStep.template?.titleFr ??
               t("cases.runner.step", { position: currentStep.position })
@@ -330,37 +388,47 @@ async function cancel(): Promise<void> {
           :language="defaultLanguage"
         />
 
-        <div class="flex flex-wrap items-center justify-between gap-2 border-t border-default pt-4">
-          <UButton
-            color="neutral"
-            variant="ghost"
-            icon="i-tabler-arrow-left"
-            :disabled="currentIndex === 0"
-            :label="t('common.actions.back')"
-            @click="currentIndex -= 1"
-          />
+        <UAlert
+          v-if="stepError"
+          color="warning"
+          variant="subtle"
+          icon="i-tabler-alert-triangle"
+          :title="stepError"
+        />
 
-          <div class="flex items-center gap-2">
+        <StickyActionBar>
+          <template #secondary>
             <UButton
-              v-if="canSkip"
               color="neutral"
-              variant="outline"
-              icon="i-tabler-player-skip-forward"
-              :label="t('cases.runner.skip')"
-              :loading="saving"
-              :disabled="saving"
-              @click="skipCurrent"
+              variant="ghost"
+              icon="i-tabler-arrow-left"
+              :ui="{ leadingIcon: 'rtl:rotate-180' }"
+              :disabled="currentIndex === 0"
+              :label="t('common.actions.back')"
+              @click="currentIndex -= 1"
             />
-            <UButton
-              v-if="currentStep.template?.stepType !== 'submission'"
-              icon="i-tabler-arrow-right"
-              :label="t('cases.runner.continue')"
-              :loading="saving"
-              :disabled="saving"
-              @click="continueStep"
-            />
-          </div>
-        </div>
+          </template>
+
+          <UButton
+            v-if="canSkip"
+            color="neutral"
+            variant="outline"
+            icon="i-tabler-player-skip-forward"
+            :label="t('cases.runner.skip')"
+            :loading="saving"
+            :disabled="saving"
+            @click="skipCurrent"
+          />
+          <UButton
+            v-if="!isLastStep && currentStep.template?.stepType !== 'submission'"
+            icon="i-tabler-arrow-right"
+            :ui="{ trailingIcon: 'rtl:rotate-180' }"
+            :label="t('cases.runner.continue')"
+            :loading="saving"
+            :disabled="saving"
+            @click="continueStep"
+          />
+        </StickyActionBar>
       </section>
     </div>
   </div>
@@ -372,4 +440,43 @@ async function cancel(): Promise<void> {
     icon="i-tabler-alert-triangle"
     :title="t('cases.runner.notFound')"
   />
+
+  <UModal v-model:open="cancelOpen">
+    <template #content>
+      <UCard>
+        <template #header>
+          <div class="flex items-center justify-between gap-3">
+            <h2 class="font-medium text-highlighted">{{ t("cases.runner.cancelTitle") }}</h2>
+            <UButton
+              color="neutral"
+              variant="ghost"
+              icon="i-tabler-x"
+              square
+              @click="cancelOpen = false"
+            />
+          </div>
+        </template>
+
+        <p class="text-base text-muted">{{ t("cases.runner.cancelBody") }}</p>
+
+        <template #footer>
+          <div class="flex justify-end gap-2">
+            <UButton
+              color="neutral"
+              variant="ghost"
+              :label="t('cases.runner.cancelKeep')"
+              @click="cancelOpen = false"
+            />
+            <UButton
+              color="error"
+              icon="i-tabler-x"
+              :loading="cancelling"
+              :label="t('cases.runner.cancelConfirm')"
+              @click="cancel"
+            />
+          </div>
+        </template>
+      </UCard>
+    </template>
+  </UModal>
 </template>

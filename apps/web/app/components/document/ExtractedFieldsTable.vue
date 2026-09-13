@@ -10,27 +10,45 @@ const { t, locale } = useI18n();
 
 type Row = ExtractedFieldItem;
 
+function humanizeKey(value: string): string {
+  return value
+    .replace(/[_-]+/g, " ")
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^./, (char) => char.toUpperCase());
+}
+
 function labelFor(row: Row): string {
   const normalized = row.normalizedKey ?? null;
   if (normalized && normalized in FIELD_LABELS) {
     const label = FIELD_LABELS[normalized as keyof typeof FIELD_LABELS];
-    return (locale.value === "ar" ? label.ar : label.fr) || label.fr || row.labelRaw || row.key;
+    return (locale.value === "ar" ? label.ar : label.fr) || label.fr || humanizeKey(row.key);
   }
-  return row.labelRaw || row.key;
+  const raw = row.labelRaw || row.key;
+  return raw ? humanizeKey(raw) : t("documents.fields.key");
+}
+
+function humanizeValue(value: unknown): string {
+  if (value === null || value === undefined || value === "") {
+    return t("documents.fields.noValue");
+  }
+  if (Array.isArray(value)) {
+    return value.map((entry) => humanizeValue(entry)).join(", ");
+  }
+  if (typeof value === "object") {
+    return Object.entries(value as Record<string, unknown>)
+      .map(([key, entry]) => `${humanizeKey(key)}: ${humanizeValue(entry)}`)
+      .join(" · ");
+  }
+  return String(value);
 }
 
 function displayValue(row: Row): string {
   if (row.valueText) {
     return row.valueText;
   }
-  if (row.valueJsonb !== null && row.valueJsonb !== undefined) {
-    try {
-      return JSON.stringify(row.valueJsonb);
-    } catch {
-      return String(row.valueJsonb);
-    }
-  }
-  return t("documents.fields.noValue");
+  return humanizeValue(row.valueJsonb);
 }
 
 function confidenceNumber(row: Row): number | null {

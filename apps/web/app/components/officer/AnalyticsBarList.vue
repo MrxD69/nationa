@@ -12,10 +12,8 @@ const max = computed(() => Math.max(...props.items.map((item) => item.value), 1)
 </script>
 
 <template>
-  <UCard>
-    <template #header>
-      <h2 class="text-base font-semibold text-highlighted">{{ title }}</h2>
-    </template>
+  <section class="space-y-3 border-t border-default pt-4">
+    <h2 class="text-sm font-semibold text-highlighted">{{ title }}</h2>
 
     <p v-if="items.length === 0" class="text-base text-muted">{{ emptyLabel }}</p>
 
@@ -33,5 +31,5 @@ const max = computed(() => Math.max(...props.items.map((item) => item.value), 1)
         </div>
       </li>
     </ul>
-  </UCard>
+  </section>
 </template>

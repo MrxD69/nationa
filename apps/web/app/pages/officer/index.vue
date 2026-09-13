@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import QueueTable from "~/components/officer/QueueTable.vue";
 import AgencySwitcher from "~/components/officer/AgencySwitcher.vue";
+import PageHeader from "~/components/ui/PageHeader.vue";
 
 definePageMeta({ layout: "officer", middleware: "auth" });
 
@@ -146,32 +147,27 @@ watch([agencyId, status, tier, sort], () => {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div class="space-y-1">
-        <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
-          {{ t("officer.queue.title") }}
-        </h1>
-        <p class="text-base text-muted">{{ t("officer.queue.subtitle") }}</p>
-      </div>
-      <AgencySwitcher v-model="agencyId" :agencies="agencies" />
-    </div>
+  <div class="mx-auto w-full max-w-7xl space-y-6">
+    <PageHeader
+      :title="t('officer.queue.title')"
+      :subtitle="t('officer.queue.subtitle')"
+      icon="i-tabler-inbox"
+      max-width="max-w-7xl"
+    >
+      <template #actions>
+        <AgencySwitcher v-model="agencyId" :agencies="agencies" />
+      </template>
+    </PageHeader>
 
     <UAlert
-      v-if="error && agencies.length === 0"
+      v-if="agencies.length === 0 && error"
       color="error"
       variant="subtle"
       :title="t('officer.queue.error')"
       :description="error"
     >
       <template #actions>
-        <UButton
-          color="error"
-          variant="soft"
-          size="lg"
-          :label="t('officer.common.retry')"
-          @click="retry()"
-        />
+        <UButton color="error" variant="soft" :label="t('officer.common.retry')" @click="retry()" />
       </template>
     </UAlert>
 
@@ -184,9 +180,13 @@ watch([agencyId, status, tier, sort], () => {
     />
 
     <template v-else>
-      <div class="flex flex-wrap items-center gap-3">
-        <USelect v-model="status" :items="statusItems" class="w-44" />
-        <USelect v-model="tier" :items="tierItems" class="w-44" />
+      <div class="flex flex-wrap gap-3">
+        <UFormField :label="t('officer.queue.statusFilter')" class="w-full sm:w-56">
+          <USelect v-model="status" :items="statusItems" class="w-full" />
+        </UFormField>
+        <UFormField :label="t('officer.queue.tierFilter')" class="w-full sm:w-56">
+          <USelect v-model="tier" :items="tierItems" class="w-full" />
+        </UFormField>
       </div>
 
       <UAlert
@@ -200,7 +200,6 @@ watch([agencyId, status, tier, sort], () => {
           <UButton
             color="error"
             variant="soft"
-            size="lg"
             :label="t('officer.common.retry')"
             @click="retry()"
           />

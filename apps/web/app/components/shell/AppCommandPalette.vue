@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { CommandPaletteGroup, CommandPaletteItem } from "@nuxt/ui";
 
-import { COMPANY_TABS, RAIL_ITEMS, resolveCompanyPath } from "~/constants/navigation";
+import { COMPANY_TABS, resolveCompanyPath } from "~/constants/navigation";
 import type { ActionCatalogItem } from "~/composables/useActions";
 import type { CompanySummary } from "~/composables/useSelectedCompany";
 
@@ -10,8 +10,11 @@ const { open, setOpen } = useCommandPalette();
 const { companies, selectedCompanyId, accessibleCompanyId, selectCompany, hasCompany } =
   useSelectedCompany();
 const { catalogQuery } = useActions();
+const visibleRailItems = useVisibleRailItems();
 
-const catalog = catalogQuery({ companyId: accessibleCompanyId.value ?? undefined });
+const companyId = computed(() => accessibleCompanyId.value ?? undefined);
+
+const catalog = catalogQuery({ companyId });
 
 function close() {
   setOpen(false);
@@ -48,14 +51,14 @@ const companyItems = computed<CommandPaletteItem[]>(() =>
 const navigationItems = computed<CommandPaletteItem[]>(() => {
   const items: CommandPaletteItem[] = [];
 
-  for (const railItem of RAIL_ITEMS) {
+  for (const railItem of visibleRailItems.value) {
     if (!railItem.to) {
       continue;
     }
     const to = railItem.to;
     items.push({
       id: `nav:${railItem.key}`,
-      label: t(railItem.labelKey),
+      label: railItem.label ?? t(railItem.labelKey),
       icon: railItem.icon,
       onSelect: () => navigate(to),
     });

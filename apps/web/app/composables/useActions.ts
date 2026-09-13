@@ -27,6 +27,8 @@ export type ActionCatalogItem = {
   status: ActionStepState;
   progress: number;
   caseId: string | null;
+  recommended?: boolean;
+  recommendationReason?: string | null;
 };
 
 export type ActionStepSignals = Record<string, boolean>;

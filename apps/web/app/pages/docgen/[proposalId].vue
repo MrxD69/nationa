@@ -5,6 +5,9 @@ import DocgenArtifact from "~/components/docgen/DocgenArtifact.vue";
 import DocgenDraftPreview from "~/components/docgen/DocgenDraftPreview.vue";
 import DocgenFieldEditor from "~/components/docgen/DocgenFieldEditor.vue";
 import DocgenQuestionnaire from "~/components/docgen/DocgenQuestionnaire.vue";
+import PageHeader from "~/components/ui/PageHeader.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
+import StickyActionBar from "~/components/ui/StickyActionBar.vue";
 
 definePageMeta({ layout: "app", middleware: "auth" });
 
@@ -144,31 +147,24 @@ const artifactView = computed(() => approved.value ?? draft.value);
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-4xl space-y-6">
-    <div class="flex flex-wrap items-start justify-between gap-3">
-      <div class="space-y-1">
-        <div class="flex items-center gap-2">
-          <NuxtLink to="/docgen" class="text-sm text-muted hover:underline">
-            {{ t("docgen.title") }}
-          </NuxtLink>
-          <UBadge
-            color="neutral"
-            variant="subtle"
-            size="lg"
-            :label="t(`docgen.status.${status}`, status)"
-          />
-        </div>
-        <h1 class="text-xl font-semibold tracking-tight text-highlighted">
-          {{ t("docgen.workspace.title") }}
-        </h1>
-        <p class="text-base text-muted">{{ t("docgen.workspace.subtitle") }}</p>
-      </div>
-    </div>
+  <div class="mx-auto w-full max-w-5xl space-y-6">
+    <PageHeader
+      :title="t('docgen.workspace.title')"
+      :subtitle="t('docgen.workspace.subtitle')"
+      icon="i-tabler-file-text"
+      back-to="/docgen"
+    >
+      <template #actions>
+        <UBadge
+          color="neutral"
+          variant="subtle"
+          size="lg"
+          :label="t(`docgen.status.${status}`, status)"
+        />
+      </template>
+    </PageHeader>
 
-    <div v-if="isPending && !draft" class="flex items-center gap-2 py-8 text-base text-muted">
-      <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
-      {{ t("docgen.loading") }}
-    </div>
+    <LoadingState v-if="isPending && !draft" variant="skeleton-grid" />
 
     <UAlert
       v-else-if="!draft"
@@ -178,44 +174,50 @@ const artifactView = computed(() => approved.value ?? draft.value);
       :title="t('docgen.errors.loadFailed')"
     />
 
-    <template v-else-if="artifactView && !isDraft">
-      <DocgenArtifact
-        :payload="artifactView.payload"
-        :status="status"
-        :document-id="artifactView.payload.approvedDocumentId ?? null"
-        :storage-key="artifactView.payload.approvedStorageKey ?? null"
-      />
-    </template>
+    <DocgenArtifact
+      v-else-if="artifactView && !isDraft"
+      :payload="artifactView.payload"
+      :status="status"
+      :document-id="artifactView.payload.approvedDocumentId ?? null"
+      :storage-key="artifactView.payload.approvedStorageKey ?? null"
+    />
 
-    <template v-else>
-      <DocgenQuestionnaire
-        v-if="(payload?.questions?.length ?? 0) > 0"
-        v-model="answers"
-        :questions="payload?.questions ?? []"
-      />
-
-      <DocgenDraftPreview :payload="draft.payload" />
-
-      <DocgenFieldEditor v-model="edits" :fields="draft.payload.fields" />
-
-      <DocgenApprovalBar
-        :busy="isBusy"
-        :disabled="!isDraft"
-        @approve="onApprove"
-        @reject="onReject"
-      />
-
-      <div class="flex items-center justify-end">
-        <UButton
-          color="neutral"
-          variant="soft"
-          icon="i-tabler-device-floppy"
-          :loading="update.isPending.value"
-          :disabled="isBusy"
-          :label="t('docgen.editor.save')"
-          @click="save"
-        />
+    <div v-else class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <div class="min-w-0 self-start lg:sticky lg:top-20">
+        <DocgenDraftPreview :payload="draft.payload" />
       </div>
-    </template>
+
+      <div class="min-w-0 space-y-6">
+        <DocgenQuestionnaire
+          v-if="(payload?.questions?.length ?? 0) > 0"
+          v-model="answers"
+          :questions="payload?.questions ?? []"
+        />
+
+        <DocgenFieldEditor v-model="edits" :fields="draft.payload.fields" />
+
+        <DocgenApprovalBar
+          :busy="isBusy"
+          :disabled="!isDraft"
+          @approve="onApprove"
+          @reject="onReject"
+        />
+
+        <StickyActionBar>
+          <template #secondary>
+            <p class="text-sm text-muted">{{ t("docgen.editor.stickyHint") }}</p>
+          </template>
+          <UButton
+            color="neutral"
+            variant="soft"
+            icon="i-tabler-device-floppy"
+            :loading="update.isPending.value"
+            :disabled="isBusy"
+            :label="t('docgen.editor.save')"
+            @click="save"
+          />
+        </StickyActionBar>
+      </div>
+    </div>
   </div>
 </template>

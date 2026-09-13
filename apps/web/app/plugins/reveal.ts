@@ -75,31 +75,57 @@ function resolveConfig(el: HTMLElement, binding: DirectiveBinding<RevealValue>) 
 export default defineNuxtPlugin((nuxtApp) => {
   if (import.meta.client) {
     gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ ignoreMobileResize: true });
   }
 
   const tweens = new WeakMap<
     HTMLElement,
-    { kill: () => void; scrollTrigger?: { kill: () => void } }
+    {
+      kill: () => void;
+      scrollTrigger?: { kill: () => void };
+      timer?: number;
+    }
   >();
 
   nuxtApp.vueApp.directive<HTMLElement, RevealValue>("reveal", {
     mounted: (el, binding) => {
       if (!import.meta.client || prefersReducedMotion()) return;
 
-      const { vars, targets, scroll, start } = resolveConfig(el, binding);
-      const tween = scroll
-        ? gsap.from(targets, {
-            ...vars,
-            scrollTrigger: { trigger: el, start, once: true },
-          } as Parameters<GsapFrom>[1])
-        : gsap.from(targets, vars);
+      try {
+        const { vars, targets, scroll, start } = resolveConfig(el, binding);
+        const tween = scroll
+          ? gsap.from(targets, {
+              ...vars,
+              scrollTrigger: { trigger: el, start, once: true },
+            } as Parameters<GsapFrom>[1])
+          : gsap.from(targets, vars);
 
-      tweens.set(el, tween);
+        const entry = {
+          kill: () => tween.kill(),
+          scrollTrigger: tween.scrollTrigger,
+          timer: undefined as number | undefined,
+        };
+
+        // Failsafe: if ScrollTrigger never fires (hidden/unmeasured container),
+        // force the tween to its end state so content is never permanently hidden.
+        if (scroll) {
+          entry.timer = window.setTimeout(() => {
+            tween.progress?.(1);
+            ScrollTrigger.refresh();
+          }, 2500);
+        }
+
+        tweens.set(el, entry);
+      } catch {
+        gsap.set(el, { clearProps: "all" });
+      }
     },
     unmounted: (el) => {
-      const tween = tweens.get(el);
-      tween?.scrollTrigger?.kill();
-      tween?.kill();
+      const entry = tweens.get(el);
+      if (entry?.timer !== undefined) window.clearTimeout(entry.timer);
+      entry?.scrollTrigger?.kill();
+      entry?.kill();
+      gsap.set(el, { clearProps: "all" });
       tweens.delete(el);
     },
   });

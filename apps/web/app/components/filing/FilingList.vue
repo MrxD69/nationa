@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { DropdownMenuItem } from "@nuxt/ui";
 import FilingStatusBadge from "~/components/filing/FilingStatusBadge.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
+import EmptyState from "~/components/ui/EmptyState.vue";
 
 type FilingRow = {
   id: string;
@@ -7,72 +10,197 @@ type FilingRow = {
   periodStart?: string | null;
   periodEnd?: string | null;
   totalTaxDue?: string | null;
+  currency?: string | null;
   status?: string | null;
 };
 
-defineProps<{
+const props = defineProps<{
   items: FilingRow[];
   loading?: boolean;
   selectedId?: string | null;
+  filtered?: boolean;
 }>();
 
-const emit = defineEmits<{ select: [id: string] }>();
+const emit = defineEmits<{ select: [id: string]; recompute: [id: string]; remove: [id: string] }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
-function formatAmount(value?: string | null) {
+const DRAFT = "draft";
+const SUBMITTED = "submitted";
+const VERIFIED = "verified";
+const OTHER = "__other__";
+
+function groupKey(filing: FilingRow): string {
+  const status = (filing.status ?? "").toLowerCase();
+  if (status === "draft" || status === "ready") {
+    return DRAFT;
+  }
+  if (status === "submitted" || status === "under_review") {
+    return SUBMITTED;
+  }
+  if (status === "approved" || status === "verified") {
+    return VERIFIED;
+  }
+  return OTHER;
+}
+
+function groupName(key: string): string {
+  if (key === DRAFT) {
+    return t("filings.groups.draft");
+  }
+  if (key === SUBMITTED) {
+    return t("filings.groups.submitted");
+  }
+  if (key === VERIFIED) {
+    return t("filings.groups.verified");
+  }
+  return t("filings.groups.other");
+}
+
+const groups = computed(() => {
+  const order: string[] = [];
+  const buckets = new Map<string, FilingRow[]>();
+  for (const filing of props.items) {
+    const key = groupKey(filing);
+    if (!buckets.has(key)) {
+      buckets.set(key, []);
+      order.push(key);
+    }
+    buckets.get(key)?.push(filing);
+  }
+  return order.map((key) => ({ key, name: groupName(key), items: buckets.get(key) ?? [] }));
+});
+
+function formatAmount(value?: string | null, currency?: string | null) {
   if (value === null || value === undefined || value === "") {
     return "—";
   }
   const amount = Number(value);
-  return Number.isFinite(amount) ? amount.toFixed(3) : value;
+  if (!Number.isFinite(amount)) {
+    return value;
+  }
+  const code = (currency || "TND").trim().toUpperCase() || "TND";
+  try {
+    return new Intl.NumberFormat(locale.value, {
+      style: "currency",
+      currency: code,
+      minimumFractionDigits: 3,
+    }).format(amount);
+  } catch {
+    return `${amount.toFixed(3)} ${code}`;
+  }
+}
+
+function rowTitle(filing: FilingRow) {
+  if (filing.periodStart && filing.periodEnd) {
+    return `${filing.periodStart} → ${filing.periodEnd}`;
+  }
+  return filing.taxType || "—";
+}
+
+function rowMeta(filing: FilingRow) {
+  return [filing.taxType || "—", formatAmount(filing.totalTaxDue, filing.currency)].join(" · ");
+}
+
+function menuItems(filing: FilingRow): DropdownMenuItem[] {
+  return [
+    {
+      label: t("filings.actions.view"),
+      icon: "i-tabler-eye",
+      onSelect: () => emit("select", filing.id),
+    },
+    {
+      label: t("filings.actions.recompute"),
+      icon: "i-tabler-reload",
+      onSelect: () => emit("recompute", filing.id),
+    },
+    {
+      label: t("filings.actions.remove"),
+      icon: "i-tabler-trash",
+      color: "error",
+      onSelect: () => emit("remove", filing.id),
+    },
+  ];
 }
 </script>
 
 <template>
   <div>
-    <div v-if="loading" class="flex items-center gap-2 py-8 text-base text-muted">
-      <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
-      {{ t("filings.loading") }}
-    </div>
+    <LoadingState v-if="loading" variant="skeleton-list" :label="t('filings.loading')" />
 
-    <div
+    <EmptyState
       v-else-if="items.length === 0"
-      class="rounded-xl border border-dashed border-default py-10 text-center"
-    >
-      <p class="text-base font-medium text-toned">{{ t("filings.empty") }}</p>
-      <p class="text-sm text-muted">{{ t("filings.emptyHint") }}</p>
-    </div>
+      icon="i-tabler-file-off"
+      :title="filtered ? t('filings.list.emptyFiltered') : t('filings.empty')"
+      :description="filtered ? undefined : t('filings.emptyHint')"
+    />
 
-    <div v-else class="overflow-x-auto rounded-xl border border-default">
-      <table class="w-full text-base">
-        <thead class="bg-elevated text-sm text-muted">
-          <tr>
-            <th class="px-3 py-2 text-start font-medium">{{ t("filings.list.period") }}</th>
-            <th class="px-3 py-2 text-start font-medium">{{ t("filings.list.taxType") }}</th>
-            <th class="px-3 py-2 text-end font-medium">{{ t("filings.list.totalTaxDue") }}</th>
-            <th class="px-3 py-2 text-start font-medium">{{ t("filings.list.status") }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="filing in items"
+    <div v-else class="divide-y divide-default overflow-hidden rounded-lg border border-default">
+      <details v-for="group in groups" :key="group.key" open>
+        <summary
+          class="flex cursor-pointer list-none items-center gap-2 px-3 py-2 transition-colors hover:bg-accented [&::-webkit-details-marker]:hidden"
+        >
+          <UIcon
+            name="i-tabler-chevron-down"
+            class="size-4 shrink-0 text-muted transition-transform [[details:not([open])_&]:-rotate-90]"
+          />
+          <span class="min-w-0 flex-1 truncate text-sm font-semibold text-toned">
+            {{ group.name }}
+          </span>
+          <UBadge color="neutral" variant="soft" size="sm" :label="String(group.items.length)" />
+        </summary>
+        <div class="divide-y divide-default border-t border-default">
+          <div
+            v-for="filing in group.items"
             :key="filing.id"
-            class="cursor-pointer border-t border-default hover:bg-elevated/60"
-            :class="filing.id === selectedId ? 'bg-primary/5' : ''"
+            class="group flex cursor-pointer items-start gap-3 px-3 py-2.5 transition-colors"
+            :class="
+              filing.id === selectedId
+                ? 'bg-primary/10 text-primary'
+                : 'hover:bg-accented focus-visible:bg-accented'
+            "
+            role="button"
+            tabindex="0"
             @click="emit('select', filing.id)"
+            @keydown.enter="emit('select', filing.id)"
+            @keydown.space.prevent="emit('select', filing.id)"
           >
-            <td class="px-3 py-2 text-toned" dir="ltr">
-              {{ filing.periodStart }} → {{ filing.periodEnd }}
-            </td>
-            <td class="px-3 py-2 text-muted">{{ filing.taxType || "—" }}</td>
-            <td class="px-3 py-2 text-end text-toned" dir="ltr">
-              {{ formatAmount(filing.totalTaxDue) }}
-            </td>
-            <td class="px-3 py-2"><FilingStatusBadge :status="filing.status" /></td>
-          </tr>
-        </tbody>
-      </table>
+            <div
+              class="flex size-9 shrink-0 items-center justify-center rounded-md"
+              :class="
+                filing.id === selectedId ? 'bg-primary/15 text-primary' : 'bg-accented text-muted'
+              "
+            >
+              <UIcon name="i-tabler-file-invoice" class="size-5" />
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-base font-medium text-highlighted" dir="ltr">
+                {{ rowTitle(filing) }}
+              </p>
+              <p class="truncate text-sm text-muted">{{ rowMeta(filing) }}</p>
+            </div>
+
+            <div class="flex shrink-0 items-center gap-1">
+              <FilingStatusBadge :status="filing.status" class="hidden sm:inline-flex" />
+
+              <UDropdownMenu :items="menuItems(filing)" :content="{ align: 'end' }">
+                <UButton
+                  color="neutral"
+                  variant="ghost"
+                  icon="i-tabler-dots-vertical"
+                  size="sm"
+                  square
+                  :aria-label="t('filings.list.actions')"
+                  :title="t('filings.list.actions')"
+                  @click.stop
+                  @keydown.stop
+                />
+              </UDropdownMenu>
+            </div>
+          </div>
+        </div>
+      </details>
     </div>
   </div>
 </template>

@@ -3,6 +3,25 @@
     "title": "الإعدادات",
     "subtitle": "خصّص مساحة عملك.",
     "preferences": "التفضيلات",
+    "sections": {
+      "account": "الحساب",
+      "preferences": "التفضيلات",
+      "assistant": "المساعد"
+    },
+    "account": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "type": "نوع الحساب",
+      "types": {
+        "owner": "مالك (مؤسسة)",
+        "accountant": "محاسب / محامٍ",
+        "officer": "موظف عمومي",
+        "admin": "مسؤول",
+        "unknown": "غير محدّد"
+      }
+    },
+    "signOut": "تسجيل الخروج",
+    "unsaved": "تغييرات غير محفوظة",
     "theme": {
       "label": "المظهر",
       "light": "فاتح",

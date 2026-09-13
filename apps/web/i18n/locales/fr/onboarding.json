@@ -4,11 +4,14 @@
     "subtitle": "Quelques questions pour personnaliser votre espace.",
     "loading": "Chargement…",
     "retry": "Réessayer",
+    "retryLoad": "Réessayer",
     "resume": "Votre onboarding est déjà terminé.",
     "steps": {
       "question": "Question",
       "consent": "Confidentialité",
-      "finish": "Terminé"
+      "finish": "Terminé",
+      "current": "En cours",
+      "done": "Terminée"
     },
     "question": "Avez-vous déjà une entreprise ?",
     "choices": {
@@ -49,6 +52,7 @@
     "back": "Retour",
     "errors": {
       "saveFailed": "Échec de l'enregistrement. Réessayez.",
+      "loadFailed": "Impossible de charger votre profil.",
       "consentRequired": "Vous devez accepter la politique de confidentialité."
     }
   }

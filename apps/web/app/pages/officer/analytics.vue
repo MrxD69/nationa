@@ -3,6 +3,9 @@ import AgencySwitcher from "~/components/officer/AgencySwitcher.vue";
 import AnalyticsCards from "~/components/officer/AnalyticsCards.vue";
 import AnalyticsBarList from "~/components/officer/AnalyticsBarList.vue";
 import TrendBars from "~/components/officer/TrendBars.vue";
+import PageHeader from "~/components/ui/PageHeader.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
+import EmptyState from "~/components/ui/EmptyState.vue";
 
 definePageMeta({ layout: "officer", middleware: "auth" });
 
@@ -36,8 +39,19 @@ const agenciesLoaded = ref(false);
 
 function findingLabel(code: string): string {
   const key = `checks.findings.${code}.title`;
-  return te(key) ? t(key) : code;
+  return te(key) ? t(key) : t("officer.analytics.unknownFinding");
 }
+
+/**
+ * A network failure and a permission failure are not the same story: only the
+ * latter is about the supervisor role. Anything matching FORBIDDEN gets the
+ * supervisor message; every other error keeps a neutral title.
+ */
+const errorTitle = computed(() =>
+  /forbidden|403|supervisor/i.test(error.value ?? "")
+    ? t("officer.analytics.supervisorOnly")
+    : t("officer.analytics.errorTitle"),
+);
 
 const tierItems = computed(() => {
   const totals = analytics.value?.totals;
@@ -138,37 +152,34 @@ watch(agencyId, () => {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div class="space-y-1">
-        <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
-          {{ t("officer.analytics.title") }}
-        </h1>
-        <p class="text-base text-muted">{{ t("officer.analytics.subtitle") }}</p>
-      </div>
-      <AgencySwitcher v-model="agencyId" :agencies="agencies" />
-    </div>
+  <div class="mx-auto w-full max-w-7xl space-y-6">
+    <PageHeader
+      :title="t('officer.analytics.title')"
+      :subtitle="t('officer.analytics.subtitle')"
+      icon="i-tabler-chart-bar"
+      max-width="max-w-7xl"
+    >
+      <template #actions>
+        <AgencySwitcher v-model="agencyId" :agencies="agencies" />
+      </template>
+    </PageHeader>
 
-    <div v-if="loading" class="flex items-center gap-2 text-base text-muted">
-      <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
-      <span>{{ t("officer.common.loading") }}</span>
-    </div>
+    <LoadingState
+      v-if="loading"
+      variant="skeleton-grid"
+      :count="6"
+      :label="t('officer.common.loading')"
+    />
 
     <UAlert
       v-else-if="error"
       color="error"
       variant="subtle"
-      :title="t('officer.analytics.supervisorOnly')"
+      :title="errorTitle"
       :description="error"
     >
       <template #actions>
-        <UButton
-          color="error"
-          variant="soft"
-          size="lg"
-          :label="t('officer.common.retry')"
-          @click="retry()"
-        />
+        <UButton color="error" variant="soft" :label="t('officer.common.retry')" @click="retry()" />
       </template>
     </UAlert>
 
@@ -204,12 +215,11 @@ watch(agencyId, () => {
       </div>
     </template>
 
-    <UAlert
+    <EmptyState
       v-else
-      color="neutral"
-      variant="soft"
-      icon="i-tabler-info-circle"
-      :description="t('officer.analytics.empty')"
+      icon="i-tabler-chart-bar"
+      :title="t('officer.analytics.empty')"
+      :description="t('officer.analytics.error')"
     />
   </div>
 </template>

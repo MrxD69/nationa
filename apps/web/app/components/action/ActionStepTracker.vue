@@ -139,19 +139,14 @@ async function onStart(): Promise<void> {
 
   <UAlert
     v-else-if="isError"
+    class="rounded-lg"
     color="error"
     variant="subtle"
     :title="t('actions.hub.error')"
     :description="error?.message"
   >
     <template #actions>
-      <UButton
-        color="error"
-        variant="soft"
-        size="lg"
-        :label="t('actions.hub.retry')"
-        @click="refetch()"
-      />
+      <UButton color="error" variant="soft" :label="t('actions.hub.retry')" @click="refetch()" />
     </template>
   </UAlert>
 
@@ -164,7 +159,10 @@ async function onStart(): Promise<void> {
         <div class="flex flex-wrap items-center gap-2">
           <AgencyMark :agency-id="tracker.action.agencyId" size="sm" :alt="agencyName" />
           <span class="text-base font-semibold text-toned">{{ agencyName }}</span>
-          <ActionStatusBadge :state="tracker.aggregate.state" />
+          <ActionStatusBadge
+            v-if="tracker.aggregate.state !== 'not_started'"
+            :state="tracker.aggregate.state"
+          />
           <span v-if="tracker.action.estimatedDays" class="text-sm text-muted">
             {{ t("actions.hub.days", { count: tracker.action.estimatedDays }) }}
           </span>
@@ -190,7 +188,13 @@ async function onStart(): Promise<void> {
       </div>
     </div>
 
-    <UAlert v-if="actionError" color="error" variant="subtle" :title="actionError" />
+    <UAlert
+      v-if="actionError"
+      class="rounded-lg"
+      color="error"
+      variant="subtle"
+      :title="actionError"
+    />
 
     <ActionNextCallout
       :step="nextStep"
@@ -283,6 +287,7 @@ async function onStart(): Promise<void> {
 
   <UAlert
     v-else
+    class="rounded-lg"
     color="error"
     variant="subtle"
     icon="i-tabler-alert-triangle"

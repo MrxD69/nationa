@@ -51,7 +51,6 @@ const obligationOptions = computed(() =>
       <UButton
         color="neutral"
         variant="soft"
-        size="lg"
         icon="i-tabler-calculator"
         :loading="loading"
         :label="t('filings.period.preview')"

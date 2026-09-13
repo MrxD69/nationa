@@ -15,42 +15,35 @@ export const RAIL_ITEMS: RailItem[] = [
     icon: "i-tabler-building-skyscraper",
     labelKey: "shell.rail.companies",
     to: "/companies",
+    section: "workspace",
   },
   {
     key: "submissions",
     icon: "i-tabler-send",
     labelKey: "shell.rail.submissions",
     to: "/submissions",
+    section: "workspace",
   },
   {
     key: "actions",
     icon: "i-tabler-list-check",
     labelKey: "shell.rail.actions",
     to: "/actions",
-  },
-  {
-    key: "notifications",
-    icon: "i-tabler-bell",
-    labelKey: "shell.rail.notifications",
-    action: "notifications",
-  },
-  {
-    key: "search",
-    icon: "i-tabler-search",
-    labelKey: "shell.rail.search",
-    action: "search",
+    section: "workspace",
   },
   {
     key: "settings",
     icon: "i-tabler-settings",
     labelKey: "shell.rail.settings",
     to: "/settings",
+    section: "account",
   },
   {
     key: "help",
     icon: "i-tabler-help-circle",
     labelKey: "shell.rail.help",
     to: "/help",
+    section: "account",
   },
 ];
 
@@ -62,6 +55,14 @@ export const COMPANY_TABS: CompanyNavItem[] = [
     to: "/companies/:companyId",
     priority: 10,
     matchPrefixes: ["/companies/:companyId"],
+  },
+  {
+    key: "infos",
+    icon: "i-tabler-info-circle",
+    labelKey: "shell.company.tabs.infos",
+    to: "/companies/:companyId/infos",
+    priority: 20,
+    matchPrefixes: ["/companies/:companyId/infos"],
   },
   {
     key: "cases",

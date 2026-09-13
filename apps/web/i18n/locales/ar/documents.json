@@ -2,9 +2,35 @@
   "documents": {
     "title": "الوثائق",
     "subtitle": "ارفع وثائق المؤسسة واستخرج بياناتها.",
+    "critical": {
+      "title": "معلوماتي",
+      "subtitle": "اجمع هنا الوثائق الأساسية لمؤسستك.",
+      "progress": "{done}/{total} مُوفّرة",
+      "missing": "مطلوبة",
+      "provided": "متوفرة",
+      "view": "عرض",
+      "upload": "رفع",
+      "replace": "استبدال",
+      "uploadTitle": "رفع وثيقة",
+      "categoryLabel": "اختر الفئة",
+      "chooseFile": "اختر ملفًا",
+      "submit": "رفع",
+      "success": "تم رفع الوثيقة.",
+      "error": "فشل رفع الوثيقة.",
+      "missingType": "النوع غير متاح",
+      "items": {
+        "rne_extrait": "مضمون السجل الوطني للمؤسسات",
+        "cin": "بطاقة التعريف الوطنية للمتصرف",
+        "statuts": "النظام الأساسي للشركة",
+        "carte_identification_fiscale": "بطاقة التعريف الجبائي",
+        "declaration_beneficiaire": "تصريح المستفيد الحقيقي",
+        "pv_nomination_gerant": "محضر تعيين المتصرف"
+      }
+    },
     "upload": {
       "title": "وثيقة جديدة",
       "subtitle": "اختر النوع ثم أسقط الملف.",
+      "open": "إضافة وثيقة",
       "typeLabel": "نوع الوثيقة",
       "typePlaceholder": "اختر نوعًا",
       "requiredHint": "الحقول المتوقعة:",
@@ -15,6 +41,9 @@
       "success": "تم رفع الوثيقة. بدأ الاستخراج.",
       "button": "رفع"
     },
+    "groups": {
+      "uncategorized": "مستندات أخرى"
+    },
     "list": {
       "title": "وثائق المؤسسة",
       "count": "{count} وثيقة",
@@ -22,13 +51,15 @@
       "loading": "جارٍ تحميل الوثائق…",
       "empty": "لا توجد وثائق",
       "emptyHint": "ارفع أول وثيقة للبدء.",
+      "emptyAction": "إضافة وثيقة",
       "untitled": "وثيقة بدون عنوان",
       "typeUnknown": "وثائق أخرى",
       "fileName": "الملف",
       "size": "الحجم",
       "uploadedAt": "تاريخ الرفع",
       "version": "الإصدار",
-      "view": "عرض"
+      "view": "عرض",
+      "rowMenu": "إجراءات"
     },
     "status": {
       "uploaded": "مرفوعة",
@@ -47,7 +78,15 @@
     "detail": {
       "title": "تفاصيل الوثيقة",
       "subtitle": "الحقول المستخرجة ودرجات الثقة.",
-      "loading": "جارٍ تحميل الوثيقة…"
+      "loading": "جارٍ تحميل الوثيقة…",
+      "close": "إغلاق",
+      "select": "اختر وثيقة",
+      "selectHint": "اختر وثيقة من القائمة لعرض حقولها المستخرجة.",
+      "technical": "تفاصيل تقنية",
+      "technicalHint": "معلومات داخلية عن الوثيقة.",
+      "documentId": "المعرّف",
+      "versionId": "الإصدار",
+      "storageKey": "مفتاح التخزين"
     },
     "fields": {
       "key": "الحقل",

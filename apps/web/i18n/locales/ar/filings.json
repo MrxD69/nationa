@@ -37,18 +37,32 @@
       "invoiceCount": "{count} فاتورة متحقّق منها",
       "empty": "لا توجد فواتير متحقّق منها في هذه الفترة."
     },
+    "groups": {
+      "draft": "المسودات",
+      "submitted": "المودعة",
+      "verified": "المتحقق منها",
+      "other": "أخرى"
+    },
     "list": {
+      "title": "التصريحات المسجّلة",
       "period": "الفترة",
       "obligation": "الالتزام",
       "taxType": "نوع التصريح",
       "status": "الحالة",
       "totalTaxDue": "الأداء الصافي",
-      "actions": "إجراءات"
+      "actions": "إجراءات",
+      "emptyFiltered": "لا توجد تصريحات لهذه الفترة.",
+      "select": "اختر تصريحًا",
+      "selectHint": "اختر تصريحًا من القائمة لعرض تفاصيله."
     },
     "detail": {
       "title": "تفاصيل التصريح",
       "invoices": "الفواتير المدرجة",
-      "noInvoices": "لا توجد فواتير مرتبطة"
+      "noInvoices": "لا توجد فواتير مرتبطة",
+      "technical": "تفاصيل تقنية",
+      "technicalHint": "المعرّفات الداخلية للتصريح.",
+      "filingId": "المعرّف",
+      "obligationId": "الالتزام"
     },
     "actions": {
       "newDraft": "مسودة جديدة",
@@ -60,7 +74,13 @@
       "remove": "حذف",
       "print": "طباعة",
       "refresh": "تحديث",
-      "close": "إغلاق"
+      "close": "إغلاق",
+      "view": "فتح",
+      "createdToast": "تم إنشاء مسودة التصريح.",
+      "confirmDeleteTitle": "حذف هذا التصريح؟",
+      "confirmDeleteBody": "هذا الإجراء نهائي.",
+      "confirmDelete": "حذف",
+      "cancel": "إلغاء"
     },
     "invite": {
       "title": "دعوة محاسب",

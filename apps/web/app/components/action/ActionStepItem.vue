@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ActionFinding, ActionStep } from "~/composables/useActions";
+import { FIELD_LABELS, normalizeFieldKey } from "@nationa/api/domain/fields";
 import ActionStatusBadge from "~/components/action/ActionStatusBadge.vue";
 import FormPreview from "~/components/form/FormPreview.vue";
 import { matchForms } from "~/constants/forms";
@@ -113,17 +114,77 @@ function severityColor(finding: ActionFinding) {
   return SEVERITY_COLORS[finding.severity] ?? "neutral";
 }
 
-function fieldValue(value: { valueText: string | null; valueJsonb: unknown }): string {
-  if (value.valueText) {
-    return value.valueText;
+/**
+ * Field keys arrive as machine identifiers (`legalName`, `taxId`…). Show the
+ * translated label a person can read, falling back to a neutral word instead of
+ * leaking the raw key.
+ */
+function fieldLabel(key: string): string {
+  const normalized = normalizeFieldKey(key);
+  const labels = normalized ? FIELD_LABELS[normalized] : undefined;
+  if (!labels) {
+    return t("actions.fields.unknown");
   }
-  if (value.valueJsonb === null || value.valueJsonb === undefined) {
+  return locale.value === "ar" ? (labels.ar ?? labels.fr) : labels.fr;
+}
+
+const ADDRESS_PARTS = [
+  "street",
+  "building",
+  "office",
+  "locality",
+  "postalCode",
+  "city",
+  "governorate",
+  "country",
+] as const;
+
+/**
+ * Turn stored values into readable text: join address parts, expand arrays and
+ * plain objects, and never dump raw JSON at the reader.
+ */
+function humanizeValue(value: unknown): string {
+  if (value === null || value === undefined) {
     return "";
   }
-  if (typeof value.valueJsonb === "object") {
-    return JSON.stringify(value.valueJsonb);
+  if (typeof value === "string") {
+    return value;
   }
-  return String(value.valueJsonb);
+  if (typeof value === "number" || typeof value === "bigint") {
+    return String(value);
+  }
+  if (typeof value === "boolean") {
+    return value ? t("actions.fields.yes") : t("actions.fields.no");
+  }
+  if (Array.isArray(value)) {
+    return value
+      .map((entry) => humanizeValue(entry))
+      .filter(Boolean)
+      .join(", ");
+  }
+  if (typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    const address = ADDRESS_PARTS.map((part) => humanizeValue(record[part])).filter(Boolean);
+    if (address.length > 0) {
+      return address.join(", ");
+    }
+    return Object.entries(record)
+      .map(([key, entry]) => {
+        const text = humanizeValue(entry);
+        return text ? `${fieldLabel(key)}: ${text}` : "";
+      })
+      .filter(Boolean)
+      .join(" · ");
+  }
+  return "";
+}
+
+function fieldValue(field: ActionStep["fields"][number]): string {
+  return field.valueText ?? humanizeValue(field.valueJsonb);
+}
+
+function isNumericText(value: string): boolean {
+  return value.length > 0 && /\d/.test(value) && /^[\d\s.,:/\-%+()]+$/.test(value);
 }
 </script>
 
@@ -175,12 +236,12 @@ function fieldValue(value: { valueText: string | null; valueJsonb: unknown }): s
       </component>
 
       <div v-show="hasDetails && open" class="space-y-6 pt-3">
-        <div v-if="props.step.description" class="space-y-1">
-          <h4 class="text-base font-semibold tracking-wide text-muted uppercase">
-            {{ t("actions.step.objective") }}
-          </h4>
-          <p class="text-base leading-7 text-toned">{{ props.step.description }}</p>
-        </div>
+        <p v-if="props.step.description" class="text-base leading-7 text-toned">
+          <UIcon
+            name="i-tabler-hand-pointer"
+            class="me-1.5 size-5 shrink-0 align-middle text-primary"
+          />{{ props.step.description }}
+        </p>
 
         <div v-if="forms.length" class="space-y-2">
           <h4 class="text-base font-semibold tracking-wide text-muted uppercase">
@@ -224,38 +285,52 @@ function fieldValue(value: { valueText: string | null; valueJsonb: unknown }): s
           </ul>
         </div>
 
-        <div v-if="props.step.citations.length" class="space-y-2">
-          <h4 class="text-base font-semibold tracking-wide text-muted uppercase">
-            {{ t("actions.tracker.citations") }}
-          </h4>
-          <ul class="divide-y divide-default border-y border-default">
-            <li v-for="citation in props.step.citations" :key="citation.id" class="py-3">
-              <div class="flex flex-wrap items-center gap-2">
-                <UBadge color="neutral" variant="subtle" size="lg">{{ citation.source }}</UBadge>
-                <span v-if="citation.article" class="text-base text-muted">
-                  {{ citation.article }}
-                </span>
-              </div>
-              <div class="mt-1 text-base font-medium text-highlighted">
-                {{ citationTitle(citation) }}
-              </div>
-              <p v-if="citationText(citation)" class="mt-1 text-base leading-6 text-muted">
-                {{ citationText(citation) }}
-              </p>
-              <UButton
-                v-if="citation.url"
-                :to="citation.url"
-                target="_blank"
-                external
-                size="lg"
-                color="neutral"
-                variant="link"
-                icon="i-tabler-external-link"
-                :label="t('actions.tracker.citations')"
-                class="mt-1 px-0"
-              />
-            </li>
-          </ul>
+        <div v-if="props.step.citations.length" class="flex items-center gap-2 py-1">
+          <UTooltip :ui="{ content: 'h-auto' }" :content="{ side: 'top' }">
+            <button
+              type="button"
+              class="inline-flex size-11 shrink-0 items-center justify-center rounded-md text-muted transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              :aria-label="t('actions.step.legalInfo')"
+            >
+              <UIcon name="i-tabler-info-circle" class="size-5" />
+            </button>
+
+            <template #content>
+              <ul class="max-w-72 space-y-3">
+                <li v-for="citation in props.step.citations" :key="citation.id">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <UBadge color="neutral" variant="subtle" size="lg">{{
+                      citation.source
+                    }}</UBadge>
+                    <span v-if="citation.article" class="text-base text-muted">
+                      {{ citation.article }}
+                    </span>
+                  </div>
+                  <div class="mt-1 text-base font-medium text-highlighted">
+                    {{ citationTitle(citation) }}
+                  </div>
+                  <p v-if="citationText(citation)" class="mt-1 text-base leading-6 text-muted">
+                    {{ citationText(citation) }}
+                  </p>
+                  <UButton
+                    v-if="citation.url"
+                    :to="citation.url"
+                    target="_blank"
+                    external
+                    color="neutral"
+                    variant="link"
+                    icon="i-tabler-external-link"
+                    :label="t('actions.tracker.openCitation')"
+                    class="mt-1 px-0"
+                  />
+                </li>
+              </ul>
+            </template>
+          </UTooltip>
+          <span class="text-base text-muted">{{ t("actions.step.legalInfo") }}</span>
+          <UBadge color="neutral" variant="subtle" size="sm" class="tabular-nums">
+            {{ props.step.citations.length }}
+          </UBadge>
         </div>
 
         <div v-if="props.step.findings.length" class="space-y-2">
@@ -288,8 +363,12 @@ function fieldValue(value: { valueText: string | null; valueJsonb: unknown }): s
               :key="field.id"
               class="flex min-w-0 items-baseline justify-between gap-4 py-3"
             >
-              <dt class="truncate text-base text-muted">{{ field.fieldKey }}</dt>
-              <dd class="truncate text-base text-toned" :title="fieldValue(field)">
+              <dt class="truncate text-base text-muted">{{ fieldLabel(field.fieldKey) }}</dt>
+              <dd
+                class="truncate text-base text-toned"
+                :dir="isNumericText(fieldValue(field)) ? 'ltr' : undefined"
+                :title="fieldValue(field)"
+              >
                 {{ fieldValue(field) }}
               </dd>
             </div>

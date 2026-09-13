@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import AgencyMark from "~/components/agency/AgencyMark.vue";
+import EmptyState from "~/components/ui/EmptyState.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
+import PageHeader from "~/components/ui/PageHeader.vue";
 definePageMeta({ layout: "app", middleware: "auth" });
 
 const { locale, t } = useI18n();
@@ -60,19 +63,23 @@ function formatDate(value: string | Date | null | undefined): string {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-7xl space-y-6">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div class="space-y-1">
-        <h1 class="text-2xl font-semibold text-highlighted">{{ t("cases.list.title") }}</h1>
-        <p class="text-base text-muted">{{ t("cases.list.subtitle") }}</p>
-      </div>
-      <UButton to="/cases/new" icon="i-tabler-plus" :label="t('cases.list.new')" />
-    </div>
+  <div class="mx-auto w-full max-w-6xl space-y-6">
+    <PageHeader
+      :title="t('cases.list.title')"
+      :subtitle="t('cases.list.subtitle')"
+      max-width="max-w-6xl"
+    >
+      <template #actions>
+        <UButton to="/cases/new" icon="i-tabler-plus" :label="t('cases.list.new')" />
+      </template>
+    </PageHeader>
 
-    <div v-if="isLoading" class="flex items-center gap-2 text-base text-muted">
-      <UIcon name="i-tabler-loader-2" class="animate-spin" />
-      <span>{{ t("cases.list.loading") }}</span>
-    </div>
+    <LoadingState
+      v-if="isLoading"
+      variant="skeleton-rows"
+      :count="4"
+      :label="t('cases.list.loading')"
+    />
 
     <UAlert
       v-else-if="isError"
@@ -82,26 +89,24 @@ function formatDate(value: string | Date | null | undefined): string {
       :description="error?.message"
     >
       <template #actions>
-        <UButton
-          color="error"
-          variant="soft"
-          size="lg"
-          :label="t('cases.list.retry')"
-          @click="refetch()"
-        />
+        <UButton color="error" variant="soft" :label="t('cases.list.retry')" @click="refetch()" />
       </template>
     </UAlert>
 
-    <div v-else-if="cases.length === 0" class="space-y-3">
-      <UAlert color="neutral" variant="subtle" :title="t('cases.list.empty')" />
-    </div>
+    <EmptyState
+      v-else-if="cases.length === 0"
+      icon="i-tabler-folder"
+      :title="t('cases.list.empty')"
+    >
+      <UButton to="/cases/new" icon="i-tabler-plus" :label="t('cases.list.new')" />
+    </EmptyState>
 
     <div v-else class="divide-y divide-default overflow-hidden rounded-lg border border-default">
       <NuxtLink
         v-for="item in cases"
         :key="item.id"
         :to="`/cases/${item.id}`"
-        class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-elevated"
+        class="hover-surface flex flex-wrap items-center justify-between gap-4 px-5 py-4"
       >
         <div class="min-w-0 space-y-1.5">
           <div class="flex flex-wrap items-center gap-2">

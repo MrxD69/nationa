@@ -2,6 +2,7 @@
 import FindingDetail from "~/components/findings/FindingDetail.vue";
 import FindingNotesHistory from "~/components/findings/FindingNotesHistory.vue";
 import FindingStatusActions from "~/components/findings/FindingStatusActions.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
 
 type FindingStatus = "open" | "resolved" | "waived" | "acknowledged";
 type FindingSubjectType = "case" | "submission" | "company" | "document";
@@ -123,14 +124,12 @@ async function addNote(body: string) {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-7xl">
+  <div class="mx-auto w-full max-w-6xl space-y-6">
     <UButton
       :to="backLink"
       icon="i-tabler-arrow-left"
       color="neutral"
       variant="ghost"
-      size="lg"
-      class="mb-4"
       :ui="{ leadingIcon: 'rtl:rotate-180' }"
     >
       {{ t("checks.actions.back") }}
@@ -144,11 +143,7 @@ async function addNote(body: string) {
       :description="t('checks.missingSubject')"
     />
 
-    <div v-else-if="pending" class="space-y-4">
-      <USkeleton class="h-8 w-1/2" />
-      <USkeleton class="h-32 w-full" />
-      <USkeleton class="h-40 w-full" />
-    </div>
+    <LoadingState v-else-if="pending" variant="skeleton-list" :count="3" />
 
     <UAlert
       v-else-if="error || !finding"

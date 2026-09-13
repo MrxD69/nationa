@@ -66,12 +66,10 @@ const severityColor: Record<string, "info" | "warning" | "error"> = {
       <div v-html="props.payload.render.html" />
     </div>
 
-    <UCard v-if="citations.length > 0">
-      <template #header>
-        <h3 class="text-sm font-semibold text-highlighted">{{ t("docgen.preview.citations") }}</h3>
-      </template>
-      <ul class="space-y-2">
-        <li v-for="citation in citations" :key="citation.id" class="text-sm text-toned">
+    <div v-if="citations.length > 0" class="space-y-2">
+      <h3 class="text-sm font-semibold text-highlighted">{{ t("docgen.preview.citations") }}</h3>
+      <ul class="divide-y divide-default border-t border-default">
+        <li v-for="citation in citations" :key="citation.id" class="py-2 text-sm text-toned">
           <UIcon name="i-tabler-file-text" class="me-1 inline size-3.5 align-[-2px]" />
           <a
             v-if="citation.url"
@@ -85,7 +83,7 @@ const severityColor: Record<string, "info" | "warning" | "error"> = {
           <span v-else>{{ citationTitle(citation) }}</span>
         </li>
       </ul>
-    </UCard>
+    </div>
   </div>
 </template>
 

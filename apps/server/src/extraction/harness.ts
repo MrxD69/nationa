@@ -43,7 +43,7 @@ async function main(): Promise<void> {
   const bytes = new Uint8Array(await readFile(filePath));
 
   const openrouter = createOpenRouter({ apiKey });
-  const model = openrouter(process.env.OPENROUTER_MODEL ?? "google/gemini-2.5-flash");
+  const model = openrouter(process.env.OPENROUTER_MODEL ?? "qwen/qwen3.7-flash");
 
   const result = await extractStructuredDocument({
     model,

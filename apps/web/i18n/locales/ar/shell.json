@@ -2,6 +2,7 @@
   "shell": {
     "rail": {
       "companies": "الشركات",
+      "myCompany": "مؤسستي",
       "submissions": "المُقدَّمات",
       "actions": "الإجراءات",
       "notifications": "الإشعارات",
@@ -11,15 +12,23 @@
       "profile": "الملف الشخصي",
       "logoLabel": "الصفحة الرئيسية لـ Nationa",
       "openActions": "الإجراءات الجارية",
-      "unpin": "إزالة من القائمة"
+      "unpin": "إزالة من القائمة",
+      "recommendedCount": "{count} إجراءات موصى بها",
+      "sections": {
+        "workspace": "مساحة العمل",
+        "account": "الحساب"
+      }
     },
     "company": {
       "select": "اختر شركة",
       "noCompany": "لم يتم اختيار أي شركة",
+      "create": "إنشاء شركة",
+      "switchLabel": "تغيير الشركة",
       "more": "المزيد",
       "portfolio": "المحفظة",
       "tabs": {
         "overview": "نظرة عامة",
+        "infos": "معلوماتي",
         "papers": "المستندات",
         "invoices": "الفواتير",
         "filings": "التصاريح",
@@ -47,6 +56,12 @@
         "actions": "الإجراءات"
       },
       "empty": "لا توجد نتائج"
+    },
+    "auth": {
+      "tagline": "معاملاتك الإدارية، بكل بساطة.",
+      "benefit1": "كل التزاماتك في مكان واحد",
+      "benefit2": "إجراءات موجَّهة خطوة بخطوة",
+      "benefit3": "مساعد يذكر مصادره"
     }
   }
 }

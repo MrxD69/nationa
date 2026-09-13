@@ -10,6 +10,7 @@ const props = defineProps<{
 const { t } = useI18n();
 
 const open = ref(false);
+const detailsOpen = ref(false);
 
 const label = computed(() => {
   const key = `assistant.tools.${props.name}`;
@@ -37,10 +38,16 @@ function pretty(value: unknown): string {
     return String(value);
   }
 }
+
+function onDetailsToggle(event: Event) {
+  if (event.target instanceof HTMLDetailsElement) {
+    detailsOpen.value = event.target.open;
+  }
+}
 </script>
 
 <template>
-  <div class="rounded-xl border border-default">
+  <div class="rounded-lg border border-default">
     <button
       type="button"
       class="flex w-full items-center gap-2 px-3 py-2 text-start"
@@ -56,17 +63,34 @@ function pretty(value: unknown): string {
       />
     </button>
     <div v-if="open" class="space-y-2 border-t border-default p-3">
-      <div v-if="input">
-        <p class="text-sm font-medium text-muted">{{ t("assistant.tools.title") }}</p>
-        <pre
-          class="mt-1 max-h-48 overflow-auto rounded-lg bg-elevated p-2 text-sm leading-5 text-muted"
-          >{{ pretty(input) }}</pre>
-      </div>
-      <div v-if="output !== undefined">
-        <pre
-          class="max-h-64 overflow-auto rounded-lg bg-elevated p-2 text-sm leading-5 text-muted"
-          >{{ pretty(output) }}</pre>
-      </div>
+      <p v-if="input" class="text-sm font-medium text-muted">{{ t("assistant.tools.title") }}</p>
+
+      <details class="rounded-md" :open="detailsOpen" @toggle="onDetailsToggle">
+        <summary
+          class="flex cursor-pointer list-none items-center gap-1.5 text-sm font-medium text-muted"
+        >
+          <UIcon
+            name="i-tabler-chevron-right"
+            class="size-4 shrink-0 transition-transform"
+            :class="detailsOpen ? 'rotate-90' : ''"
+          />
+          {{ detailsOpen ? t("assistant.tools.hideDetails") : t("assistant.tools.showDetails") }}
+        </summary>
+
+        <div class="mt-2 space-y-2">
+          <pre
+            v-if="input"
+            class="max-h-48 overflow-auto rounded-md bg-elevated p-2 text-sm leading-5 text-muted"
+            dir="ltr"
+            >{{ pretty(input) }}</pre>
+          <pre
+            v-if="output !== undefined"
+            class="max-h-64 overflow-auto rounded-md bg-elevated p-2 text-sm leading-5 text-muted"
+            dir="ltr"
+            >{{ pretty(output) }}</pre>
+        </div>
+      </details>
+
       <p v-if="errorText" class="text-sm text-error">{{ errorText }}</p>
     </div>
   </div>

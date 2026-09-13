@@ -74,7 +74,7 @@ watch(
 </script>
 
 <template>
-  <UCard class="flex h-full flex-col">
+  <UCard class="flex h-full flex-col" :ui="{ root: 'rounded-lg' }">
     <template #header>
       <div class="flex items-center justify-between gap-2">
         <h2 class="text-base font-semibold text-highlighted">
@@ -93,11 +93,11 @@ watch(
         <li v-for="(entry, index) in documents" :key="entry.version?.id ?? index">
           <button
             type="button"
-            class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-start text-base transition"
+            class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-start text-base transition-control"
             :class="
               entry.version?.id === selectedId
                 ? 'bg-elevated text-highlighted'
-                : 'text-muted hover:bg-elevated/60'
+                : 'text-muted hover-surface'
             "
             @click="select(entry)"
           >
@@ -109,7 +109,7 @@ watch(
         </li>
       </ul>
 
-      <div class="min-h-80 overflow-hidden rounded-lg border border-default bg-elevated/40">
+      <div class="min-h-80 overflow-hidden rounded-md border border-default bg-elevated/40">
         <div v-if="loading" class="flex h-80 items-center justify-center text-muted">
           <UIcon name="i-tabler-loader-2" class="size-5 animate-spin" />
         </div>
@@ -135,7 +135,6 @@ watch(
             :to="url"
             target="_blank"
             rel="noopener"
-            size="lg"
             color="neutral"
             variant="ghost"
             icon="i-tabler-external-link"

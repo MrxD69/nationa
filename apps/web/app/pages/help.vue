@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import PageHeader from "~/components/ui/PageHeader.vue";
+import SectionHeader from "~/components/ui/SectionHeader.vue";
+
 definePageMeta({ layout: "app", middleware: "auth" });
 
 const { t } = useI18n();
@@ -13,22 +16,34 @@ const faqItems = computed(() => [
 </script>
 
 <template>
-  <UContainer class="max-w-3xl space-y-8 py-8">
-    <div class="space-y-1">
-      <h1 class="text-2xl font-semibold text-highlighted">{{ t("help.title") }}</h1>
-      <p class="text-base text-muted">{{ t("help.subtitle") }}</p>
-    </div>
+  <div class="mx-auto w-full max-w-5xl space-y-8 py-8">
+    <PageHeader
+      :title="t('help.title')"
+      :subtitle="t('help.subtitle')"
+      icon="i-tabler-help-circle"
+    />
 
-    <UAccordion :items="faqItems" />
+    <section class="space-y-4">
+      <SectionHeader :title="t('help.faq.title')" icon="i-tabler-messages" />
+      <UAccordion :items="faqItems" />
+    </section>
 
-    <UCard>
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <div class="space-y-1">
-          <p class="font-medium text-highlighted">{{ t("help.contact.label") }}</p>
-          <p class="text-base text-muted">{{ t("help.contact.description") }}</p>
-        </div>
-        <UButton icon="i-tabler-sparkles" :label="t('shell.ai.open')" @click="setOpen(true)" />
+    <section class="space-y-4">
+      <SectionHeader
+        :title="t('help.contact.label')"
+        icon="i-tabler-lifebuoy"
+        :description="t('help.contact.description')"
+      />
+      <div class="flex flex-wrap items-center gap-2">
+        <UButton icon="i-tabler-sparkles" :label="t('help.contact.cta')" @click="setOpen(true)" />
+        <UButton
+          color="neutral"
+          variant="soft"
+          icon="i-tabler-mail"
+          :label="t('help.contact.email')"
+          :href="`mailto:${t('help.contact.email')}`"
+        />
       </div>
-    </UCard>
-  </UContainer>
+    </section>
+  </div>
 </template>

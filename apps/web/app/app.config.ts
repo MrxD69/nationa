@@ -23,7 +23,7 @@ export default defineAppConfig({
 
     colors: {
       primary: "brand",
-      neutral: "slate",
+      neutral: "zinc",
     },
     icons: {
       arrowDown: "i-tabler-arrow-down",

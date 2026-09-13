@@ -30,7 +30,20 @@ const props = defineProps<{
 
 const emit = defineEmits<{ save: [payload: Record<string, unknown>]; cancel: [] }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+function formatCurrency(value: number, currency?: string | null) {
+  const code = (currency || "TND").trim().toUpperCase() || "TND";
+  try {
+    return new Intl.NumberFormat(locale.value, {
+      style: "currency",
+      currency: code,
+      minimumFractionDigits: 3,
+    }).format(value);
+  } catch {
+    return `${value.toFixed(3)} ${code}`;
+  }
+}
 
 const directionOptions = computed(() => [
   { label: t("invoices.direction.purchase"), value: "purchase" },
@@ -114,9 +127,9 @@ const totals = computed(() => {
     taxAmount += values.taxAmount;
   }
   return {
-    subtotal: subtotal.toFixed(3),
-    taxAmount: taxAmount.toFixed(3),
-    total: (subtotal + taxAmount).toFixed(3),
+    subtotal,
+    taxAmount,
+    total: subtotal + taxAmount,
   };
 });
 
@@ -145,121 +158,109 @@ function submit() {
 </script>
 
 <template>
-  <UCard>
-    <template #header>
-      <h2 class="text-base font-semibold text-highlighted">
-        {{ props.invoice?.id ? t("invoices.form.editTitle") : t("invoices.form.newTitle") }}
-      </h2>
-    </template>
+  <div class="space-y-4">
+    <div class="grid gap-4 sm:grid-cols-2">
+      <UFormField :label="t('invoices.form.direction')">
+        <USelect v-model="form.direction" :items="directionOptions" class="w-full" />
+      </UFormField>
+      <UFormField :label="t('invoices.form.invoiceNumber')">
+        <UInput v-model="form.invoiceNumber" class="w-full" />
+      </UFormField>
+      <UFormField :label="t('invoices.form.supplierName')">
+        <UInput v-model="form.supplierName" class="w-full" />
+      </UFormField>
+      <UFormField :label="t('invoices.form.supplierTaxId')">
+        <UInput v-model="form.supplierTaxId" class="w-full" dir="ltr" />
+      </UFormField>
+      <UFormField :label="t('invoices.form.issueDate')">
+        <UInput v-model="form.issueDate" type="date" class="w-full" />
+      </UFormField>
+      <UFormField :label="t('invoices.form.dueDate')">
+        <UInput v-model="form.dueDate" type="date" class="w-full" />
+      </UFormField>
+      <UFormField :label="t('invoices.form.currency')">
+        <UInput v-model="form.currency" class="w-full" dir="ltr" />
+      </UFormField>
+    </div>
 
-    <div class="space-y-4">
-      <div class="grid gap-4 sm:grid-cols-2">
-        <UFormField :label="t('invoices.form.direction')">
-          <USelect v-model="form.direction" :items="directionOptions" class="w-full" />
-        </UFormField>
-        <UFormField :label="t('invoices.form.invoiceNumber')">
-          <UInput v-model="form.invoiceNumber" class="w-full" />
-        </UFormField>
-        <UFormField :label="t('invoices.form.supplierName')">
-          <UInput v-model="form.supplierName" class="w-full" />
-        </UFormField>
-        <UFormField :label="t('invoices.form.supplierTaxId')">
-          <UInput v-model="form.supplierTaxId" class="w-full" dir="ltr" />
-        </UFormField>
-        <UFormField :label="t('invoices.form.issueDate')">
-          <UInput v-model="form.issueDate" type="date" class="w-full" />
-        </UFormField>
-        <UFormField :label="t('invoices.form.dueDate')">
-          <UInput v-model="form.dueDate" type="date" class="w-full" />
-        </UFormField>
-        <UFormField :label="t('invoices.form.currency')">
-          <UInput v-model="form.currency" class="w-full" dir="ltr" />
-        </UFormField>
+    <div class="space-y-2">
+      <div class="flex items-center justify-between gap-2">
+        <h3 class="text-base font-medium text-highlighted">{{ t("invoices.form.lines") }}</h3>
+        <UButton
+          color="neutral"
+          variant="soft"
+          icon="i-tabler-plus"
+          :label="t('invoices.form.addLine')"
+          @click="addLine"
+        />
       </div>
 
-      <div class="space-y-2">
-        <div class="flex items-center justify-between gap-2">
-          <h3 class="text-base font-medium text-highlighted">{{ t("invoices.form.lines") }}</h3>
-          <UButton
-            color="neutral"
-            variant="soft"
-            size="lg"
-            icon="i-tabler-plus"
-            :label="t('invoices.form.addLine')"
-            @click="addLine"
-          />
-        </div>
-
-        <div
-          v-for="(line, index) in lineItems"
-          :key="index"
-          class="grid gap-2 rounded-lg border border-default p-2 sm:grid-cols-[minmax(0,2fr)_repeat(4,minmax(0,1fr))_auto]"
-        >
-          <UInput v-model="line.description" :placeholder="t('invoices.form.description')" />
-          <UInput
-            v-model="line.quantity"
-            type="number"
-            :placeholder="t('invoices.form.quantity')"
-          />
-          <UInput
-            v-model="line.unitPrice"
-            type="number"
-            step="0.001"
-            :placeholder="t('invoices.form.unitPrice')"
-          />
-          <UInput
-            v-model="line.taxRate"
-            type="number"
-            step="0.01"
-            :placeholder="t('invoices.form.taxRate')"
-          />
-          <UInput
-            v-model="line.taxAmount"
-            type="number"
-            step="0.001"
-            :placeholder="t('invoices.form.lineTax')"
-          />
-          <UButton
-            color="neutral"
-            variant="ghost"
-            size="lg"
-            icon="i-tabler-trash"
-            :aria-label="t('invoices.form.removeLine')"
-            @click="removeLine(index)"
-          />
-        </div>
-      </div>
-
-      <dl class="grid grid-cols-3 gap-2 rounded-lg bg-elevated p-3 text-base">
-        <div>
-          <dt class="text-sm text-muted">{{ t("invoices.form.subtotal") }}</dt>
-          <dd class="text-toned" dir="ltr">{{ totals.subtotal }}</dd>
-        </div>
-        <div>
-          <dt class="text-sm text-muted">{{ t("invoices.form.taxAmount") }}</dt>
-          <dd class="text-toned" dir="ltr">{{ totals.taxAmount }}</dd>
-        </div>
-        <div>
-          <dt class="text-sm text-muted">{{ t("invoices.form.total") }}</dt>
-          <dd class="font-medium text-highlighted" dir="ltr">{{ totals.total }}</dd>
-        </div>
-      </dl>
-
-      <div class="flex items-center justify-end gap-2">
+      <div
+        v-for="(line, index) in lineItems"
+        :key="index"
+        class="grid gap-2 rounded-md border border-default p-2 sm:grid-cols-[minmax(0,2fr)_repeat(4,minmax(0,1fr))_auto]"
+      >
+        <UInput v-model="line.description" :placeholder="t('invoices.form.description')" />
+        <UInput v-model="line.quantity" type="number" :placeholder="t('invoices.form.quantity')" />
+        <UInput
+          v-model="line.unitPrice"
+          type="number"
+          step="0.001"
+          :placeholder="t('invoices.form.unitPrice')"
+        />
+        <UInput
+          v-model="line.taxRate"
+          type="number"
+          step="0.01"
+          :placeholder="t('invoices.form.taxRate')"
+        />
+        <UInput
+          v-model="line.taxAmount"
+          type="number"
+          step="0.001"
+          :placeholder="t('invoices.form.lineTax')"
+        />
         <UButton
           color="neutral"
           variant="ghost"
-          :label="t('invoices.form.cancel')"
-          @click="emit('cancel')"
-        />
-        <UButton
-          color="primary"
-          icon="i-tabler-check"
-          :loading="saving"
-          :label="t('invoices.form.save')"
-          @click="submit"
+          icon="i-tabler-trash"
+          :aria-label="t('invoices.form.removeLine')"
+          @click="removeLine(index)"
         />
       </div>
     </div>
-  </UCard>
+
+    <dl class="grid grid-cols-3 gap-2 rounded-md bg-accented p-3 text-base tabular-nums">
+      <div>
+        <dt class="text-sm text-muted">{{ t("invoices.form.subtotal") }}</dt>
+        <dd class="text-toned" dir="ltr">{{ formatCurrency(totals.subtotal, form.currency) }}</dd>
+      </div>
+      <div>
+        <dt class="text-sm text-muted">{{ t("invoices.form.taxAmount") }}</dt>
+        <dd class="text-toned" dir="ltr">{{ formatCurrency(totals.taxAmount, form.currency) }}</dd>
+      </div>
+      <div>
+        <dt class="text-sm text-muted">{{ t("invoices.form.total") }}</dt>
+        <dd class="font-medium text-highlighted" dir="ltr">
+          {{ formatCurrency(totals.total, form.currency) }}
+        </dd>
+      </div>
+    </dl>
+
+    <div class="flex items-center justify-end gap-2">
+      <UButton
+        color="neutral"
+        variant="ghost"
+        :label="t('invoices.form.cancel')"
+        @click="emit('cancel')"
+      />
+      <UButton
+        color="primary"
+        icon="i-tabler-check"
+        :loading="saving"
+        :label="t('invoices.form.save')"
+        @click="submit"
+      />
+    </div>
+  </div>
 </template>

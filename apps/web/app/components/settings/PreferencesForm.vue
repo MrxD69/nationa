@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SectionHeader from "~/components/ui/SectionHeader.vue";
+
 type ThemePreference = "light" | "dark" | "system";
 type AppLocale = "fr" | "ar";
 
@@ -17,6 +19,7 @@ const colorMode = useColorMode();
 
 const saving = ref(false);
 const aiInstructions = ref(props.preferences.aiInstructions ?? "");
+const pristine = ref<string | null>(null);
 
 const theme = computed<ThemePreference>({
   get: () => {
@@ -52,6 +55,12 @@ const state = computed(() => ({
   aiInstructions: aiInstructions.value,
 }));
 
+function snapshot(): string {
+  return JSON.stringify(state.value);
+}
+
+const dirty = computed(() => pristine.value !== null && pristine.value !== snapshot());
+
 watch(
   () => props.preferences.aiInstructions,
   (value) => {
@@ -67,6 +76,7 @@ onMounted(() => {
   if ((savedLocale === "fr" || savedLocale === "ar") && savedLocale !== locale.value) {
     void setLocale(savedLocale);
   }
+  pristine.value = snapshot();
 });
 
 async function save() {
@@ -77,6 +87,7 @@ async function save() {
       aiInstructions: aiInstructions.value,
       locale: language.value,
     });
+    pristine.value = snapshot();
     toast.add({ title: t("settings.saved"), color: "success" });
   } catch {
     toast.add({ title: t("settings.error"), color: "error" });
@@ -87,29 +98,51 @@ async function save() {
 </script>
 
 <template>
-  <UForm :state="state" class="grid gap-6" @submit="save">
-    <UFormField :label="t('settings.theme.label')">
-      <USelect v-model="theme" :items="themeItems" class="w-full sm:w-56" />
-    </UFormField>
-
-    <UFormField :label="t('settings.language.label')">
-      <USelect v-model="language" :items="languageItems" class="w-full sm:w-56" />
-    </UFormField>
-
-    <UFormField
-      :label="t('settings.aiInstructions.label')"
-      :description="t('settings.aiInstructions.description')"
-    >
-      <UTextarea
-        v-model="aiInstructions"
-        :placeholder="t('settings.aiInstructions.placeholder')"
-        :rows="5"
-        class="w-full"
+  <UForm :state="state" class="space-y-8" @submit="save">
+    <section class="space-y-4">
+      <SectionHeader
+        :title="t('settings.sections.preferences')"
+        icon="i-tabler-adjustments"
+        :level="2"
       />
-    </UFormField>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <UFormField :label="t('settings.theme.label')">
+          <USelect v-model="theme" :items="themeItems" class="w-full" />
+        </UFormField>
 
-    <div class="flex items-center justify-end">
-      <UButton type="submit" :loading="saving" :disabled="saving" :label="t('settings.save')" />
+        <UFormField :label="t('settings.language.label')">
+          <USelect v-model="language" :items="languageItems" class="w-full" />
+        </UFormField>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <SectionHeader
+        :title="t('settings.sections.assistant')"
+        icon="i-tabler-sparkles"
+        :level="2"
+      />
+      <UFormField
+        :label="t('settings.aiInstructions.label')"
+        :description="t('settings.aiInstructions.description')"
+      >
+        <UTextarea
+          v-model="aiInstructions"
+          :placeholder="t('settings.aiInstructions.placeholder')"
+          :rows="5"
+          class="w-full"
+        />
+      </UFormField>
+    </section>
+
+    <div class="flex flex-wrap items-center justify-end gap-3">
+      <span v-if="dirty" class="text-sm text-muted">{{ t("settings.unsaved") }}</span>
+      <UButton
+        type="submit"
+        :loading="saving"
+        :disabled="saving || !dirty"
+        :label="t('common.actions.save')"
+      />
     </div>
   </UForm>
 </template>

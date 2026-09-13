@@ -28,7 +28,22 @@
       "signIn": "تسجيل الدخول",
       "signOut": "تسجيل الخروج",
       "profile": "الملف الشخصي",
-      "account": "الحساب"
+      "account": "الحساب",
+      "delete": "حذف",
+      "confirm": "تأكيد",
+      "close": "إغلاق",
+      "retry": "إعادة المحاولة",
+      "open": "فتح",
+      "edit": "تعديل",
+      "create": "إنشاء",
+      "clear": "مسح"
+    },
+    "error": {
+      "generic": "حدث خطأ ما.",
+      "retry": "إعادة المحاولة"
+    },
+    "validation": {
+      "required": "هذا الحقل مطلوب."
     },
     "user": {
       "guest": "ضيف"

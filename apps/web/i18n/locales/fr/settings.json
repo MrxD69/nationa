@@ -3,6 +3,25 @@
     "title": "Paramètres",
     "subtitle": "Personnalisez votre espace de travail.",
     "preferences": "Préférences",
+    "sections": {
+      "account": "Compte",
+      "preferences": "Préférences",
+      "assistant": "Assistant"
+    },
+    "account": {
+      "name": "Nom",
+      "email": "Adresse e-mail",
+      "type": "Type de compte",
+      "types": {
+        "owner": "Propriétaire (PME)",
+        "accountant": "Comptable / avocat",
+        "officer": "Agent public",
+        "admin": "Administrateur",
+        "unknown": "Non défini"
+      }
+    },
+    "signOut": "Se déconnecter",
+    "unsaved": "Modifications non enregistrées",
     "theme": {
       "label": "Thème",
       "light": "Clair",

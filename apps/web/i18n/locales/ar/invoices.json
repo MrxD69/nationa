@@ -15,9 +15,20 @@
       "needs_review": "بحاجة إلى مراجعة",
       "verified": "متحقّق منها"
     },
+    "groups": {
+      "purchase": "المشتريات",
+      "sale": "المبيعات",
+      "other": "أخرى"
+    },
+    "list": {
+      "title": "قائمة الفواتير",
+      "emptyAction": "استيراد فاتورة"
+    },
     "upload": {
       "title": "استيراد فاتورة",
       "subtitle": "أضف فاتورة لاستخراج بياناتها تلقائيًا.",
+      "label": "أسقط فاتورة",
+      "description": "PDF أو JPG أو PNG.",
       "button": "استيراد واستخراج",
       "uploading": "جارٍ الرفع…",
       "processing": "جارٍ الاستخراج…",
@@ -62,17 +73,28 @@
     },
     "detail": {
       "title": "تفاصيل الفاتورة",
+      "select": "اختر فاتورة",
+      "selectHint": "اختر فاتورة من القائمة لعرض تفاصيلها.",
+      "close": "إغلاق",
       "lines": "الأسطر",
       "noLines": "لا توجد أسطر",
-      "provenance": "مصدر الحقول"
+      "provenance": "مصدر الحقول",
+      "technical": "تفاصيل تقنية",
+      "confirmDeleteTitle": "حذف هذه الفاتورة؟",
+      "confirmDeleteBody": "هذا الإجراء نهائي.",
+      "confirmDelete": "حذف",
+      "cancel": "إلغاء"
     },
     "actions": {
       "verify": "تحقّق",
       "edit": "تعديل",
       "remove": "حذف",
+      "view": "فتح",
       "close": "إغلاق",
       "new": "فاتورة جديدة",
-      "refresh": "تحديث"
+      "refresh": "تحديث",
+      "createdToast": "تم حفظ الفاتورة.",
+      "verifiedToast": "تم التحقّق من الفاتورة."
     },
     "provenance": {
       "source": "المصدر",

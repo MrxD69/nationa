@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import FindingsList from "~/components/findings/FindingsList.vue";
+import PageHeader from "~/components/ui/PageHeader.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
+import EmptyState from "~/components/ui/EmptyState.vue";
 
 type FindingSubjectType = "case" | "submission" | "company" | "document";
 
@@ -108,22 +111,26 @@ async function rerun() {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-7xl">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
-          {{ t("checks.title") }}
-        </h1>
-        <p class="text-base text-muted">{{ t("checks.subtitle") }}</p>
-      </div>
-      <UButton icon="i-tabler-reload" :loading="running" :disabled="!valid" @click="rerun">
-        {{ t("checks.rerun") }}
-      </UButton>
-    </div>
+  <div class="mx-auto w-full max-w-6xl space-y-6">
+    <PageHeader
+      :title="t('checks.title')"
+      :subtitle="t('checks.subtitle')"
+      icon="i-tabler-shield-check"
+      max-width="max-w-none"
+    >
+      <template #actions>
+        <UButton
+          icon="i-tabler-reload"
+          :loading="running"
+          :disabled="!valid"
+          :label="t('checks.rerun')"
+          @click="rerun"
+        />
+      </template>
+    </PageHeader>
 
     <UAlert
       v-if="!valid"
-      class="mt-6"
       color="neutral"
       variant="soft"
       icon="i-tabler-info-circle"
@@ -131,44 +138,47 @@ async function rerun() {
     />
 
     <template v-else>
-      <div v-if="latestRun" class="mt-4 flex flex-wrap items-center gap-2">
+      <div v-if="latestRun" class="flex flex-wrap items-center gap-2">
         <UBadge color="neutral" variant="soft" size="lg">
           {{ t("checks.latestRun") }}
         </UBadge>
         <UBadge :color="runColor(latestRun.status)" variant="subtle" size="lg">
           {{ t(`checks.runStatus.${latestRun.status}`) }}
         </UBadge>
-        <span class="text-sm text-muted">
+        <span class="text-sm text-muted tabular">
           {{ t("checks.findingsCount", { count: findings.length }) }}
         </span>
       </div>
 
       <UAlert
         v-if="error"
-        class="mt-4"
         color="error"
         variant="soft"
         icon="i-tabler-alert-triangle"
-        :description="t('checks.loadError')"
-      />
+        :title="t('checks.loadError')"
+      >
+        <template #actions>
+          <UButton
+            color="error"
+            variant="soft"
+            :label="t('submissions.error.retry')"
+            @click="refresh()"
+          />
+        </template>
+      </UAlert>
 
-      <div v-if="pending" class="mt-6 grid gap-3 md:grid-cols-2">
-        <USkeleton v-for="n in 4" :key="n" class="h-28 w-full" />
-      </div>
+      <LoadingState v-if="pending" variant="skeleton-grid" :count="6" />
 
-      <div v-else-if="findings.length > 0" class="mt-6">
-        <FindingsList :findings="findings" :company-id="companyId" />
-      </div>
+      <template v-else-if="!error">
+        <FindingsList v-if="findings.length > 0" :findings="findings" :company-id="companyId" />
 
-      <UAlert
-        v-else
-        class="mt-6"
-        color="success"
-        variant="soft"
-        icon="i-tabler-circle-check"
-        :title="t('checks.empty')"
-        :description="t('checks.emptyDescription')"
-      />
+        <EmptyState
+          v-else
+          icon="i-tabler-circle-check"
+          :title="t('checks.empty')"
+          :description="t('checks.emptyDescription')"
+        />
+      </template>
     </template>
   </div>
 </template>

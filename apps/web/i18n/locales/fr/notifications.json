@@ -3,6 +3,10 @@
     "title": "Notifications",
     "empty": "Aucune notification pour le moment.",
     "loading": "Chargement des notifications…",
-    "markAllRead": "Tout marquer comme lu"
+    "markAllRead": "Tout marquer comme lu",
+    "markRead": "Marquer comme lue",
+    "unread": "{count} non lue(s)",
+    "recommendedTitle": "Nouvelles démarches recommandées",
+    "recommendedBody": "{codes}"
   }
 }

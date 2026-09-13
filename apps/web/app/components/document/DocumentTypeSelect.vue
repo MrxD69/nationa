@@ -45,8 +45,11 @@ onMounted(load);
 </script>
 
 <template>
-  <div class="space-y-1.5">
-    <label class="text-sm font-medium text-toned">{{ t("documents.upload.typeLabel") }}</label>
+  <UFormField
+    :label="t('documents.upload.typeLabel')"
+    :error="error ? t('documents.errors.generic') : undefined"
+    class="w-full"
+  >
     <USelect
       v-model="model"
       :items="items"
@@ -55,6 +58,5 @@ onMounted(load);
       icon="i-tabler-file-description"
       class="w-full"
     />
-    <p v-if="error" class="text-sm text-error">{{ t("documents.errors.generic") }}</p>
-  </div>
+  </UFormField>
 </template>

@@ -4,6 +4,27 @@ import { z } from "zod";
 import type { DocLang, DocumentTemplateDef } from "../documents/templates/types";
 import type { CitationPayload } from "./types";
 
+// Closed, fixed-shape structured value. Qwen's structured-output mode rejects
+// JSON Schemas containing `additionalProperties`/`patternProperties`, which
+// `z.record`/`z.object({}).catchall(...)` would emit. These address fields match
+// the persisted `valueJsonb` shape for the address case.
+const addressValue = z.object({
+  street: z.string().nullish(),
+  building: z.string().nullish(),
+  office: z.string().nullish(),
+  locality: z.string().nullish(),
+  postalCode: z.string().nullish(),
+  city: z.string().nullish(),
+  governorate: z.string().nullish(),
+  country: z.string().nullish(),
+});
+
+const structuredValue = z.object({
+  raw: z.string().nullish(),
+  fr: addressValue.nullish(),
+  ar: addressValue.nullish(),
+});
+
 export const docgenDraftSchema = z.object({
   fields: z
     .array(
@@ -11,13 +32,7 @@ export const docgenDraftSchema = z.object({
         key: z.string().describe("The template field key this value belongs to."),
         valueText: z.string().nullish().describe("Plain-text value, null when unknown."),
         valueJsonb: z
-          .union([
-            z.string(),
-            z.number(),
-            z.boolean(),
-            z.record(z.string(), z.unknown()),
-            z.array(z.unknown()),
-          ])
+          .union([z.string(), z.number(), z.boolean(), structuredValue, z.array(z.string())])
           .nullish()
           .describe("Structured value (e.g. an address object) when a plain string is not enough."),
         citingKeys: z

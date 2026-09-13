@@ -30,7 +30,7 @@ const body = computed(() => {
 </script>
 
 <template>
-  <div class="rounded-xl border border-default bg-elevated/40 p-3">
+  <div class="rounded-lg border border-default bg-elevated/40 p-3">
     <div class="flex items-start gap-2">
       <UIcon name="i-tabler-gavel" class="mt-0.5 size-4 shrink-0 text-muted" />
       <div class="min-w-0 flex-1 space-y-1">
@@ -52,7 +52,6 @@ const body = computed(() => {
           external
           color="neutral"
           variant="link"
-          size="lg"
           icon="i-tabler-external-link"
           :label="t('assistant.citation.open')"
         />

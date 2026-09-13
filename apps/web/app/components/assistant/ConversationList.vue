@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { AssistantConversation } from "~/composables/useAssistant";
+import EmptyState from "~/components/ui/EmptyState.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
 
 defineProps<{
   conversations: AssistantConversation[];
@@ -14,6 +16,24 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+
+const confirmId = ref<string | null>(null);
+
+function requestDelete(id: string) {
+  confirmId.value = id;
+}
+
+function cancelDelete() {
+  confirmId.value = null;
+}
+
+function confirmDelete() {
+  if (!confirmId.value) {
+    return;
+  }
+  emit("delete", confirmId.value);
+  confirmId.value = null;
+}
 
 function formatDate(value?: string | Date | null): string {
   if (!value) {
@@ -31,37 +51,54 @@ function formatDate(value?: string | Date | null): string {
   <div class="flex min-h-0 flex-col">
     <div class="flex items-center justify-between gap-2 pb-2">
       <h2 class="text-base font-semibold text-highlighted">{{ t("assistant.conversations") }}</h2>
-      <UButton
-        color="primary"
-        variant="soft"
-        size="lg"
-        icon="i-tabler-plus"
-        :label="t('assistant.newConversation')"
-        @click="emit('new')"
-      />
     </div>
 
-    <div v-if="loading" class="flex items-center gap-2 py-4 text-sm text-muted">
-      <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
-      {{ t("assistant.loading") }}
-    </div>
+    <LoadingState
+      v-if="loading"
+      variant="skeleton-rows"
+      :count="3"
+      :label="t('assistant.loading')"
+    />
 
-    <div
+    <EmptyState
       v-else-if="conversations.length === 0"
-      class="rounded-xl border border-dashed border-default p-4 text-center text-sm text-muted"
-    >
-      {{ t("assistant.noConversations") }}
-    </div>
+      icon="i-tabler-messages"
+      size="sm"
+      :title="t('assistant.noConversations')"
+    />
 
     <ul v-else class="min-h-0 flex-1 space-y-1 overflow-y-auto">
       <li v-for="conversation in conversations" :key="conversation.id">
         <div
-          class="group flex items-center gap-2 rounded-lg px-2 py-2 transition-colors"
-          :class="conversation.id === activeId ? 'bg-primary/10' : 'hover:bg-elevated'"
+          v-if="confirmId === conversation.id"
+          class="rounded-md border border-error/40 bg-error/5 px-2 py-2"
+        >
+          <p class="text-sm text-error">{{ t("assistant.deleteConfirm") }}</p>
+          <div class="mt-2 flex flex-wrap items-center justify-end gap-2">
+            <UButton
+              color="neutral"
+              variant="ghost"
+              :label="t('assistant.cancel')"
+              @click="cancelDelete"
+            />
+            <UButton
+              color="error"
+              variant="soft"
+              icon="i-tabler-trash"
+              :label="t('assistant.delete')"
+              @click="confirmDelete"
+            />
+          </div>
+        </div>
+
+        <div
+          v-else
+          class="group flex items-center gap-2 rounded-md px-2 py-2 transition-control"
+          :class="conversation.id === activeId ? 'bg-primary/10' : 'hover-surface'"
         >
           <button
             type="button"
-            class="min-w-0 flex-1 text-start"
+            class="min-w-0 flex-1 rounded-md text-start focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
             @click="emit('select', conversation.id)"
           >
             <p class="truncate text-base text-highlighted">
@@ -69,14 +106,15 @@ function formatDate(value?: string | Date | null): string {
             </p>
             <p class="text-sm text-muted">{{ formatDate(conversation.updatedAt) }}</p>
           </button>
+
           <UButton
             color="neutral"
             variant="ghost"
-            size="lg"
+            square
             icon="i-tabler-trash"
+            class="reveal-on-hover shrink-0"
             :aria-label="t('assistant.delete')"
-            class="opacity-0 group-hover:opacity-100"
-            @click="emit('delete', conversation.id)"
+            @click="requestDelete(conversation.id)"
           />
         </div>
       </li>

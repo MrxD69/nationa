@@ -2,6 +2,9 @@
 import { useMutation, useQuery } from "@tanstack/vue-query";
 import { COMPANY_FIELD_KEYS } from "@nationa/api/domain/fields";
 import CompanyForm from "~/components/company/CompanyForm.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
+import PageHeader from "~/components/ui/PageHeader.vue";
+import StickyActionBar from "~/components/ui/StickyActionBar.vue";
 
 definePageMeta({ layout: "app", middleware: "auth" });
 
@@ -105,42 +108,48 @@ async function submit() {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-4xl">
-    <div class="grid gap-6">
-      <div class="flex items-center gap-2">
-        <UButton
-          :to="`/companies/${companyId}`"
-          color="neutral"
-          variant="ghost"
-          icon="i-tabler-arrow-left"
-          size="lg"
-          class="rtl:rotate-180"
-          :label="t('companies.detail.back')"
-        />
-      </div>
+  <div class="mx-auto w-full max-w-5xl space-y-6">
+    <PageHeader
+      :title="t('companies.edit.title')"
+      :subtitle="t('companies.edit.subtitle')"
+      icon="i-tabler-pencil"
+      :back-to="`/companies/${companyId}`"
+      :back-label="t('companies.detail.back')"
+    />
 
-      <div class="space-y-1">
-        <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
-          {{ t("companies.edit.title") }}
-        </h1>
-        <p class="text-base text-muted">{{ t("companies.edit.subtitle") }}</p>
-      </div>
+    <UAlert v-if="error" color="error" variant="subtle" :title="error" />
 
-      <UAlert v-if="error" color="error" variant="subtle" :title="error" />
+    <LoadingState v-if="isPending" />
 
-      <div v-if="isPending" class="flex items-center gap-2 text-base text-muted">
-        <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
-        <span>{{ t("companies.loading") }}</span>
-      </div>
-
-      <UCard v-else>
-        <CompanyForm
-          v-model="form"
-          :submitting="saving"
-          :submit-label="t('companies.edit.submit')"
-          @submit="submit"
-        />
-      </UCard>
-    </div>
+    <CompanyForm
+      v-else
+      v-model="form"
+      :submitting="saving"
+      :submit-label="t('companies.edit.submit')"
+      @submit="submit"
+    >
+      <template #actions>
+        <StickyActionBar>
+          <template #secondary>
+            <p class="hidden text-sm text-muted sm:block">
+              {{ t("companies.edit.stickyHint") }}
+            </p>
+          </template>
+          <UButton
+            type="button"
+            color="neutral"
+            variant="ghost"
+            :to="`/companies/${companyId}`"
+            :label="t('common.actions.cancel')"
+          />
+          <UButton
+            type="submit"
+            :loading="saving"
+            :disabled="saving"
+            :label="t('companies.edit.submit')"
+          />
+        </StickyActionBar>
+      </template>
+    </CompanyForm>
   </div>
 </template>

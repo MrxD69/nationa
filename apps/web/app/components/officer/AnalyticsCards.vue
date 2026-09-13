@@ -13,10 +13,19 @@ type Patterns = {
 
 const props = defineProps<{ totals: Totals; patterns: Patterns }>();
 
-const { t } = useI18n();
+const { t, te } = useI18n();
 
 const topFinding = computed(() => props.patterns.commonFindings[0] ?? null);
 const topReason = computed(() => props.patterns.commonRejectionReasons[0] ?? null);
+
+/**
+ * Never surface the raw check `code` in a KPI: show the translated finding
+ * title, or a neutral label when the code has no translation.
+ */
+function findingLabel(code: string): string {
+  const key = `checks.findings.${code}.title`;
+  return te(key) ? t(key) : t("officer.analytics.unknownFinding");
+}
 
 const cards = computed(() => [
   {
@@ -41,7 +50,9 @@ const cards = computed(() => [
     key: "findings",
     icon: "i-tabler-alert-triangle",
     label: t("officer.analytics.kpi.commonFindings"),
-    value: topFinding.value ? `${topFinding.value.code} (${topFinding.value.count})` : "—",
+    value: topFinding.value
+      ? `${findingLabel(topFinding.value.code)} (${topFinding.value.count})`
+      : "—",
   },
   {
     key: "reasons",
@@ -54,10 +65,14 @@ const cards = computed(() => [
 
 <template>
   <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-    <UCard v-for="card in cards" :key="card.key" :ui="{ body: 'p-4 sm:p-4' }">
+    <div
+      v-for="card in cards"
+      :key="card.key"
+      class="rounded-lg border border-default bg-elevated/40 p-4"
+    >
       <div class="flex items-start gap-3">
         <span
-          class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-elevated text-muted"
+          class="flex size-9 shrink-0 items-center justify-center rounded-md bg-accented text-muted"
         >
           <UIcon :name="card.icon" class="size-5" />
         </span>
@@ -66,6 +81,6 @@ const cards = computed(() => [
           <p class="mt-0.5 truncate text-lg font-semibold text-highlighted">{{ card.value }}</p>
         </div>
       </div>
-    </UCard>
+    </div>
   </div>
 </template>

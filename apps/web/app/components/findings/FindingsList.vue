@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FindingCard from "./FindingCard.vue";
+import SectionHeader from "~/components/ui/SectionHeader.vue";
 
 type Severity = "info" | "warning" | "error" | "blocker";
 
@@ -13,10 +14,14 @@ type Finding = {
   status: "open" | "resolved" | "waived" | "acknowledged";
 };
 
-const props = defineProps<{
-  findings: Finding[];
-  companyId: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    findings: Finding[];
+    companyId?: string;
+    linkable?: boolean;
+  }>(),
+  { companyId: undefined, linkable: true },
+);
 
 const { t } = useI18n();
 
@@ -33,12 +38,7 @@ const groups = computed(() =>
 <template>
   <div class="space-y-8">
     <section v-for="group in groups" :key="group.severity" class="space-y-3">
-      <header class="flex items-center gap-2">
-        <h2 class="text-base font-semibold tracking-tight text-highlighted">
-          {{ t(`checks.groups.${group.severity}`) }}
-        </h2>
-        <UBadge color="neutral" variant="soft" size="lg">{{ group.items.length }}</UBadge>
-      </header>
+      <SectionHeader :title="t(`checks.groups.${group.severity}`)" :count="group.items.length" />
 
       <div class="divide-y divide-default overflow-hidden rounded-lg border border-default">
         <FindingCard
@@ -46,6 +46,7 @@ const groups = computed(() =>
           :key="finding.id"
           :finding="finding"
           :company-id="companyId"
+          :linkable="linkable"
         />
       </div>
     </section>

@@ -2,6 +2,7 @@
   "shell": {
     "rail": {
       "companies": "Entreprises",
+      "myCompany": "Mon entreprise",
       "submissions": "Soumissions",
       "actions": "Démarches",
       "notifications": "Notifications",
@@ -11,15 +12,23 @@
       "profile": "Profil",
       "logoLabel": "Accueil Nationa",
       "openActions": "Démarches en cours",
-      "unpin": "Retirer de la liste"
+      "unpin": "Retirer de la liste",
+      "recommendedCount": "{count} démarches recommandées",
+      "sections": {
+        "workspace": "Espace de travail",
+        "account": "Compte"
+      }
     },
     "company": {
       "select": "Sélectionner une entreprise",
       "noCompany": "Aucune entreprise sélectionnée",
+      "create": "Créer une entreprise",
+      "switchLabel": "Changer d'entreprise",
       "more": "Plus",
       "portfolio": "Portefeuille",
       "tabs": {
         "overview": "Vue d'ensemble",
+        "infos": "Mes infos",
         "papers": "Documents",
         "invoices": "Factures",
         "filings": "Déclarations",
@@ -47,6 +56,12 @@
         "actions": "Actions"
       },
       "empty": "Aucun résultat"
+    },
+    "auth": {
+      "tagline": "Vos démarches administratives, simplifiées.",
+      "benefit1": "Toutes vos obligations au même endroit",
+      "benefit2": "Des démarches guidées pas à pas",
+      "benefit3": "Un assistant qui cite ses sources"
     }
   }
 }

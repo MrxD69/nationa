@@ -14,6 +14,7 @@ const color = computed(() => (props.severity === "critical" ? "error" : "warning
   <UAlert
     :color="color"
     variant="soft"
+    class="rounded-lg"
     icon="i-tabler-alert-triangle"
     :title="t('assistant.delicate.title')"
     :description="[summary, ...(reasons ?? [])].join(' · ')"

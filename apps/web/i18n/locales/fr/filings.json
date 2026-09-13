@@ -37,18 +37,32 @@
       "invoiceCount": "{count} facture(s) vérifiée(s)",
       "empty": "Aucune facture vérifiée sur cette période."
     },
+    "groups": {
+      "draft": "Brouillons",
+      "submitted": "Déposées",
+      "verified": "Vérifiées",
+      "other": "Autres"
+    },
     "list": {
+      "title": "Déclarations enregistrées",
       "period": "Période",
       "obligation": "Obligation",
       "taxType": "Type de déclaration",
       "status": "Statut",
       "totalTaxDue": "TVA nette",
-      "actions": "Actions"
+      "actions": "Actions",
+      "emptyFiltered": "Aucune déclaration pour cette période.",
+      "select": "Sélectionnez une déclaration",
+      "selectHint": "Choisissez une déclaration dans la liste pour voir son détail."
     },
     "detail": {
       "title": "Détail de la déclaration",
       "invoices": "Factures incluses",
-      "noInvoices": "Aucune facture liée"
+      "noInvoices": "Aucune facture liée",
+      "technical": "Détails techniques",
+      "technicalHint": "Identifiants internes de la déclaration.",
+      "filingId": "Identifiant",
+      "obligationId": "Obligation"
     },
     "actions": {
       "newDraft": "Nouveau brouillon",
@@ -60,7 +74,13 @@
       "remove": "Supprimer",
       "print": "Imprimer",
       "refresh": "Actualiser",
-      "close": "Fermer"
+      "close": "Fermer",
+      "view": "Ouvrir",
+      "createdToast": "Brouillon de déclaration créé.",
+      "confirmDeleteTitle": "Supprimer cette déclaration ?",
+      "confirmDeleteBody": "Cette action est définitive.",
+      "confirmDelete": "Supprimer",
+      "cancel": "Annuler"
     },
     "invite": {
       "title": "Inviter un comptable",

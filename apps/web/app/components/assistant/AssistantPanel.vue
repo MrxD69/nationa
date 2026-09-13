@@ -61,6 +61,46 @@ const activeConversation = computed(
   () => conversations.value.find((item) => item.id === conversationId.value) ?? null,
 );
 
+const scrollArea = ref<HTMLElement | null>(null);
+const atBottom = ref(true);
+const showJumpToLatest = computed(() => hasMessages.value && !atBottom.value);
+const suggestionKeys = [
+  "assistant.suggestions.q1",
+  "assistant.suggestions.q2",
+  "assistant.suggestions.q3",
+];
+
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
+async function scrollToBottom() {
+  await nextTick();
+  const element = scrollArea.value;
+  if (!element) {
+    return;
+  }
+  element.scrollTo({
+    top: element.scrollHeight,
+    behavior: prefersReducedMotion() ? "auto" : "smooth",
+  });
+}
+
+function updateAtBottom() {
+  const element = scrollArea.value;
+  if (!element) {
+    return;
+  }
+  atBottom.value = element.scrollHeight - element.scrollTop - element.clientHeight < 48;
+}
+
+watch([() => messages.value.length, status], async () => {
+  await nextTick();
+  await scrollToBottom();
+});
+
 async function loadConversations() {
   conversationsLoading.value = true;
   try {
@@ -129,9 +169,7 @@ watch([() => props.companyId, () => props.caseId], async () => {
   await loadConversations();
 });
 
-async function handleSubmit() {
-  const text = input.value;
-  input.value = "";
+async function sendPrompt(text: string) {
   if (!text.trim()) {
     return;
   }
@@ -144,6 +182,43 @@ async function handleSubmit() {
       color: "error",
     });
   }
+}
+
+async function handleSubmit() {
+  const text = input.value;
+  input.value = "";
+  await sendPrompt(text);
+}
+
+const isComposing = ref(false);
+let compositionGuardUntil = 0;
+
+function onCompositionStart() {
+  isComposing.value = true;
+}
+
+function onCompositionEnd() {
+  isComposing.value = false;
+  compositionGuardUntil = Date.now() + 50;
+}
+
+function onComposerKeydown(event: KeyboardEvent) {
+  if (event.key !== "Enter") {
+    return;
+  }
+  if (event.shiftKey || event.ctrlKey || event.metaKey || event.altKey) {
+    return;
+  }
+  if (
+    isComposing.value ||
+    Date.now() < compositionGuardUntil ||
+    event.isComposing ||
+    event.keyCode === 229
+  ) {
+    return;
+  }
+  event.preventDefault();
+  void handleSubmit();
 }
 
 async function onClarification(
@@ -265,13 +340,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex h-full min-h-0 flex-1 flex-col">
+  <div class="relative flex h-full min-h-0 flex-1 flex-col">
     <div class="flex shrink-0 items-center gap-1.5 border-b border-default px-3 py-2">
       <UPopover :content="{ align: 'start' }">
         <UButton
           color="neutral"
           variant="ghost"
-          size="lg"
           class="min-w-0 flex-1 justify-start"
           :aria-label="t('assistant.conversations')"
         >
@@ -309,7 +383,6 @@ onMounted(() => {
       <UButton
         color="primary"
         variant="soft"
-        size="lg"
         square
         icon="i-tabler-plus"
         :aria-label="t('assistant.newConversation')"
@@ -319,7 +392,6 @@ onMounted(() => {
       <UButton
         color="neutral"
         variant="ghost"
-        size="lg"
         square
         icon="i-tabler-x"
         :aria-label="t('shell.ai.close')"
@@ -327,16 +399,38 @@ onMounted(() => {
       />
     </div>
 
-    <div class="min-h-0 flex-1 space-y-4 overflow-y-auto p-4">
-      <div v-if="!hasMessages" class="flex h-full items-center justify-center py-10">
+    <div
+      ref="scrollArea"
+      class="min-h-0 flex-1 space-y-4 overflow-y-auto p-4"
+      @scroll.passive="updateAtBottom"
+    >
+      <div v-if="!hasMessages" class="flex h-full flex-col items-center justify-center gap-4 py-10">
         <div class="max-w-md space-y-2 text-center">
-          <div class="mx-auto flex size-10 items-center justify-center rounded-full bg-elevated">
+          <div class="mx-auto flex size-10 items-center justify-center rounded-full bg-accented">
             <UIcon name="i-tabler-sparkles" class="size-5 text-muted" />
           </div>
           <h2 class="text-base font-semibold text-highlighted">
             {{ t("assistant.emptyTitle") }}
           </h2>
           <p class="text-base text-muted">{{ t("assistant.emptySubtitle") }}</p>
+        </div>
+
+        <div class="w-full max-w-md space-y-2">
+          <p class="text-center text-sm font-medium text-muted">
+            {{ t("assistant.suggestions.title") }}
+          </p>
+          <div class="flex flex-col gap-2">
+            <UButton
+              v-for="key in suggestionKeys"
+              :key="key"
+              color="neutral"
+              variant="soft"
+              icon="i-tabler-message-2"
+              class="press justify-start rounded-lg text-start"
+              :label="t(key)"
+              @click="sendPrompt(t(key))"
+            />
+          </div>
         </div>
       </div>
 
@@ -358,26 +452,80 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="shrink-0 border-t border-default p-3">
-      <UChatPrompt
-        v-model="input"
-        icon="i-tabler-sparkles"
+    <UButton
+      v-if="showJumpToLatest"
+      color="primary"
+      square
+      icon="i-tabler-arrow-down"
+      class="absolute end-4 bottom-24 z-10 shadow-lg transition-control"
+      :aria-label="t('assistant.jumpToLatest')"
+      @click="scrollToBottom"
+    />
+
+    <div class="shrink-0 border-t border-default p-2.5">
+      <UAlert
+        v-if="error"
+        color="error"
         variant="soft"
-        :rows="1"
-        :maxrows="8"
-        :loading="isStreaming"
-        :error="error"
-        :placeholder="t('assistant.placeholder')"
-        @submit="handleSubmit"
+        icon="i-tabler-alert-circle"
+        class="mb-2 rounded-lg"
+        :title="t('assistant.errors.sendFailed')"
+        :description="error.message"
       >
-        <UChatPromptSubmit
-          class="ms-auto"
-          :status="status"
-          @stop="stop"
-          @reload="() => regenerate()"
+        <template #actions>
+          <UButton
+            color="error"
+            variant="soft"
+            icon="i-tabler-refresh"
+            :label="t('assistant.retry')"
+            @click="() => regenerate()"
+          />
+        </template>
+      </UAlert>
+
+      <form
+        class="flex items-end gap-2 rounded-xl border border-default bg-elevated/40 p-2 transition-control focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30"
+        @submit.prevent="handleSubmit"
+      >
+        <UTextarea
+          v-model="input"
+          size="md"
+          variant="none"
+          :rows="1"
+          :maxrows="6"
+          :autoresize="true"
+          :disabled="isStreaming"
+          :placeholder="t('assistant.placeholder')"
+          class="min-w-0 flex-1"
+          :ui="{ base: 'px-1.5 py-1 min-h-11' }"
+          @keydown="onComposerKeydown"
+          @compositionstart="onCompositionStart"
+          @compositionend="onCompositionEnd"
         />
-      </UChatPrompt>
-      <p class="mt-2 text-sm text-muted">{{ t("assistant.disclaimer") }}</p>
+
+        <UButton
+          v-if="isStreaming"
+          color="neutral"
+          variant="soft"
+          size="md"
+          square
+          icon="i-tabler-player-stop"
+          class="press shrink-0 self-end size-11"
+          :aria-label="t('assistant.stop')"
+          @click="stop"
+        />
+        <UButton
+          v-else
+          type="submit"
+          color="primary"
+          size="md"
+          square
+          icon="i-tabler-arrow-up"
+          class="press shrink-0 self-end size-11"
+          :disabled="!input.trim()"
+          :aria-label="t('assistant.send')"
+        />
+      </form>
     </div>
   </div>
 </template>

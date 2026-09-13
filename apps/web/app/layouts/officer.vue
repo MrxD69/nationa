@@ -43,10 +43,19 @@ const items = computed(() => [
       </template>
 
       <template #body>
-        <div class="flex min-h-0 flex-1 flex-col gap-6">
-          <div v-reveal="{ y: 8, duration: 0.4 }">
-            <UNavigationMenu :items="items" />
-          </div>
+        <div class="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col gap-6">
+          <nav v-reveal="{ y: 8, duration: 0.4 }" class="flex flex-wrap gap-2">
+            <UButton
+              v-for="item in items"
+              :key="item.to"
+              :to="item.to"
+              :icon="item.icon"
+              :label="item.label"
+              :color="item.active ? 'primary' : 'neutral'"
+              :variant="item.active ? 'soft' : 'ghost'"
+              :aria-current="item.active ? 'page' : undefined"
+            />
+          </nav>
           <div v-reveal="{ y: 12, duration: 0.4, delay: 0.05 }">
             <slot />
           </div>

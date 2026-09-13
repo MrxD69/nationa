@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { DropdownMenuItem } from "@nuxt/ui";
 import type { DocumentBundleItem } from "~/composables/useUpload";
 import ExtractionStatus from "~/components/document/ExtractionStatus.vue";
 
@@ -40,62 +41,70 @@ function formatDate(value?: string | Date | null): string {
 
 const document = computed(() => props.bundle.document);
 const version = computed(() => props.bundle.version);
+
+const meta = computed(() =>
+  [
+    formatSize(version.value?.size),
+    `v${version.value?.version ?? 1}`,
+    formatDate(document.value.createdAt),
+  ].join(" · "),
+);
+
+const menuItems = computed<DropdownMenuItem[]>(() => [
+  {
+    label: t("documents.list.view"),
+    icon: "i-tabler-eye",
+    onSelect: () => emit("select", document.value.id),
+  },
+  {
+    label: t("documents.extraction.reprocess"),
+    icon: "i-tabler-reload",
+    onSelect: () => emit("reprocess", document.value.id),
+  },
+]);
 </script>
 
 <template>
   <div
-    class="flex flex-col gap-3 border-s-4 px-5 py-4 transition-colors sm:flex-row sm:items-start sm:justify-between"
-    :class="selected ? 'border-s-primary bg-primary/5' : 'border-s-transparent hover:bg-elevated'"
+    class="group flex cursor-pointer items-start gap-3 px-3 py-2.5 transition-colors"
+    :class="selected ? 'bg-primary/10 text-primary' : 'hover-surface focus-visible:bg-accented'"
+    role="button"
+    tabindex="0"
+    @click="emit('select', document.id)"
+    @keydown.enter="emit('select', document.id)"
+    @keydown.space.prevent="emit('select', document.id)"
   >
-    <div class="min-w-0 flex-1 space-y-2">
-      <div class="flex items-start justify-between gap-3">
-        <div class="min-w-0 space-y-1">
-          <p class="truncate text-lg font-semibold text-highlighted">
-            {{ document.title || t("documents.list.untitled") }}
-          </p>
-          <p v-if="typeName" class="text-base text-muted">{{ typeName }}</p>
-        </div>
-        <ExtractionStatus :status="document.status" />
-      </div>
-
-      <dl class="flex flex-wrap items-center gap-x-6 gap-y-1 text-base text-muted">
-        <div class="flex min-w-0 items-center gap-1.5">
-          <dt>{{ t("documents.list.fileName") }}:</dt>
-          <dd class="truncate text-toned">{{ version?.fileName ?? "—" }}</dd>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <dt>{{ t("documents.list.size") }}:</dt>
-          <dd class="text-toned">{{ formatSize(version?.size) }}</dd>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <dt>{{ t("documents.list.uploadedAt") }}:</dt>
-          <dd class="text-toned">{{ formatDate(document.createdAt) }}</dd>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <dt>{{ t("documents.list.version") }}:</dt>
-          <dd class="text-toned">v{{ version?.version ?? 1 }}</dd>
-        </div>
-      </dl>
+    <div
+      class="flex size-9 shrink-0 items-center justify-center rounded-md"
+      :class="selected ? 'bg-primary/15 text-primary' : 'bg-accented text-muted'"
+    >
+      <UIcon name="i-tabler-file-text" class="size-5" />
     </div>
 
-    <div class="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
-      <UButton
-        color="neutral"
-        variant="ghost"
-        size="lg"
-        icon="i-tabler-eye"
-        :label="t('documents.list.view')"
-        @click="emit('select', document.id)"
-      />
-      <UButton
-        color="neutral"
-        variant="soft"
-        size="lg"
-        icon="i-tabler-reload"
-        :loading="reprocessing"
-        :label="t('documents.extraction.reprocess')"
-        @click="emit('reprocess', document.id)"
-      />
+    <div class="min-w-0 flex-1">
+      <p class="truncate text-base font-medium text-highlighted">
+        {{ document.title || t("documents.list.untitled") }}
+      </p>
+      <p class="truncate text-sm text-muted">{{ meta }}</p>
+    </div>
+
+    <div class="flex shrink-0 items-center gap-1">
+      <ExtractionStatus :status="document.status" class="hidden sm:inline-flex" />
+
+      <UDropdownMenu :items="menuItems" :content="{ align: 'end' }">
+        <UButton
+          color="neutral"
+          variant="ghost"
+          icon="i-tabler-dots-vertical"
+          size="sm"
+          square
+          :loading="reprocessing"
+          :aria-label="t('documents.list.rowMenu')"
+          :title="t('documents.list.rowMenu')"
+          @click.stop
+          @keydown.stop
+        />
+      </UDropdownMenu>
     </div>
   </div>
 </template>

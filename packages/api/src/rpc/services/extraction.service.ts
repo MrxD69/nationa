@@ -2,6 +2,7 @@ import { generateObject, type FlexibleSchema, type LanguageModel, type UserConte
 
 import type { Document, DocumentVersion, NewExtractedField } from "@nationa/db";
 
+import { recommendDemarches } from "../../ai/recommend";
 import {
   extractionSchemaByKind,
   extractionSchemaNameByKind,
@@ -211,6 +212,19 @@ export async function runExtraction(
         fieldsWritten,
       },
     });
+
+    if (document.companyId) {
+      try {
+        await recommendDemarches(ctx, {
+          companyId: document.companyId,
+          documentId: document.id,
+          kind,
+          output: extracted.object,
+        });
+      } catch {
+        // Recommendation is best-effort; never fail extraction because of it.
+      }
+    }
 
     return {
       extractionId: extraction.id,

@@ -3,6 +3,10 @@
     "title": "الإشعارات",
     "empty": "لا توجد إشعارات حاليًا.",
     "loading": "جارٍ تحميل الإشعارات…",
-    "markAllRead": "تحديد الكل كمقروء"
+    "markAllRead": "تحديد الكل كمقروء",
+    "markRead": "تحديد كمقروءة",
+    "unread": "{count} غير مقروءة",
+    "recommendedTitle": "إجراءات جديدة موصى بها",
+    "recommendedBody": "{codes}"
   }
 }

@@ -54,7 +54,7 @@ function iconFor(action?: string | null): string {
       >
         <UIcon :name="iconFor(event.action)" class="size-3.5" />
       </span>
-      <p class="text-base text-highlighted">{{ event.summary || event.action }}</p>
+      <p class="text-base text-highlighted" dir="auto">{{ event.summary || event.action }}</p>
       <p class="text-sm text-muted">{{ formatDate(event.createdAt) }}</p>
     </li>
   </ol>

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import CompanyCard from "./CompanyCard.vue";
+import EmptyState from "~/components/ui/EmptyState.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
 
 type CompanyListItem = {
   id: string;
@@ -18,23 +20,14 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <div v-if="loading" class="flex items-center gap-2 text-base text-muted">
-    <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
-    <span>{{ t("companies.loading") }}</span>
-  </div>
+  <LoadingState v-if="loading" variant="skeleton-list" :count="4" />
 
-  <div
+  <EmptyState
     v-else-if="companies.length === 0"
-    class="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-default px-6 py-16 text-center"
-  >
-    <div class="flex size-12 items-center justify-center rounded-full bg-elevated">
-      <UIcon name="i-tabler-building-skyscraper" class="size-6 text-muted" />
-    </div>
-    <div class="space-y-1">
-      <p class="font-medium text-highlighted">{{ t("companies.empty.title") }}</p>
-      <p class="text-base text-muted">{{ t("companies.empty.description") }}</p>
-    </div>
-  </div>
+    icon="i-tabler-building-skyscraper"
+    :title="t('companies.empty.title')"
+    :description="t('companies.empty.description')"
+  />
 
   <div v-else class="divide-y divide-default overflow-hidden rounded-lg border border-default">
     <CompanyCard v-for="company in companies" :key="company.id" :company="company" />

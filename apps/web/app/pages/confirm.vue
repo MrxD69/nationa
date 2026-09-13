@@ -1,24 +1,57 @@
 <script setup lang="ts">
+import EmptyState from "~/components/ui/EmptyState.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
+
 definePageMeta({ layout: "auth" });
 
 const user = useSupabaseUser();
+const { t } = useI18n();
+
+const status = ref<"working" | "success" | "error">("working");
+let fallbackTimer: ReturnType<typeof setTimeout> | undefined;
 
 watch(
   user,
   (current) => {
     if (current) {
-      navigateTo("/");
+      status.value = "success";
+      if (fallbackTimer) {
+        clearTimeout(fallbackTimer);
+      }
+      void navigateTo("/");
     }
   },
   { immediate: true },
 );
+
+onMounted(() => {
+  fallbackTimer = setTimeout(() => {
+    if (!user.value && status.value === "working") {
+      status.value = "error";
+    }
+  }, 5000);
+});
+
+onBeforeUnmount(() => {
+  if (fallbackTimer) {
+    clearTimeout(fallbackTimer);
+  }
+});
 </script>
 
 <template>
-  <UContainer class="flex min-h-[calc(100vh-4rem)] items-center justify-center py-8">
-    <div class="flex items-center gap-2 text-base text-muted">
-      <UIcon name="i-lucide-loader-2" class="animate-spin" />
-      <span>Confirming…</span>
-    </div>
-  </UContainer>
+  <div class="w-full max-w-sm">
+    <LoadingState v-if="status === 'working'" :label="t('auth.confirm.working')" />
+
+    <UAlert
+      v-else-if="status === 'success'"
+      color="success"
+      variant="subtle"
+      :title="t('auth.confirm.success')"
+    />
+
+    <EmptyState v-else icon="i-tabler-alert-triangle" :title="t('auth.confirm.error')">
+      <UButton to="/login" color="neutral" variant="soft" :label="t('auth.confirm.backToLogin')" />
+    </EmptyState>
+  </div>
 </template>

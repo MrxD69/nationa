@@ -45,7 +45,6 @@ function print(): void {
       <UButton
         color="neutral"
         variant="soft"
-        size="lg"
         icon="i-tabler-printer"
         :label="t('docgen.artifact.print')"
         @click="print"
@@ -61,16 +60,25 @@ function print(): void {
       <div v-html="props.payload.render.html" />
     </div>
 
-    <dl class="grid gap-1 text-sm text-muted">
-      <div v-if="resolvedDocumentId" class="flex flex-wrap gap-2">
-        <dt class="font-medium">{{ t("docgen.artifact.documentId") }}</dt>
-        <dd class="break-all">{{ resolvedDocumentId }}</dd>
-      </div>
-      <div v-if="resolvedStorageKey" class="flex flex-wrap gap-2">
-        <dt class="font-medium">{{ t("docgen.artifact.storageKey") }}</dt>
-        <dd class="break-all">{{ resolvedStorageKey }}</dd>
-      </div>
-    </dl>
+    <details
+      v-if="resolvedDocumentId || resolvedStorageKey"
+      class="rounded-lg border border-default p-4"
+    >
+      <summary class="cursor-pointer text-sm font-medium text-toned">
+        {{ t("docgen.artifact.technical") }}
+      </summary>
+      <p class="mt-1 text-sm text-muted">{{ t("docgen.artifact.technicalHint") }}</p>
+      <dl class="mt-3 grid gap-1 text-sm text-muted">
+        <div v-if="resolvedDocumentId" class="flex flex-wrap gap-2">
+          <dt class="font-medium">{{ t("docgen.artifact.documentId") }}</dt>
+          <dd class="break-all" dir="ltr">{{ resolvedDocumentId }}</dd>
+        </div>
+        <div v-if="resolvedStorageKey" class="flex flex-wrap gap-2">
+          <dt class="font-medium">{{ t("docgen.artifact.storageKey") }}</dt>
+          <dd class="break-all" dir="ltr">{{ resolvedStorageKey }}</dd>
+        </div>
+      </dl>
+    </details>
   </div>
 </template>
 

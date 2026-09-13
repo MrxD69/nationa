@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtLink } from "#components";
 import SeverityBadge from "./SeverityBadge.vue";
 
 type Finding = {
@@ -15,10 +16,14 @@ type ComparedRefsPayload = {
   params?: Record<string, string>;
 };
 
-const props = defineProps<{
-  finding: Finding;
-  companyId: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    finding: Finding;
+    companyId?: string;
+    linkable?: boolean;
+  }>(),
+  { companyId: undefined, linkable: true },
+);
 
 const { t, te } = useI18n();
 
@@ -36,14 +41,15 @@ function translate(field: "title" | "message"): string {
 
 const detailLink = computed(() => ({
   path: `/findings/${props.finding.id}`,
-  query: { companyId: props.companyId },
+  query: props.companyId ? { companyId: props.companyId } : {},
 }));
 </script>
 
 <template>
-  <NuxtLink
-    :to="detailLink"
-    class="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-elevated focus:outline-none focus-visible:bg-elevated"
+  <component
+    :is="linkable ? NuxtLink : 'div'"
+    v-bind="linkable ? { to: detailLink } : {}"
+    class="group flex items-center gap-4 px-5 py-4 transition-control hover-surface focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
   >
     <div class="min-w-0 flex-1 space-y-1.5">
       <div class="flex flex-wrap items-center gap-2">
@@ -57,6 +63,10 @@ const detailLink = computed(() => ({
       <p class="line-clamp-2 text-base text-muted">{{ translate("message") }}</p>
     </div>
 
-    <UIcon name="i-tabler-chevron-right" class="size-6 shrink-0 text-muted rtl:rotate-180" />
-  </NuxtLink>
+    <UIcon
+      v-if="linkable"
+      name="i-tabler-chevron-right"
+      class="size-6 shrink-0 text-muted transition-control group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5"
+    />
+  </component>
 </template>

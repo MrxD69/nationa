@@ -52,7 +52,7 @@ function translate(finding: Finding, field: "title" | "message" | "fix"): string
     <article
       v-for="finding in ordered"
       :key="finding.id"
-      class="rounded-lg border border-default p-3"
+      class="rounded-md border border-default p-3"
     >
       <div class="flex flex-wrap items-center gap-2">
         <SeverityBadge :severity="finding.severity" />
@@ -61,7 +61,15 @@ function translate(finding: Finding, field: "title" | "message" | "fix"): string
         }}</span>
       </div>
       <h3 class="mt-2 text-base font-semibold text-highlighted">
-        {{ translate(finding, "title") }}
+        <NuxtLink
+          v-if="finding.id"
+          :to="`/findings/${finding.id}`"
+          class="rounded-md transition-control hover:underline"
+          :title="t('officer.review.openFinding')"
+        >
+          {{ translate(finding, "title") }}
+        </NuxtLink>
+        <template v-else>{{ translate(finding, "title") }}</template>
       </h3>
       <p class="mt-1 text-base text-toned">{{ translate(finding, "message") }}</p>
       <p v-if="translate(finding, 'fix')" class="mt-2 text-sm text-muted">

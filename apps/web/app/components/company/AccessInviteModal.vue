@@ -79,7 +79,7 @@ async function submit() {
 </script>
 
 <template>
-  <UModal v-model:open="open">
+  <UModal v-model:open="open" :ui="{ content: 'sm:max-w-lg' }">
     <template #content>
       <UCard>
         <template #header>
@@ -102,10 +102,9 @@ async function submit() {
             :title="t('companies.access.tokenTitle')"
             :description="t('companies.access.tokenHelp')"
           />
-          <div class="flex items-center gap-2 rounded-lg border border-default p-3">
+          <div class="flex items-center gap-2 rounded-md border border-default p-3">
             <code class="min-w-0 flex-1 truncate text-sm">{{ invitationLink }}</code>
             <UButton
-              size="lg"
               color="neutral"
               variant="soft"
               :icon="copied ? 'i-tabler-check' : 'i-tabler-copy'"

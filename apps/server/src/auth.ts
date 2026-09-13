@@ -40,6 +40,42 @@ function readAccountType(payload: JWTPayload): AuthUser["accountType"] {
   return parseAccountType((metadata as Record<string, unknown>).accountType) ?? undefined;
 }
 
+function readDisplayName(payload: JWTPayload): string | undefined {
+  const metadata = payload.user_metadata;
+  if (typeof metadata !== "object" || metadata === null) {
+    return undefined;
+  }
+  const value = (metadata as Record<string, unknown>).displayName;
+  if (typeof value !== "string") {
+    return undefined;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function readProfessional(payload: JWTPayload): AuthUser["professional"] {
+  const metadata = payload.user_metadata;
+  if (typeof metadata !== "object" || metadata === null) {
+    return undefined;
+  }
+  const value = (metadata as Record<string, unknown>).professional;
+  if (typeof value !== "object" || value === null) {
+    return undefined;
+  }
+  const record = value as Record<string, unknown>;
+  const professional: NonNullable<AuthUser["professional"]> = {};
+  if (typeof record.type === "string") {
+    professional.type = record.type;
+  }
+  if (typeof record.licenseNumber === "string") {
+    professional.licenseNumber = record.licenseNumber;
+  }
+  if (typeof record.verifiedAt === "string") {
+    professional.verifiedAt = record.verifiedAt;
+  }
+  return Object.keys(professional).length > 0 ? professional : undefined;
+}
+
 function toAuthUser(payload: JWTPayload): AuthUser {
   const id = typeof payload.sub === "string" ? payload.sub : undefined;
   if (!id) {
@@ -47,7 +83,14 @@ function toAuthUser(payload: JWTPayload): AuthUser {
   }
   const email = typeof payload.email === "string" ? payload.email : undefined;
   const role = typeof payload.role === "string" ? payload.role : undefined;
-  return { id, email, role, accountType: readAccountType(payload) };
+  return {
+    id,
+    email,
+    role,
+    accountType: readAccountType(payload),
+    displayName: readDisplayName(payload),
+    professional: readProfessional(payload),
+  };
 }
 
 /**

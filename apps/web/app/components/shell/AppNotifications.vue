@@ -8,16 +8,19 @@ type NotificationRow = {
   body?: string | null;
   readAt?: string | Date | null;
   createdAt?: string | Date | null;
+  entityType?: string | null;
+  entityId?: string | null;
+  companyId?: string | null;
 };
 
-const props = withDefaults(defineProps<{ collapsed?: boolean }>(), { collapsed: false });
-
 const client = useApi();
+const router = useRouter();
 const { t } = useI18n();
 
 const notifications = ref<NotificationRow[]>([]);
 const unread = ref(0);
 const loading = ref(false);
+const loaded = ref(false);
 const open = ref(false);
 
 async function refreshUnread() {
@@ -34,6 +37,7 @@ async function loadList() {
     notifications.value = (await client.notifications.list({
       limit: 20,
     })) as unknown as NotificationRow[];
+    loaded.value = true;
   } catch {
     notifications.value = [];
   } finally {
@@ -42,11 +46,19 @@ async function loadList() {
 }
 
 async function markRead(id: string) {
+  const target = notifications.value.find((item) => item.id === id);
   try {
     await client.notifications.markRead({ notificationId: id });
     await Promise.all([loadList(), refreshUnread()]);
   } catch {
-    return;
+    // Best-effort: still navigate below for company rows.
+  }
+  // Reco rows carry the company in entityId; land on its recommended section.
+  if (target?.entityType === "company") {
+    const companyId = target.entityId ?? target.companyId ?? null;
+    if (companyId) {
+      await router.push(`/actions?companyId=${companyId}`);
+    }
   }
 }
 
@@ -61,7 +73,7 @@ async function markAllRead() {
 
 async function onOpenChange(value: boolean) {
   open.value = value;
-  if (value) {
+  if (value && !loaded.value) {
     await loadList();
   }
 }
@@ -79,33 +91,20 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <UPopover :open="open" :content="{ align: 'start' }" @update:open="onOpenChange">
+  <UPopover :open="open" :content="{ align: 'end' }" @update:open="onOpenChange">
     <UButton
       color="neutral"
       variant="ghost"
-      size="lg"
-      :square="props.collapsed"
-      :block="!props.collapsed"
-      :class="props.collapsed ? 'relative' : 'relative justify-start'"
+      square
+      class="press relative"
       :aria-label="t('notifications.title')"
       :title="t('notifications.title')"
     >
       <UIcon name="i-tabler-bell" class="size-6 shrink-0" />
 
-      <span v-if="!props.collapsed" class="truncate">{{ t("notifications.title") }}</span>
-
-      <UBadge
-        v-if="unread > 0 && !props.collapsed"
-        color="error"
-        variant="solid"
-        size="md"
-        class="ms-auto shrink-0"
-        :label="unread > 9 ? '9+' : String(unread)"
-      />
-
       <span
-        v-else-if="unread > 0"
-        class="absolute -end-0.5 -top-0.5 flex min-w-5 items-center justify-center rounded-full bg-error px-1.5 text-xs font-semibold text-white"
+        v-if="unread > 0"
+        class="absolute -end-0.5 -top-0.5 flex min-w-5 items-center justify-center rounded-full bg-error px-1.5 text-xs font-semibold text-white tabular-nums"
       >
         {{ unread > 9 ? "9+" : unread }}
       </span>

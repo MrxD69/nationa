@@ -4,11 +4,19 @@ import type { LanguageModel } from "ai";
 import type { AccountType } from "../domain/account";
 import type { StoragePort } from "../storage/port";
 
+export type AuthProfessional = {
+  type?: string; // "accountant"
+  licenseNumber?: string;
+  verifiedAt?: string; // ISO
+};
+
 export type AuthUser = {
   id: string;
   email?: string;
   role?: string;
   accountType?: AccountType;
+  displayName?: string;
+  professional?: AuthProfessional;
 };
 
 export type Context = {

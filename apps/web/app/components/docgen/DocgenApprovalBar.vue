@@ -20,38 +20,31 @@ function onReject(): void {
 </script>
 
 <template>
-  <UCard>
-    <div class="space-y-3">
-      <div>
-        <h2 class="text-base font-semibold text-highlighted">{{ t("docgen.approval.title") }}</h2>
-        <p class="text-sm text-muted">{{ t("docgen.approval.disclaimer") }}</p>
-      </div>
-
-      <UInput
-        v-model="reason"
-        class="w-full"
-        size="lg"
-        :placeholder="t('docgen.approval.reasonPlaceholder')"
-      />
-
-      <div class="flex flex-wrap items-center justify-end gap-2">
-        <UButton
-          color="neutral"
-          variant="soft"
-          icon="i-tabler-x"
-          :disabled="props.disabled || props.busy"
-          :label="t('docgen.approval.reject')"
-          @click="onReject"
-        />
-        <UButton
-          color="primary"
-          icon="i-tabler-check"
-          :loading="props.busy"
-          :disabled="props.disabled"
-          :label="t('docgen.approval.approve')"
-          @click="onApprove"
-        />
-      </div>
+  <div class="space-y-3 border-t border-default pt-4">
+    <div>
+      <h2 class="text-base font-semibold text-highlighted">{{ t("docgen.approval.title") }}</h2>
+      <p class="text-sm text-muted">{{ t("docgen.approval.disclaimer") }}</p>
     </div>
-  </UCard>
+
+    <UInput v-model="reason" class="w-full" :placeholder="t('docgen.approval.reasonPlaceholder')" />
+
+    <div class="flex flex-wrap items-center justify-end gap-2">
+      <UButton
+        color="neutral"
+        variant="soft"
+        icon="i-tabler-x"
+        :disabled="props.disabled || props.busy"
+        :label="t('docgen.approval.reject')"
+        @click="onReject"
+      />
+      <UButton
+        color="primary"
+        icon="i-tabler-check"
+        :loading="props.busy"
+        :disabled="props.disabled"
+        :label="t('docgen.approval.approve')"
+        @click="onApprove"
+      />
+    </div>
+  </div>
 </template>

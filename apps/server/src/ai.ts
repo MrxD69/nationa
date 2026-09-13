@@ -6,5 +6,5 @@ export function getModel(env: Pick<ServerRuntimeEnv, "OPENROUTER_API_KEY" | "OPE
   const openrouter = createOpenRouter({
     apiKey: env.OPENROUTER_API_KEY,
   });
-  return openrouter(env.OPENROUTER_MODEL ?? "google/gemini-2.5-flash");
+  return openrouter(env.OPENROUTER_MODEL ?? "qwen/qwen3.7-flash");
 }

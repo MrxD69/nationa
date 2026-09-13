@@ -13,8 +13,9 @@ import { assertCompanyPermission, requireUser } from "../../auth/access";
 import { assertCasePermission } from "../../auth/case-access";
 import { inferDocumentKind, type DocumentKind } from "../../domain/extraction";
 import type { CompanyPermission } from "../../permissions";
-import { documentObjectKey } from "../../storage/port";
+import { documentObjectKey, sanitizeFileName } from "../../storage/port";
 import type { Context, Db } from "../context";
+import * as companiesRepo from "../repositories/companies.repo";
 import * as repo from "../repositories/documents.repo";
 import { runExtraction } from "./extraction.service";
 
@@ -35,6 +36,13 @@ export type UploadRequestResult = {
   versionId: string;
   storageKey: string;
   uploadUrl: string;
+  fileName: string;
+};
+
+export type DocumentUrlResult = {
+  url: string;
+  mimeType: string;
+  fileName: string;
 };
 
 export type RegisterDocumentInput = DocumentScope & {
@@ -188,6 +196,28 @@ export async function getDocumentDetail(
   return { document, version, extraction, fields, provenance };
 }
 
+export async function getDocumentUrl(
+  context: Context,
+  input: { companyId: string; documentId: string },
+): Promise<DocumentUrlResult> {
+  requireUser(context);
+  const document = await requireDocumentById(context.db, input.documentId);
+  await assertDocumentAccess(context, document, input.companyId);
+
+  const version = await loadCurrentVersion(context.db, document);
+  if (!version) {
+    throw new ORPCError("NOT_FOUND", { message: "Document has no current version" });
+  }
+
+  return {
+    url: await context.storage.presignGet(version.storagePath, {
+      downloadName: version.fileName,
+    }),
+    mimeType: version.mimeType,
+    fileName: version.fileName,
+  };
+}
+
 export async function listCompanyDocuments(
   context: Context,
   input: { companyId: string; documentTypeId?: string; limit?: number },
@@ -211,6 +241,36 @@ export async function listActiveDocumentTypes(context: Context) {
   return repo.listActiveDocumentTypes(context.db);
 }
 
+function fileExtension(fileName: string): string {
+  const base = fileName.split(/[\\/]/).pop() ?? "";
+  const dot = base.lastIndexOf(".");
+  const ext = dot > 0 ? base.slice(dot).toLowerCase() : "";
+  return /^\.[a-z0-9]+$/.test(ext) ? ext : ".bin";
+}
+
+async function resolveExpressiveFileName(
+  context: Context,
+  input: UploadRequestInput,
+): Promise<string> {
+  if (!input.companyId || !input.documentTypeId) {
+    return input.fileName;
+  }
+  try {
+    const company = await companiesRepo.findCompanyById(context.db, input.companyId);
+    const typeCode = await repo.findDocumentTypeCode(context.db, input.documentTypeId);
+    if (!company || !typeCode) {
+      return input.fileName;
+    }
+    const companyLabel =
+      company.uniqueIdentifier || company.tradeName || company.legalName || "company";
+    const date = new Date().toISOString().slice(0, 10);
+    const raw = `${companyLabel}_${typeCode}_${date}${fileExtension(input.fileName)}`;
+    return sanitizeFileName(raw);
+  } catch {
+    return input.fileName;
+  }
+}
+
 export async function requestUpload(
   context: Context,
   input: UploadRequestInput,
@@ -227,12 +287,14 @@ export async function requestUpload(
     await assertCaseAccess(context, input.caseId, "documents.write");
   }
 
+  const expressiveName = await resolveExpressiveFileName(context, input);
+
   const created = await repo.insertDocument(context.db, {
     companyId: input.companyId ?? null,
     caseId: input.caseId ?? null,
     documentTypeId: input.documentTypeId ?? null,
     ownerUserId: user.id,
-    title: input.fileName,
+    title: expressiveName,
     status: "uploaded",
   });
 
@@ -245,7 +307,7 @@ export async function requestUpload(
     caseId: input.caseId,
     documentId: created.id,
     version: 1,
-    fileName: input.fileName,
+    fileName: expressiveName,
   });
 
   const version = await repo.insertDocumentVersion(context.db, {
@@ -253,7 +315,7 @@ export async function requestUpload(
     version: 1,
     storageBucket: context.storage.bucket,
     storagePath: storageKey,
-    fileName: input.fileName,
+    fileName: expressiveName,
     mimeType: input.mimeType,
     size: input.size,
     source: "upload",
@@ -271,6 +333,7 @@ export async function requestUpload(
     versionId: version.id,
     storageKey,
     uploadUrl: buildUploadUrl(storageKey),
+    fileName: expressiveName,
   };
 }
 

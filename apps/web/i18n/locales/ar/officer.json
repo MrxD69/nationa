@@ -40,7 +40,8 @@
       "allStatuses": "كل الحالات",
       "allTiers": "الكل",
       "open": "دراسة",
-      "loadMore": "تحميل المزيد"
+      "loadMore": "تحميل المزيد",
+      "mobileList": "قائمة الطلبات"
     },
     "review": {
       "title": "دراسة الطلب",
@@ -72,18 +73,26 @@
       "openDocument": "فتح في تبويب جديد",
       "previewUnavailable": "المعاينة غير متاحة لهذا النوع من الملفات.",
       "back": "رجوع إلى القائمة",
-      "submittedBy": "المُرسل"
+      "submittedBy": "المُرسل",
+      "unknownUser": "مستخدم غير معروف",
+      "openCase": "فتح الملف",
+      "openFinding": "فتح الملاحظة",
+      "confirmDecision": "تأكيد: {decision}"
     },
     "decision": {
       "approve": "قبول",
       "reject": "رفض",
       "return_for_correction": "إعادة للتصحيح",
-      "escalate": "إحالة"
+      "escalate": "إحالة",
+      "choose": "اختر قراراً",
+      "rejectWarning": "هذا القرار نهائي."
     },
     "analytics": {
       "title": "التحليلات",
       "subtitle": "مؤشرات معالجة الهيئة",
       "error": "تعذّر تحميل التحليلات.",
+      "errorTitle": "تعذّر تحميل التحليلات",
+      "unknownFinding": "ملاحظة",
       "empty": "لا توجد بيانات",
       "supervisorOnly": "مخصّص للمشرفين والمديرين.",
       "kpi": {

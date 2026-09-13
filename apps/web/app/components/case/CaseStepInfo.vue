@@ -42,31 +42,32 @@ function citationText(citation: Citation): string {
   <div class="grid gap-4">
     <p v-if="description" class="text-base leading-6 text-muted">{{ description }}</p>
 
-    <div v-if="props.step.citations?.length" class="grid gap-3">
+    <div v-if="props.step.citations?.length" class="space-y-3">
       <h3 class="text-base font-medium text-highlighted">{{ t("cases.citations.title") }}</h3>
-      <UCard v-for="citation in props.step.citations" :key="citation.id">
-        <div class="space-y-2">
-          <div class="flex flex-wrap items-center gap-2">
-            <UBadge color="neutral" variant="subtle" size="lg">{{ citation.source }}</UBadge>
-            <span v-if="citation.article" class="text-sm text-muted">{{ citation.article }}</span>
+      <ul class="divide-y divide-default border-t border-default">
+        <li v-for="citation in props.step.citations" :key="citation.id" class="py-3">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <UBadge color="neutral" variant="subtle" size="lg">{{ citation.source }}</UBadge>
+              <span v-if="citation.article" class="text-sm text-muted">{{ citation.article }}</span>
+            </div>
+            <div class="text-base font-medium text-highlighted">{{ citationTitle(citation) }}</div>
+            <p v-if="citationText(citation)" class="text-base leading-6 text-muted">
+              {{ citationText(citation) }}
+            </p>
+            <UButton
+              v-if="citation.url"
+              :to="citation.url"
+              target="_blank"
+              external
+              color="neutral"
+              variant="link"
+              icon="i-tabler-external-link"
+              :label="t('cases.citations.source')"
+            />
           </div>
-          <div class="text-base font-medium text-highlighted">{{ citationTitle(citation) }}</div>
-          <p v-if="citationText(citation)" class="text-base leading-6 text-muted">
-            {{ citationText(citation) }}
-          </p>
-          <UButton
-            v-if="citation.url"
-            :to="citation.url"
-            target="_blank"
-            external
-            size="lg"
-            color="neutral"
-            variant="link"
-            icon="i-tabler-external-link"
-            :label="t('cases.citations.source')"
-          />
-        </div>
-      </UCard>
+        </li>
+      </ul>
     </div>
   </div>
 </template>

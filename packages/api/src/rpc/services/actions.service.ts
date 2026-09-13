@@ -14,6 +14,7 @@ import type {
 
 import { assertCompanyPermission, requireUser } from "../../auth/access";
 import { assertCasePermission } from "../../auth/case-access";
+import { RECOMMENDED_DEMARCHE_KIND } from "../../ai/recommend";
 import {
   deriveActionProgress,
   deriveActionStatus,
@@ -28,6 +29,7 @@ import type { ParsedFormSchema } from "../../domain/procedure-forms";
 import { parseFormSchema } from "../../domain/procedure-forms";
 import type { Context } from "../context";
 import * as repo from "../repositories/actions.repo";
+import { listDraftProposalsBySubject } from "../repositories/ai.repo";
 import { startCase } from "./cases.service";
 import { runChecks, type RunChecksResult } from "./checks.service";
 
@@ -49,6 +51,8 @@ export type ActionCatalogItem = {
   status: ActionStepState;
   progress: number;
   caseId: string | null;
+  recommended?: boolean;
+  recommendationReason?: string | null;
 };
 
 export type ActionStep = {
@@ -143,6 +147,37 @@ function primaryText(field: CaseFieldValue | undefined): string | null {
     return field.valueText;
   }
   return scalarToString(field.valueJsonb);
+}
+
+function toRecord(value: unknown): Record<string, unknown> | null {
+  if (typeof value === "string") {
+    try {
+      return toRecord(JSON.parse(value));
+    } catch {
+      return null;
+    }
+  }
+  if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    return value as Record<string, unknown>;
+  }
+  return null;
+}
+
+function toStringArray(value: unknown): string[] {
+  const raw =
+    typeof value === "string"
+      ? (() => {
+          try {
+            return JSON.parse(value) as unknown;
+          } catch {
+            return null;
+          }
+        })()
+      : value;
+  if (!Array.isArray(raw)) {
+    return [];
+  }
+  return raw.filter((entry): entry is string => typeof entry === "string");
 }
 
 function toNumber(value: string | null): number | null {
@@ -261,6 +296,28 @@ export async function listActionCatalog(
     await assertCompanyPermission(context, input.companyId, "cases.read");
   }
 
+  const recommendedCodes = new Set<string>();
+  const recommendationReasons: Record<string, unknown> = {};
+  let recommendationRationale: string | null = null;
+  if (input.companyId) {
+    const [proposal] = await listDraftProposalsBySubject(context.db, {
+      subjectType: "company",
+      subjectId: input.companyId,
+      kind: RECOMMENDED_DEMARCHE_KIND,
+    });
+    if (proposal) {
+      const payload = toRecord(proposal.payload) ?? {};
+      for (const code of toStringArray(payload.codes)) {
+        recommendedCodes.add(code);
+      }
+      const reasons = toRecord(payload.reasons);
+      if (reasons) {
+        Object.assign(recommendationReasons, reasons);
+      }
+      recommendationRationale = proposal.rationale ?? null;
+    }
+  }
+
   const templates = await repo.listCatalogTemplates(context.db, input.agencyId);
   if (templates.length === 0) {
     return [];
@@ -332,6 +389,12 @@ export async function listActionCatalog(
       status: derived.status,
       progress: derived.progress,
       caseId: derived.caseId,
+      recommended: recommendedCodes.has(template.code),
+      recommendationReason: recommendedCodes.has(template.code)
+        ? typeof recommendationReasons[template.code] === "string"
+          ? (recommendationReasons[template.code] as string)
+          : recommendationRationale
+        : null,
     });
   }
 
@@ -523,7 +586,6 @@ export async function getActionTracker(
 }
 
 const OUTSTANDING_STATES: ReadonlySet<ActionStepState> = new Set<ActionStepState>([
-  "not_started",
   "in_progress",
   "needs_correction",
   "blocked",

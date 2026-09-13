@@ -16,6 +16,15 @@
     "regenerate": "Régénérer",
     "thinking": "Réflexion…",
     "messages": "{count} message(s)",
+    "suggestions": {
+      "title": "Suggestions",
+      "q1": "Quelles sont mes prochaines échéances ?",
+      "q2": "Comment déclarer la TVA ?",
+      "q3": "Quels documents me manquent ?"
+    },
+    "jumpToLatest": "Voir les derniers messages",
+    "retry": "Réessayer",
+    "cancel": "Annuler",
     "tools": {
       "title": "Outils utilisés",
       "searchRules": "Recherche de règles",
@@ -28,7 +37,9 @@
       "flagDelicateMatter": "Sujet délicat",
       "running": "En cours…",
       "done": "Terminé",
-      "error": "Échec"
+      "error": "Échec",
+      "showDetails": "Afficher les détails",
+      "hideDetails": "Masquer les détails"
     },
     "progress": {
       "searchRules": "Recherche de règles{query}…",

@@ -40,7 +40,8 @@
       "allStatuses": "Tous les statuts",
       "allTiers": "Toutes",
       "open": "Examiner",
-      "loadMore": "Charger plus"
+      "loadMore": "Charger plus",
+      "mobileList": "Liste des soumissions"
     },
     "review": {
       "title": "Examen de la soumission",
@@ -72,18 +73,26 @@
       "openDocument": "Ouvrir dans un nouvel onglet",
       "previewUnavailable": "Aperçu indisponible pour ce type de fichier.",
       "back": "Retour à la file",
-      "submittedBy": "Auteur"
+      "submittedBy": "Auteur",
+      "unknownUser": "Utilisateur inconnu",
+      "openCase": "Ouvrir le dossier",
+      "openFinding": "Ouvrir le constat",
+      "confirmDecision": "Confirmer : {decision}"
     },
     "decision": {
       "approve": "Approuver",
       "reject": "Rejeter",
       "return_for_correction": "Renvoyer pour correction",
-      "escalate": "Escalader"
+      "escalate": "Escalader",
+      "choose": "Choisissez une décision",
+      "rejectWarning": "Cette décision est définitive."
     },
     "analytics": {
       "title": "Analytique",
       "subtitle": "Indicateurs de traitement de l'organisme",
       "error": "Impossible de charger l'analytique.",
+      "errorTitle": "Impossible de charger l'analytique",
+      "unknownFinding": "Constat",
       "empty": "Aucune donnée",
       "supervisorOnly": "Réservé aux superviseurs et administrateurs.",
       "kpi": {

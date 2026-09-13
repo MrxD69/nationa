@@ -2,9 +2,35 @@
   "documents": {
     "title": "Documents",
     "subtitle": "Téléversez et extrayez les documents de l'entreprise.",
+    "critical": {
+      "title": "Mes infos",
+      "subtitle": "Rassemblez ici les documents essentiels de votre entreprise.",
+      "progress": "{done}/{total} fournis",
+      "missing": "À fournir",
+      "provided": "Fourni",
+      "view": "Voir",
+      "upload": "Téléverser",
+      "replace": "Remplacer",
+      "uploadTitle": "Téléverser un document",
+      "categoryLabel": "Choisissez la catégorie",
+      "chooseFile": "Sélectionnez un fichier",
+      "submit": "Téléverser",
+      "success": "Document téléversé.",
+      "error": "Le téléversement a échoué.",
+      "missingType": "Type indisponible",
+      "items": {
+        "rne_extrait": "Extrait RNE",
+        "cin": "CIN du gérant",
+        "statuts": "Statuts de la société",
+        "carte_identification_fiscale": "Carte d'identification fiscale",
+        "declaration_beneficiaire": "Déclaration du bénéficiaire effectif",
+        "pv_nomination_gerant": "PV de nomination du gérant"
+      }
+    },
     "upload": {
       "title": "Nouveau document",
       "subtitle": "Sélectionnez un type puis déposez un fichier.",
+      "open": "Ajouter un document",
       "typeLabel": "Type de document",
       "typePlaceholder": "Choisir un type",
       "requiredHint": "Champs attendus :",
@@ -15,6 +41,9 @@
       "success": "Document téléversé. Extraction lancée.",
       "button": "Téléverser"
     },
+    "groups": {
+      "uncategorized": "Autres documents"
+    },
     "list": {
       "title": "Documents de l'entreprise",
       "count": "{count} document(s)",
@@ -22,13 +51,15 @@
       "loading": "Chargement des documents…",
       "empty": "Aucun document",
       "emptyHint": "Téléversez un premier document pour commencer.",
+      "emptyAction": "Ajouter un document",
       "untitled": "Document sans titre",
       "typeUnknown": "Autres documents",
       "fileName": "Fichier",
       "size": "Taille",
       "uploadedAt": "Téléversé le",
       "version": "Version",
-      "view": "Voir"
+      "view": "Voir",
+      "rowMenu": "Actions"
     },
     "status": {
       "uploaded": "Téléversé",
@@ -47,7 +78,15 @@
     "detail": {
       "title": "Détail du document",
       "subtitle": "Champs extraits et niveaux de confiance.",
-      "loading": "Chargement du document…"
+      "loading": "Chargement du document…",
+      "close": "Fermer",
+      "select": "Sélectionnez un document",
+      "selectHint": "Choisissez un document dans la liste pour afficher ses champs extraits.",
+      "technical": "Détails techniques",
+      "technicalHint": "Informations internes du document.",
+      "documentId": "Identifiant",
+      "versionId": "Version",
+      "storageKey": "Clé de stockage"
     },
     "fields": {
       "key": "Champ",

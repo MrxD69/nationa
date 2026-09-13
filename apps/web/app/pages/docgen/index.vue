@@ -2,6 +2,9 @@
 import type { DocgenMode } from "~/composables/useDocgen";
 import type { DocLang } from "@nationa/api/documents/templates/types";
 import DocgenTemplatePicker from "~/components/docgen/DocgenTemplatePicker.vue";
+import PageHeader from "~/components/ui/PageHeader.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
+import EmptyState from "~/components/ui/EmptyState.vue";
 
 definePageMeta({ layout: "app", middleware: "auth" });
 
@@ -28,9 +31,8 @@ const picker = ref<{ templateCode: string | null; language: DocLang; mode: Docge
   mode: "template",
 });
 
-const canGenerate = computed(
-  () => Boolean(picker.value.templateCode) && Boolean(caseId.value || companyId.value),
-);
+const hasScope = computed(() => Boolean(caseId.value || companyId.value));
+const canGenerate = computed(() => Boolean(picker.value.templateCode) && hasScope.value);
 
 const generate = generateMutation({
   onSuccess: (draft) => {
@@ -39,7 +41,11 @@ const generate = generateMutation({
 });
 
 async function onGenerate(): Promise<void> {
-  if (!picker.value.templateCode || !canGenerate.value) {
+  if (!picker.value.templateCode) {
+    toast.add({ title: t("docgen.errors.missingTemplate"), color: "warning" });
+    return;
+  }
+  if (!canGenerate.value) {
     return;
   }
   try {
@@ -62,11 +68,12 @@ async function onGenerate(): Promise<void> {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-4xl space-y-6">
-    <div class="space-y-1">
-      <h1 class="text-xl font-semibold tracking-tight text-highlighted">{{ t("docgen.title") }}</h1>
-      <p class="text-base text-muted">{{ t("docgen.subtitle") }}</p>
-    </div>
+  <div class="mx-auto w-full max-w-5xl space-y-6">
+    <PageHeader
+      :title="t('docgen.title')"
+      :subtitle="t('docgen.subtitle')"
+      icon="i-tabler-file-text"
+    />
 
     <UAlert
       v-if="!caseId && !companyId"
@@ -77,17 +84,27 @@ async function onGenerate(): Promise<void> {
       :description="t('docgen.scope.missingDescription')"
     />
 
-    <DocgenTemplatePicker v-model="picker" :templates="templates ?? []" :loading="isPending" />
+    <LoadingState v-if="isPending" variant="skeleton-grid" />
 
-    <div class="flex items-center justify-end">
-      <UButton
-        color="primary"
-        icon="i-tabler-sparkles"
-        :loading="generate.isPending.value"
-        :disabled="!canGenerate"
-        :label="t('docgen.picker.generate')"
-        @click="onGenerate"
-      />
-    </div>
+    <EmptyState
+      v-else-if="(templates ?? []).length === 0"
+      icon="i-tabler-file-off"
+      :title="t('docgen.picker.empty')"
+    />
+
+    <template v-else>
+      <DocgenTemplatePicker v-model="picker" :templates="templates ?? []" :loading="isPending" />
+
+      <div class="flex items-center justify-end">
+        <UButton
+          color="primary"
+          icon="i-tabler-sparkles"
+          :loading="generate.isPending.value"
+          :disabled="!hasScope"
+          :label="t('docgen.picker.generate')"
+          @click="onGenerate"
+        />
+      </div>
+    </template>
   </div>
 </template>

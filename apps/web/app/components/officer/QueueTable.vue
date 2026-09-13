@@ -3,6 +3,8 @@ import type { TableColumn } from "@nuxt/ui";
 import { h } from "vue";
 import SubmissionStatusBadge from "~/components/submission/SubmissionStatusBadge.vue";
 import CleanlinessBadge from "~/components/submission/CleanlinessBadge.vue";
+import EmptyState from "~/components/ui/EmptyState.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
 
 type QueueItem = {
   id: string;
@@ -110,7 +112,6 @@ const columns = computed<TableColumn<QueueItem>[]>(() => [
       h(
         UButton,
         {
-          size: "lg",
           variant: "soft",
           color: "neutral",
           label: t("officer.queue.open"),
@@ -124,10 +125,9 @@ const columns = computed<TableColumn<QueueItem>[]>(() => [
 
 <template>
   <div class="space-y-4">
-    <div class="flex items-center gap-2">
+    <div class="flex flex-wrap items-center gap-2">
       <span class="text-base font-medium text-muted">{{ t("officer.queue.sort") }}</span>
       <UButton
-        size="lg"
         :color="sort === 'cleanliness' ? 'primary' : 'neutral'"
         :variant="sort === 'cleanliness' ? 'solid' : 'ghost'"
         icon="i-tabler-shield-check"
@@ -135,7 +135,6 @@ const columns = computed<TableColumn<QueueItem>[]>(() => [
         @click="emit('update:sort', 'cleanliness')"
       />
       <UButton
-        size="lg"
         :color="sort === 'submittedAt' ? 'primary' : 'neutral'"
         :variant="sort === 'submittedAt' ? 'solid' : 'ghost'"
         icon="i-tabler-calendar"
@@ -144,6 +143,67 @@ const columns = computed<TableColumn<QueueItem>[]>(() => [
       />
     </div>
 
-    <UTable :data="rows" :columns="columns" :loading="loading" :empty="t('officer.queue.empty')" />
+    <LoadingState
+      v-if="loading && items.length === 0"
+      variant="skeleton-rows"
+      :count="5"
+      :label="t('officer.common.loading')"
+    />
+
+    <EmptyState
+      v-else-if="items.length === 0"
+      icon="i-tabler-inbox"
+      :title="t('officer.queue.empty')"
+      :description="t('officer.queue.emptyDescription')"
+    />
+
+    <template v-else>
+      <!-- Desktop: full table. -->
+      <div class="hidden md:block">
+        <UTable
+          :data="rows"
+          :columns="columns"
+          :loading="loading"
+          :empty="t('officer.queue.empty')"
+        />
+      </div>
+
+      <!-- Mobile: one card per submission; the table's seven columns do not fit. -->
+      <section class="space-y-3 md:hidden" :aria-label="t('officer.queue.mobileList')">
+        <article
+          v-for="item in rows"
+          :key="item.id"
+          class="space-y-3 rounded-lg border border-default p-4"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <p class="min-w-0 truncate text-base font-medium text-highlighted">
+              {{ companyName(item) || "—" }}
+            </p>
+            <SubmissionStatusBadge :status="item.status" />
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <CleanlinessBadge :tier="item.cleanlinessTier" :score="item.cleanlinessScore" />
+            <UBadge color="neutral" variant="soft">
+              {{ t("officer.queue.findings") }}: {{ item.findingsCount }}
+            </UBadge>
+            <UBadge v-if="item.blockers > 0" color="error" variant="subtle">
+              {{ t("officer.review.blockers") }}: {{ item.blockers }}
+            </UBadge>
+          </div>
+
+          <div class="flex items-center justify-between gap-3">
+            <span class="text-sm text-muted">{{ formatDate(item.submittedAt) }}</span>
+            <UButton
+              variant="soft"
+              color="neutral"
+              icon="i-tabler-eye"
+              :label="t('officer.queue.open')"
+              @click="emit('open', item.id)"
+            />
+          </div>
+        </article>
+      </section>
+    </template>
   </div>
 </template>

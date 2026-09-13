@@ -30,7 +30,7 @@ const title = computed(() => {
     full, and two copies of the same paragraph read as noise.
   -->
   <section
-    class="border-s-4 border-s-primary bg-primary/5 px-5 py-4"
+    class="rounded-lg border-s-4 border-s-primary bg-primary/5 px-5 py-4"
     v-reveal="{ y: 10, duration: 0.4 }"
   >
     <div class="flex flex-wrap items-start justify-between gap-4">
@@ -45,7 +45,11 @@ const title = computed(() => {
         <template v-if="props.step">
           <div class="flex flex-wrap items-center gap-2">
             <span class="text-lg font-semibold text-highlighted">{{ title }}</span>
-            <ActionStatusBadge :state="props.step.state" size="lg" />
+            <ActionStatusBadge
+              v-if="props.step.state !== 'not_started'"
+              :state="props.step.state"
+              size="lg"
+            />
           </div>
           <p v-if="props.step.description" class="line-clamp-2 text-base text-muted">
             {{ props.step.description }}
@@ -58,14 +62,12 @@ const title = computed(() => {
         <UButton
           v-if="props.caseId"
           :to="`/cases/${props.caseId}`"
-          size="lg"
           variant="outline"
           icon="i-tabler-external-link"
           :label="t('actions.tracker.openCase')"
         />
         <UButton
           v-if="props.caseId"
-          size="lg"
           icon="i-tabler-shield-check"
           :loading="props.running"
           :disabled="props.running"

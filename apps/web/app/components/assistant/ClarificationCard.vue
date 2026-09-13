@@ -50,7 +50,7 @@ function submit() {
 </script>
 
 <template>
-  <div class="rounded-xl border border-primary/40 bg-primary/5 p-3">
+  <div class="rounded-lg border border-primary/40 bg-primary/5 p-3">
     <div class="flex items-center gap-2">
       <UIcon name="i-tabler-help-circle" class="size-4 text-primary" />
       <p class="text-base font-medium text-highlighted">{{ t("assistant.clarification.title") }}</p>
@@ -84,7 +84,6 @@ function submit() {
     <div class="mt-3 flex justify-end">
       <UButton
         color="primary"
-        size="lg"
         :disabled="!canSubmit || submitted"
         :icon="submitted ? 'i-tabler-check' : undefined"
         :label="

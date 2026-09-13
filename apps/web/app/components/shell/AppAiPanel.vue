@@ -23,18 +23,25 @@ const caseId = computed(() => {
 
     The wrapper exists because a resizable `UDashboardPanel` renders a fragment
     (panel + resize handle), and a directive on a multi-root component is silently
-    dropped by Vue. `display: contents` keeps it out of the flex layout, and
-    `v-show` on it hides the panel and its handle together while preserving the
-    conversation, scroll position and resized width.
+    dropped by Vue. It is `v-if` so the panel — and every assistant query — only
+    exists while open. Below `lg` it becomes a full-screen sheet; from `lg` up it
+    is `display: contents`, keeping it inline and resizable in the dashboard flex.
   -->
-  <div v-show="open" class="contents">
+  <div
+    v-if="open"
+    class="max-lg:fixed max-lg:inset-0 max-lg:z-50 max-lg:block max-lg:bg-default lg:contents"
+  >
     <UDashboardPanel
       id="app-ai"
       resizable
       :default-size="26"
       :min-size="22"
       :max-size="36"
-      :ui="{ body: 'flex min-h-0 flex-1 flex-col gap-0 overflow-hidden p-0' }"
+      class="max-lg:h-full"
+      :ui="{
+        body: 'flex min-h-0 flex-1 flex-col gap-0 overflow-hidden p-0',
+        handle: 'max-lg:hidden',
+      }"
     >
       <template #header>
         <UDashboardNavbar :toggle="false">
@@ -48,7 +55,6 @@ const caseId = computed(() => {
             <UButton
               color="neutral"
               variant="ghost"
-              size="lg"
               square
               icon="i-tabler-x"
               :aria-label="t('shell.ai.close')"

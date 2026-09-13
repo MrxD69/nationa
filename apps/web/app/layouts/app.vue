@@ -16,7 +16,11 @@ const { hasCompany } = useSelectedCompany();
  */
 const showTabs = computed(() => {
   const path = route.path;
-  if (path === "/companies") {
+  if (path === "/companies" || path === "/companies/new") {
+    return false;
+  }
+  // Company creation/edit/access screens are not one of the company tabs.
+  if (/^\/companies\/[^/]+\/(edit|access)$/.test(path)) {
     return false;
   }
   // Démarches are public templates reached from the rail, not company tabs.

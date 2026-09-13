@@ -73,7 +73,14 @@
       "acknowledge": "Prendre en compte",
       "addNote": "Ajouter une note",
       "sendNote": "Publier",
-      "back": "Retour aux constats"
+      "back": "Retour aux constats",
+      "waiveTitle": "Lever ce constat ?",
+      "waiveBody": "Le constat sera marqué comme levé.",
+      "waiveConfirm": "Lever",
+      "reopenTitle": "Réouvrir ce constat ?",
+      "reopenBody": "Le constat repassera au statut ouvert.",
+      "reopenConfirm": "Réouvrir",
+      "cancel": "Annuler"
     },
     "compared": {
       "title": "Valeurs comparées",
@@ -94,7 +101,9 @@
       "suggestedFix": "Correction suggérée",
       "notFound": "Constat introuvable.",
       "code": "Code",
-      "createdAt": "Créé le"
+      "createdAt": "Créé le",
+      "technical": "Détails techniques",
+      "showTechnical": "Afficher le code du constat"
     },
     "readiness": {
       "ready": "Prêt à soumettre",

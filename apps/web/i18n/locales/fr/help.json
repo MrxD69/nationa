@@ -3,6 +3,7 @@
     "title": "Aide",
     "subtitle": "Trouvez des réponses aux questions fréquentes.",
     "faq": {
+      "title": "Questions fréquentes",
       "q1": "Comment créer une entreprise ?",
       "q2": "Comment connecter une entreprise existante ?",
       "q3": "Comment fonctionne l'assistant IA ?",
@@ -14,7 +15,9 @@
     },
     "contact": {
       "label": "Contacter le support",
-      "description": "Une question sans réponse ? Écrivez-nous et nous vous répondrons rapidement."
+      "description": "Une question sans réponse ? Écrivez-nous et nous vous répondrons rapidement.",
+      "cta": "Ouvrir l'assistant",
+      "email": "support{'@'}nationa.tn"
     }
   }
 }

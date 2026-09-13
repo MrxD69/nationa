@@ -22,13 +22,15 @@ const dimensions = computed(() => {
     center: size / 2,
   };
 });
+
+const ariaValue = computed(() => Math.min(100, Math.max(0, Math.round(props.value))));
 </script>
 
 <template>
   <div
     class="inline-flex flex-col items-center gap-1"
     role="img"
-    :aria-label="`${props.label ?? t('actions.tracker.progress')}: ${dimensions.value}%`"
+    :aria-label="`${props.label ?? t('actions.tracker.progress')}: ${ariaValue}%`"
   >
     <div
       class="relative"

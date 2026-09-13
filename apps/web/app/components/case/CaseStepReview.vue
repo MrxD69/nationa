@@ -35,6 +35,8 @@ const api = useCase();
 
 const findings = ref<Finding[]>([]);
 const loading = ref(false);
+const running = ref(false);
+const hasRun = ref(false);
 const error = ref<string | null>(null);
 
 const severityColor: Record<string, "info" | "warning" | "error" | "neutral"> = {
@@ -52,14 +54,60 @@ function fieldLabel(key: string): string {
   return locale.value === "ar" ? (labels.ar ?? labels.fr) : labels.fr;
 }
 
+function humanize(value: unknown): string {
+  if (value === null || value === undefined || value === "") {
+    return "—";
+  }
+  if (typeof value === "string") {
+    return value;
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
+  if (Array.isArray(value)) {
+    const parts = value.map((item) => humanize(item)).filter((item) => item !== "—");
+    return parts.length ? parts.join(", ") : "—";
+  }
+  if (typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    if ("fr" in record || "ar" in record || "raw" in record) {
+      const address = formatAddress(record);
+      if (address) {
+        return address;
+      }
+    }
+    const entries = Object.entries(record)
+      .filter(([, item]) => item !== null && item !== undefined && item !== "")
+      .map(([key, item]) => `${fieldLabel(key)} : ${humanize(item)}`);
+    return entries.length ? entries.join(" · ") : "—";
+  }
+  return "—";
+}
+
+function formatAddress(value: Record<string, unknown>): string {
+  const chunks: string[] = [];
+  for (const part of ["fr", "ar"] as const) {
+    const localeParts = value[part];
+    if (localeParts && typeof localeParts === "object") {
+      const joined = Object.values(localeParts as Record<string, unknown>)
+        .filter((item): item is string => typeof item === "string" && item.trim().length > 0)
+        .join(", ");
+      if (joined) {
+        chunks.push(joined);
+      }
+    }
+  }
+  if (typeof value.raw === "string" && value.raw.trim()) {
+    chunks.push(value.raw);
+  }
+  return chunks.join(" · ");
+}
+
 function displayValue(field: ReviewField): string {
   if (field.valueText) {
     return field.valueText;
   }
-  if (field.valueJsonb !== null && field.valueJsonb !== undefined) {
-    return JSON.stringify(field.valueJsonb);
-  }
-  return "—";
+  return humanize(field.valueJsonb);
 }
 
 async function loadFindings(): Promise<void> {
@@ -78,15 +126,18 @@ async function loadFindings(): Promise<void> {
 }
 
 async function runChecks(): Promise<void> {
+  running.value = true;
+  error.value = null;
   try {
     await api.runCaseChecks({ caseId: props.caseId, companyId: props.companyId });
+    hasRun.value = true;
     await loadFindings();
-  } catch (cause) {
-    error.value = cause instanceof Error ? cause.message : String(cause);
+  } catch {
+    error.value = t("cases.review.failed");
+  } finally {
+    running.value = false;
   }
 }
-
-onMounted(loadFindings);
 </script>
 
 <template>
@@ -116,17 +167,31 @@ onMounted(loadFindings);
       <div class="flex items-center justify-between gap-2">
         <h3 class="text-base font-medium text-highlighted">{{ t("cases.review.checksTitle") }}</h3>
         <UButton
-          size="lg"
           color="neutral"
           variant="outline"
           icon="i-tabler-shield-check"
-          :loading="loading"
+          :loading="running"
           :label="t('cases.review.runChecks')"
           @click="runChecks"
         />
       </div>
 
       <UAlert v-if="error" color="error" variant="subtle" :title="error" />
+
+      <UAlert
+        v-if="!hasRun && !running"
+        color="neutral"
+        variant="subtle"
+        icon="i-tabler-info-circle"
+        :title="t('cases.review.notRun')"
+      />
+      <UAlert
+        v-else-if="running"
+        color="info"
+        variant="subtle"
+        icon="i-tabler-loader-2"
+        :title="t('cases.review.running')"
+      />
 
       <div
         v-for="finding in findings"
@@ -146,7 +211,7 @@ onMounted(loadFindings);
       </div>
 
       <UAlert
-        v-if="!loading && findings.length === 0"
+        v-if="hasRun && !running && !loading && findings.length === 0"
         color="success"
         variant="subtle"
         icon="i-tabler-square-rounded-check"

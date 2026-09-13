@@ -139,21 +139,45 @@ export async function supersedeDraftProposals(
     subjectType: AiProposal["subjectType"];
     subjectId: string;
     kind: string;
-    exceptId: string;
+    exceptId?: string;
   },
 ): Promise<void> {
+  const conditions = [
+    eq(aiProposals.subjectType, filter.subjectType),
+    eq(aiProposals.subjectId, filter.subjectId),
+    eq(aiProposals.kind, filter.kind),
+    eq(aiProposals.status, "draft"),
+  ];
+  if (filter.exceptId) {
+    conditions.push(ne(aiProposals.id, filter.exceptId));
+  }
   await db
     .update(aiProposals)
     .set({ status: "superseded" })
-    .where(
-      and(
-        eq(aiProposals.subjectType, filter.subjectType),
-        eq(aiProposals.subjectId, filter.subjectId),
-        eq(aiProposals.kind, filter.kind),
-        eq(aiProposals.status, "draft"),
-        ne(aiProposals.id, filter.exceptId),
-      ),
-    );
+    .where(and(...conditions));
+}
+
+export async function listDraftProposalsBySubject(
+  db: Db,
+  filter: {
+    subjectType: AiProposal["subjectType"];
+    subjectId: string;
+    kind?: string;
+  },
+): Promise<AiProposal[]> {
+  const conditions = [
+    eq(aiProposals.subjectType, filter.subjectType),
+    eq(aiProposals.subjectId, filter.subjectId),
+    eq(aiProposals.status, "draft"),
+  ];
+  if (filter.kind) {
+    conditions.push(eq(aiProposals.kind, filter.kind));
+  }
+  return db
+    .select()
+    .from(aiProposals)
+    .where(and(...conditions))
+    .orderBy(desc(aiProposals.createdAt));
 }
 
 export async function listProposalsByConversation(

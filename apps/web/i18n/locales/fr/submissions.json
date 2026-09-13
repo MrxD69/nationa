@@ -59,7 +59,13 @@
       "resubmitAcknowledge": "Je reconnais les constats bloquants",
       "resubmitted": "Soumission renvoyée pour examen",
       "blockers": "Constats bloquants",
-      "blockersDescription": "{count} constat(s) bloquant(s) doivent être reconnus avant de soumettre."
+      "blockersDescription": "{count} constat(s) bloquant(s) doivent être reconnus avant de soumettre.",
+      "blockerAcknowledgeAll": "Je reconnais ces constats bloquants",
+      "blockerAcknowledgeHint": "Cochez cette case pour pouvoir soumettre à nouveau.",
+      "confirmResubmitTitle": "Soumettre à nouveau ?",
+      "confirmResubmitBody": "Votre dossier sera renvoyé pour examen.",
+      "confirmResubmit": "Soumettre",
+      "cancel": "Annuler"
     },
     "timeline": {
       "title": "Chronologie",

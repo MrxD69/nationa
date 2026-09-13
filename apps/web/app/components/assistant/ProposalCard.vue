@@ -42,7 +42,7 @@ function valueLabel(field: { fieldKey: string; label?: string | null; valueText?
 </script>
 
 <template>
-  <div class="rounded-xl border border-primary/40 bg-primary/5 p-3">
+  <div class="rounded-lg border border-primary/40 bg-primary/5 p-3">
     <div class="flex items-center gap-2">
       <UIcon name="i-tabler-sparkles" class="size-4 text-primary" />
       <p class="flex-1 text-base font-medium text-highlighted">
@@ -63,7 +63,6 @@ function valueLabel(field: { fieldKey: string; label?: string | null; valueText?
     <div v-if="resolvable" class="mt-3 flex items-center gap-2">
       <UButton
         color="primary"
-        size="lg"
         icon="i-tabler-check"
         :disabled="!canResolve || pending"
         :loading="pending"
@@ -73,7 +72,6 @@ function valueLabel(field: { fieldKey: string; label?: string | null; valueText?
       <UButton
         color="neutral"
         variant="soft"
-        size="lg"
         icon="i-tabler-x"
         :disabled="!canResolve || pending"
         :label="t('assistant.proposal.reject')"

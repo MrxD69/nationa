@@ -28,7 +28,22 @@
       "signIn": "Se connecter",
       "signOut": "Se déconnecter",
       "profile": "Profil",
-      "account": "Compte"
+      "account": "Compte",
+      "delete": "Supprimer",
+      "confirm": "Confirmer",
+      "close": "Fermer",
+      "retry": "Réessayer",
+      "open": "Ouvrir",
+      "edit": "Modifier",
+      "create": "Créer",
+      "clear": "Effacer"
+    },
+    "error": {
+      "generic": "Une erreur est survenue.",
+      "retry": "Réessayer"
+    },
+    "validation": {
+      "required": "Ce champ est obligatoire."
     },
     "user": {
       "guest": "Invité"

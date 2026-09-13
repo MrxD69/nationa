@@ -24,10 +24,29 @@
       "skip": "Ignorer",
       "continue": "Continuer",
       "step": "Étape {position}",
-      "notFound": "Dossier introuvable"
+      "notFound": "Dossier introuvable",
+      "back": "Retour aux dossiers",
+      "cancelTitle": "Annuler ce dossier ?",
+      "cancelBody": "Le dossier sera annulé et ne pourra plus être soumis.",
+      "cancelConfirm": "Oui, annuler",
+      "cancelKeep": "Non, continuer",
+      "required": "Complétez les champs obligatoires avant de continuer."
     },
     "sections": {
       "addresses": "Adresses"
+    },
+    "address": {
+      "fr": "Adresse (français)",
+      "ar": "Adresse (arabe)",
+      "street": "Rue",
+      "building": "Immeuble",
+      "office": "Bureau",
+      "locality": "Localité",
+      "postalCode": "Code postal",
+      "city": "Ville",
+      "governorate": "Gouvernorat",
+      "country": "Pays",
+      "raw": "Adresse complète (texte libre)"
     },
     "status": {
       "draft": "Brouillon",
@@ -78,7 +97,9 @@
       "stubTitle": "Paiement simulé",
       "stub": "Le paiement en ligne n'est pas encore activé. Vous pouvez continuer pour l'instant.",
       "companylessTitle": "Paiement après immatriculation",
-      "companyless": "Les frais seront rattachés à la société une fois le dossier transmis."
+      "companyless": "Les frais seront rattachés à la société une fois le dossier transmis.",
+      "pay": "Payer les frais",
+      "paySoon": "Le paiement en ligne arrive bientôt. Vous pouvez continuer."
     },
     "review": {
       "valuesTitle": "Récapitulatif des informations",
@@ -86,6 +107,9 @@
       "checksTitle": "Contrôles automatiques",
       "runChecks": "Lancer les contrôles",
       "noFindings": "Aucune anomalie détectée.",
+      "running": "Contrôles en cours…",
+      "notRun": "Lancez les contrôles pour vérifier ce dossier.",
+      "failed": "Impossible de lancer les contrôles.",
       "suggestedFix": "Correction suggérée",
       "severity": {
         "info": "Information",

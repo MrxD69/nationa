@@ -32,7 +32,7 @@ export type DocumentObjectKeyInput = {
   fileName: string;
 };
 
-function sanitizeFileName(fileName: string): string {
+export function sanitizeFileName(fileName: string): string {
   const base = fileName.split(/[\\/]/).pop() ?? "";
   const cleaned = base.replace(/[^A-Za-z0-9._-]+/g, "_").replace(/^\.+/, "");
   return cleaned.length > 0 ? cleaned : "document";

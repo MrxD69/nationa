@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { COMPANY_FIELD_KEYS, type CompanyFieldKey } from "@nationa/api/domain/fields";
+import SectionHeader from "~/components/ui/SectionHeader.vue";
+import StickyActionBar from "~/components/ui/StickyActionBar.vue";
 
 const model = defineModel<Record<string, any>>({ required: true });
 const asPortfolio = defineModel<boolean>("asPortfolio", { default: false });
@@ -109,7 +111,7 @@ function inputType(key: string): "number" | "text" {
 <template>
   <form class="grid gap-8" @submit.prevent="emit('submit')">
     <section v-for="group in FIELD_GROUPS" :key="group.id" class="grid gap-4">
-      <h3 class="text-base font-semibold text-highlighted">{{ t(group.titleKey) }}</h3>
+      <SectionHeader :title="t(group.titleKey)" level="3" />
 
       <div class="grid gap-4 sm:grid-cols-2">
         <template v-for="key in group.fields" :key="key">
@@ -147,15 +149,15 @@ function inputType(key: string): "number" | "text" {
       <UCheckbox v-model="asPortfolio" :label="t('companies.create.portfolio')" />
     </div>
 
-    <div class="flex items-center justify-end gap-3">
-      <slot name="actions">
+    <slot name="actions">
+      <StickyActionBar>
         <UButton
           type="submit"
           :loading="props.submitting"
           :disabled="props.submitting"
           :label="props.submitLabel ?? t('common.actions.save')"
         />
-      </slot>
-    </div>
+      </StickyActionBar>
+    </slot>
   </form>
 </template>

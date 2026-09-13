@@ -23,17 +23,17 @@ function to(item: ActionCatalogItem) {
   <div data-reveal-item>
     <div
       v-if="props.items.length === 0"
-      class="rounded-lg border border-dashed border-default px-5 py-4 text-base text-muted"
+      class="rounded-md border border-dashed border-default px-5 py-4 text-base text-muted"
     >
       {{ t("actions.hub.outstandingEmpty") }}
     </div>
 
-    <div v-else class="divide-y divide-default overflow-hidden rounded-lg border border-default">
+    <div v-else class="divide-y divide-default overflow-hidden rounded-md border border-default">
       <NuxtLink
         v-for="item in props.items"
         :key="item.id"
         :to="to(item)"
-        class="group flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-elevated"
+        class="hover-surface group flex items-center justify-between gap-4 px-5 py-4"
       >
         <AgencyMark :agency-id="item.agencyId" size="sm" />
 

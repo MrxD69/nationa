@@ -3,6 +3,7 @@ import FindingsList from "./FindingsList.vue";
 import SubmissionTimeline from "~/components/submission/SubmissionTimeline.vue";
 import CleanlinessBadge from "~/components/submission/CleanlinessBadge.vue";
 import SubmissionStatusBadge from "~/components/submission/SubmissionStatusBadge.vue";
+import StickyActionBar from "~/components/ui/StickyActionBar.vue";
 
 type ReviewPayload = {
   submission: {
@@ -12,6 +13,7 @@ type ReviewPayload = {
     cleanlinessScore?: string | number | null;
     submittedAt?: string | Date | null;
     submittedByUserId?: string | null;
+    submittedByEmail?: string | null;
     caseId?: string | null;
   };
   company?: {
@@ -51,6 +53,12 @@ const { t, locale, te } = useI18n();
 const company = computed(() => props.payload.company ?? null);
 const submission = computed(() => props.payload.submission);
 
+// Never print the raw submitter UUID: show the email when the API provides one,
+// otherwise a neutral label.
+const submitterLabel = computed(
+  () => submission.value.submittedByEmail || t("officer.review.unknownUser"),
+);
+
 const companyName = computed(() => {
   const value = company.value;
   if (!value) {
@@ -84,110 +92,124 @@ const blockers = computed(() =>
     One bordered surface with internal dividers rather than four stacked cards:
     these are sections of a single review, not four independent objects.
   -->
-  <div class="divide-y divide-default overflow-hidden rounded-lg border border-default">
-    <section class="space-y-4 p-5">
-      <div class="flex flex-wrap items-start justify-between gap-3">
-        <div class="min-w-0 space-y-1">
-          <h1 class="truncate text-xl font-semibold text-highlighted">
-            {{ companyName || t("officer.review.title") }}
-          </h1>
-          <p v-if="company?.uniqueIdentifier" class="text-base text-muted">
-            {{ company.uniqueIdentifier }}
-          </p>
+  <div class="space-y-6">
+    <div class="divide-y divide-default overflow-hidden rounded-lg border border-default">
+      <section class="space-y-4 p-5">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div class="min-w-0 space-y-1">
+            <h1 class="truncate text-xl font-semibold text-highlighted">
+              {{ companyName || t("officer.review.title") }}
+            </h1>
+            <p v-if="company?.uniqueIdentifier" dir="ltr" class="text-base text-muted">
+              {{ company.uniqueIdentifier }}
+            </p>
+          </div>
+          <SubmissionStatusBadge :status="submission.status" />
         </div>
-        <SubmissionStatusBadge :status="submission.status" />
-      </div>
 
-      <dl class="grid grid-cols-1 gap-4 text-base sm:grid-cols-2">
-        <div>
-          <dt class="text-muted">{{ t("officer.review.submittedAt") }}</dt>
-          <dd class="text-toned">{{ formatDate(submission.submittedAt) }}</dd>
-        </div>
-        <div>
-          <dt class="text-muted">{{ t("officer.review.cleanliness") }}</dt>
-          <dd class="mt-0.5">
-            <CleanlinessBadge
-              :tier="submission.cleanlinessTier"
-              :score="submission.cleanlinessScore"
-            />
-          </dd>
-        </div>
-        <div>
-          <dt class="text-muted">{{ t("officer.review.submitter") }}</dt>
-          <dd class="truncate text-toned">{{ submission.submittedByUserId ?? "—" }}</dd>
-        </div>
-        <div>
-          <dt class="text-muted">{{ t("officer.review.case") }}</dt>
-          <dd class="truncate text-toned">{{ submission.caseId ?? "—" }}</dd>
-        </div>
-      </dl>
+        <dl class="grid grid-cols-1 gap-4 text-base sm:grid-cols-2">
+          <div>
+            <dt class="text-muted">{{ t("officer.review.submittedAt") }}</dt>
+            <dd class="text-toned">{{ formatDate(submission.submittedAt) }}</dd>
+          </div>
+          <div>
+            <dt class="text-muted">{{ t("officer.review.cleanliness") }}</dt>
+            <dd class="mt-0.5">
+              <CleanlinessBadge
+                :tier="submission.cleanlinessTier"
+                :score="submission.cleanlinessScore"
+              />
+            </dd>
+          </div>
+          <div>
+            <dt class="text-muted">{{ t("officer.review.submitter") }}</dt>
+            <dd class="truncate text-toned">{{ submitterLabel }}</dd>
+          </div>
+          <div>
+            <dt class="text-muted">{{ t("officer.review.case") }}</dt>
+            <dd class="truncate">
+              <NuxtLink
+                v-if="submission.caseId"
+                :to="`/cases/${submission.caseId}`"
+                class="inline-flex items-center gap-1.5 rounded-md text-primary transition-control hover:underline"
+              >
+                {{ t("officer.review.openCase") }}
+                <UIcon name="i-tabler-external-link" class="size-4 shrink-0" />
+              </NuxtLink>
+              <span v-else class="text-muted">—</span>
+            </dd>
+          </div>
+        </dl>
+      </section>
 
+      <section class="space-y-4 p-5">
+        <div class="flex items-center justify-between gap-2">
+          <h2 class="text-lg font-semibold text-highlighted">{{ t("officer.review.findings") }}</h2>
+          <UBadge v-if="blockers.length > 0" color="error" variant="subtle" size="lg">
+            {{ blockers.length }}
+          </UBadge>
+        </div>
+
+        <FindingsList :findings="payload.findings" />
+      </section>
+
+      <section v-if="payload.patterns" class="space-y-4 p-5">
+        <h2 class="text-lg font-semibold text-highlighted">{{ t("officer.review.pattern") }}</h2>
+        <p class="text-base text-muted">{{ t("officer.review.patternDescription") }}</p>
+
+        <div class="space-y-5">
+          <div>
+            <h3 class="text-base font-medium text-muted">
+              {{ t("officer.review.patternFindings") }}
+            </h3>
+            <ul v-if="payload.patterns.commonFindings.length > 0" class="mt-2 space-y-2">
+              <li
+                v-for="item in payload.patterns.commonFindings"
+                :key="item.code"
+                class="flex items-center justify-between gap-2 text-base"
+              >
+                <span class="truncate text-toned">{{ findingLabel(item.code) }}</span>
+                <UBadge color="neutral" variant="soft" size="lg">{{ item.count }}</UBadge>
+              </li>
+            </ul>
+            <p v-else class="mt-2 text-base text-muted">{{ t("officer.review.noPattern") }}</p>
+          </div>
+
+          <div>
+            <h3 class="text-base font-medium text-muted">
+              {{ t("officer.review.patternReasons") }}
+            </h3>
+            <ul v-if="payload.patterns.commonRejectionReasons.length > 0" class="mt-2 space-y-2">
+              <li
+                v-for="item in payload.patterns.commonRejectionReasons"
+                :key="item.reason"
+                class="flex items-center justify-between gap-2 text-base"
+              >
+                <span class="truncate text-toned">{{ item.reason }}</span>
+                <UBadge color="neutral" variant="soft" size="lg">{{ item.count }}</UBadge>
+              </li>
+            </ul>
+            <p v-else class="mt-2 text-base text-muted">{{ t("officer.review.noPattern") }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-4 p-5">
+        <h2 class="text-lg font-semibold text-highlighted">
+          {{ t("submissions.timeline.title") }}
+        </h2>
+        <SubmissionTimeline :events="payload.activity" />
+      </section>
+    </div>
+
+    <!-- Pinned so the decision action never scrolls away from the reviewer. -->
+    <StickyActionBar>
       <UButton
-        block
         icon="i-tabler-gavel"
         :label="t('officer.review.decision')"
         :disabled="submission.status === 'approved' || submission.status === 'rejected'"
         @click="emit('decide')"
       />
-    </section>
-
-    <section class="space-y-4 p-5">
-      <div class="flex items-center justify-between gap-2">
-        <h2 class="text-lg font-semibold text-highlighted">{{ t("officer.review.findings") }}</h2>
-        <UBadge v-if="blockers.length > 0" color="error" variant="subtle" size="lg">
-          {{ blockers.length }}
-        </UBadge>
-      </div>
-
-      <FindingsList :findings="payload.findings" />
-    </section>
-
-    <section v-if="payload.patterns" class="space-y-4 p-5">
-      <h2 class="text-lg font-semibold text-highlighted">{{ t("officer.review.pattern") }}</h2>
-      <p class="text-base text-muted">{{ t("officer.review.patternDescription") }}</p>
-
-      <div class="space-y-5">
-        <div>
-          <h3 class="text-base font-medium text-muted">
-            {{ t("officer.review.patternFindings") }}
-          </h3>
-          <ul v-if="payload.patterns.commonFindings.length > 0" class="mt-2 space-y-2">
-            <li
-              v-for="item in payload.patterns.commonFindings"
-              :key="item.code"
-              class="flex items-center justify-between gap-2 text-base"
-            >
-              <span class="truncate text-toned">{{ findingLabel(item.code) }}</span>
-              <UBadge color="neutral" variant="soft" size="lg">{{ item.count }}</UBadge>
-            </li>
-          </ul>
-          <p v-else class="mt-2 text-base text-muted">{{ t("officer.review.noPattern") }}</p>
-        </div>
-
-        <div>
-          <h3 class="text-base font-medium text-muted">
-            {{ t("officer.review.patternReasons") }}
-          </h3>
-          <ul v-if="payload.patterns.commonRejectionReasons.length > 0" class="mt-2 space-y-2">
-            <li
-              v-for="item in payload.patterns.commonRejectionReasons"
-              :key="item.reason"
-              class="flex items-center justify-between gap-2 text-base"
-            >
-              <span class="truncate text-toned">{{ item.reason }}</span>
-              <UBadge color="neutral" variant="soft" size="lg">{{ item.count }}</UBadge>
-            </li>
-          </ul>
-          <p v-else class="mt-2 text-base text-muted">{{ t("officer.review.noPattern") }}</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="space-y-4 p-5">
-      <h2 class="text-lg font-semibold text-highlighted">
-        {{ t("submissions.timeline.title") }}
-      </h2>
-      <SubmissionTimeline :events="payload.activity" />
-    </section>
+    </StickyActionBar>
   </div>
 </template>

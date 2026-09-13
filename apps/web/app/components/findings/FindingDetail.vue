@@ -75,21 +75,38 @@ function formatDate(value: string | Date): string {
         <UBadge color="neutral" variant="outline" size="lg">
           {{ t(`checks.status.${finding.status}`) }}
         </UBadge>
-        <UBadge color="neutral" variant="soft" size="lg">
-          {{ t("checks.detail.code") }} : {{ finding.code }}
-        </UBadge>
       </div>
 
-      <h1 class="text-xl font-semibold tracking-tight text-highlighted">
+      <h1 class="text-2xl font-semibold tracking-tight text-highlighted">
         {{ translate("title") }}
       </h1>
 
       <p class="text-base leading-6 text-toned" dir="auto">{{ translate("message") }}</p>
 
-      <p class="text-sm text-muted">
+      <p class="text-sm text-muted tabular">
         {{ t("checks.detail.createdAt") }} : {{ formatDate(finding.createdAt) }}
       </p>
     </header>
+
+    <details class="group rounded-md border border-default bg-elevated/40 px-4 py-3">
+      <summary
+        class="flex cursor-pointer list-none items-center gap-2 text-sm font-medium text-toned focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+      >
+        <span class="inline-flex shrink-0 rtl:rotate-180">
+          <UIcon
+            name="i-tabler-chevron-right"
+            class="size-4 transition-control group-open:rotate-90"
+          />
+        </span>
+        {{ t("checks.detail.showTechnical") }}
+      </summary>
+      <div class="mt-3 space-y-1">
+        <p class="text-sm text-muted">{{ t("checks.detail.technical") }}</p>
+        <code class="block break-all font-mono text-sm text-toned" dir="ltr">
+          {{ finding.code }}
+        </code>
+      </div>
+    </details>
 
     <UAlert
       v-if="translate('fix')"

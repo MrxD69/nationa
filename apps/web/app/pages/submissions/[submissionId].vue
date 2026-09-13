@@ -5,6 +5,9 @@ import SubmissionStatusBadge from "~/components/submission/SubmissionStatusBadge
 import CleanlinessBadge from "~/components/submission/CleanlinessBadge.vue";
 import SubmissionTimeline from "~/components/submission/SubmissionTimeline.vue";
 import DocumentViewer from "~/components/officer/DocumentViewer.vue";
+import PageHeader from "~/components/ui/PageHeader.vue";
+import SectionHeader from "~/components/ui/SectionHeader.vue";
+import LoadingState from "~/components/ui/LoadingState.vue";
 
 definePageMeta({ layout: "app", middleware: "auth" });
 
@@ -39,6 +42,7 @@ const error = ref<string | null>(null);
 const acknowledged = ref(false);
 const resubmitting = ref(false);
 const resubmitError = ref<string | null>(null);
+const confirmResubmitOpen = ref(false);
 
 const submission = computed(() => data.value?.submission ?? null);
 const cleanlinessTier = computed(() => String(submission.value?.cleanlinessTier ?? ""));
@@ -61,9 +65,13 @@ const blockers = computed(() =>
   ),
 );
 
-const canResubmit = computed(() => {
+const isReturned = computed(() => {
   const status = String(submission.value?.status ?? "");
-  if (status !== "rejected" && status !== "returned") {
+  return status === "rejected" || status === "returned";
+});
+
+const canResubmit = computed(() => {
+  if (!isReturned.value) {
     return false;
   }
   return blockers.value.length === 0 || acknowledged.value;
@@ -124,6 +132,7 @@ async function resubmit() {
   if (!canResubmit.value) {
     return;
   }
+  confirmResubmitOpen.value = false;
   resubmitting.value = true;
   resubmitError.value = null;
   try {
@@ -145,63 +154,50 @@ onMounted(load);
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-5xl space-y-6">
-    <div class="flex items-center gap-2">
-      <UButton
-        to="/submissions"
-        color="neutral"
-        variant="ghost"
-        icon="i-tabler-arrow-left"
-        size="lg"
-        :label="t('submissions.back')"
-        :ui="{ leadingIcon: 'rtl:rotate-180' }"
-      />
-    </div>
+  <div class="mx-auto w-full max-w-6xl space-y-6">
+    <PageHeader
+      :title="companyName || t('submissions.detail.title')"
+      :subtitle="agencyName || undefined"
+      icon="i-tabler-file-text"
+      back-to="/submissions"
+      :back-label="t('submissions.back')"
+      max-width="max-w-none"
+    >
+      <template #actions>
+        <CleanlinessBadge :tier="cleanlinessTier" :score="cleanlinessScore" />
+        <SubmissionStatusBadge :status="String(submission?.status ?? '')" />
+      </template>
 
-    <div v-if="loading" class="flex items-center gap-2 text-base text-muted">
-      <UIcon name="i-tabler-loader-2" class="size-4 animate-spin" />
-      <span>{{ t("submissions.loading") }}</span>
-    </div>
-
-    <UAlert
-      v-else-if="error || !submission"
-      color="error"
-      variant="subtle"
-      :title="t('submissions.detail.notFound')"
-      :description="error ?? undefined"
-    />
-
-    <template v-else>
-      <section class="space-y-4 rounded-lg border border-default p-5">
-        <div class="flex flex-wrap items-start justify-between gap-3">
-          <div class="min-w-0 space-y-1">
-            <h1 class="truncate text-xl font-semibold text-highlighted">
-              {{ companyName || t("submissions.detail.title") }}
-            </h1>
-            <p v-if="agencyName" class="text-sm text-muted">{{ agencyName }}</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <CleanlinessBadge :tier="cleanlinessTier" :score="cleanlinessScore" />
-            <SubmissionStatusBadge :status="String(submission.status ?? '')" />
-          </div>
-        </div>
-
+      <template #meta>
         <dl class="grid gap-4 text-base sm:grid-cols-3">
           <div>
             <dt class="text-muted">{{ t("submissions.detail.submittedAt") }}</dt>
-            <dd class="text-toned">{{ formatDate(submission.submittedAt) }}</dd>
+            <dd class="text-toned tabular">{{ formatDate(submission?.submittedAt) }}</dd>
           </div>
           <div>
             <dt class="text-muted">{{ t("submissions.detail.decidedAt") }}</dt>
-            <dd class="text-toned">{{ formatDate(submission.decidedAt) }}</dd>
+            <dd class="text-toned tabular">{{ formatDate(submission?.decidedAt) }}</dd>
           </div>
           <div>
             <dt class="text-muted">{{ t("submissions.detail.agency") }}</dt>
             <dd class="truncate text-toned">{{ agencyName || "—" }}</dd>
           </div>
         </dl>
-      </section>
+      </template>
+    </PageHeader>
 
+    <LoadingState v-if="loading" variant="skeleton-list" :count="3" />
+
+    <UAlert
+      v-else-if="error || !submission"
+      color="error"
+      variant="subtle"
+      icon="i-tabler-alert-triangle"
+      :title="t('submissions.detail.notFound')"
+      :description="error ?? undefined"
+    />
+
+    <template v-else>
       <UAlert
         v-if="latestReview"
         color="neutral"
@@ -217,42 +213,74 @@ onMounted(load);
         v-if="resubmitError"
         color="error"
         variant="subtle"
+        icon="i-tabler-alert-triangle"
         :title="t('submissions.error.title')"
         :description="resubmitError"
       />
 
-      <div
-        v-if="submission.status === 'rejected' || submission.status === 'returned'"
-        class="flex justify-end"
-      >
+      <div v-if="isReturned" class="flex justify-end">
         <UButton
           icon="i-tabler-send"
-          :loading="resubmitting"
           :disabled="!canResubmit"
           :label="t('submissions.detail.resubmit')"
-          @click="resubmit"
+          @click="confirmResubmitOpen = true"
         />
       </div>
 
-      <!-- Sections of one submission, so one surface with dividers rather than two cards. -->
-      <div class="divide-y divide-default overflow-hidden rounded-lg border border-default">
-        <section class="space-y-4 p-5">
-          <h2 class="text-lg font-semibold text-highlighted">
-            {{ t("submissions.detail.findings") }}
-          </h2>
+      <!-- Sections of one submission as plain bands separated by hairlines, not cards. -->
+      <div class="divide-y divide-default">
+        <section class="space-y-4 py-5 first:pt-0">
+          <SectionHeader
+            :title="t('submissions.detail.findings')"
+            icon="i-tabler-list-search"
+            :count="findings.length"
+          />
           <FindingsList v-if="findings.length > 0" :findings="findings" :company-id="companyId" />
           <p v-else class="text-base text-muted">{{ t("submissions.detail.noFindings") }}</p>
         </section>
 
-        <section class="space-y-4 p-5">
-          <h2 class="text-lg font-semibold text-highlighted">
-            {{ t("submissions.timeline.title") }}
-          </h2>
+        <section class="space-y-4 py-5">
+          <SectionHeader
+            :title="t('submissions.timeline.title')"
+            icon="i-tabler-history"
+            :count="activity.length"
+          />
           <SubmissionTimeline :events="activity" />
         </section>
       </div>
 
       <DocumentViewer :documents="documents" :company-id="companyId" />
     </template>
+
+    <UModal v-model:open="confirmResubmitOpen">
+      <template #header>
+        <h2 class="font-medium text-highlighted">
+          {{ t("submissions.detail.confirmResubmitTitle") }}
+        </h2>
+      </template>
+
+      <template #body>
+        <p class="text-base text-toned">
+          {{ t("submissions.detail.confirmResubmitBody") }}
+        </p>
+      </template>
+
+      <template #footer>
+        <div class="flex w-full items-center justify-end gap-2">
+          <UButton
+            color="neutral"
+            variant="ghost"
+            :label="t('submissions.detail.cancel')"
+            @click="confirmResubmitOpen = false"
+          />
+          <UButton
+            icon="i-tabler-send"
+            :loading="resubmitting"
+            :label="t('submissions.detail.confirmResubmit')"
+            @click="resubmit"
+          />
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>

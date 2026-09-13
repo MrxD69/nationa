@@ -32,20 +32,28 @@ function translate(finding: Finding, field: "title" | "message"): string {
     variant="subtle"
     icon="i-tabler-alert-octagon"
     :title="t('submissions.detail.blockers')"
-    :description="t('submissions.detail.blockersDescription', { count: blockers.length })"
   >
     <template #description>
-      <div class="mt-2 space-y-2">
+      <p class="text-sm text-muted">
+        {{ t("submissions.detail.blockersDescription", { count: blockers.length }) }}
+      </p>
+
+      <div class="mt-3 space-y-2">
         <div
           v-for="(finding, index) in blockers"
           :key="finding.id ?? index"
-          class="rounded-lg border border-default/60 bg-default/40 p-3"
+          class="rounded-md border border-default/60 bg-default/40 p-3"
         >
           <p class="text-base font-medium text-highlighted">{{ translate(finding, "title") }}</p>
           <p class="text-sm text-muted">{{ translate(finding, "message") }}</p>
         </div>
+      </div>
 
-        <UCheckbox v-model="acknowledged" :label="t('submissions.detail.resubmitAcknowledge')" />
+      <div class="mt-3 rounded-md border border-default/60 bg-default/40 p-3">
+        <UCheckbox v-model="acknowledged" :label="t('submissions.detail.blockerAcknowledgeAll')" />
+        <p class="ms-7 mt-1 text-sm text-muted">
+          {{ t("submissions.detail.blockerAcknowledgeHint") }}
+        </p>
       </div>
     </template>
   </UAlert>

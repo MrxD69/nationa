@@ -60,6 +60,15 @@ const selectedBundle = computed(
   () => items.value.find((item) => item.document.id === selectedId.value) ?? null,
 );
 
+const selectedDocumentType = computed(() => {
+  const typeId = selectedBundle.value?.document.documentTypeId ?? null;
+  return typeId ? (types.value.find((type) => type.id === typeId) ?? null) : null;
+});
+
+const importantFields = computed<string[]>(
+  () => selectedDocumentType.value?.requiredFields ?? [],
+);
+
 const overallConfidence = computed(() => {
   const raw = detail.value?.extraction?.confidenceOverall ?? null;
   if (raw === null || raw === "") {
@@ -210,7 +219,7 @@ watch(companyId, () => {
 
               <div class="-mx-4 divide-y divide-default border-y border-default px-4">
                 <div class="py-3">
-                  <ExtractedFieldsTable :fields="detail?.fields ?? []" />
+                  <ExtractedFieldsTable :fields="detail?.fields ?? []" :important-fields="importantFields" />
                 </div>
 
                 <details class="py-3">
@@ -300,7 +309,7 @@ watch(companyId, () => {
 
             <div class="divide-y divide-default border-y border-default">
               <div class="py-3">
-                <ExtractedFieldsTable :fields="detail?.fields ?? []" />
+                <ExtractedFieldsTable :fields="detail?.fields ?? []" :important-fields="importantFields" />
               </div>
 
               <details class="py-3">
